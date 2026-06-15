@@ -9,20 +9,12 @@ const cormorant = Cormorant_Garamond({
   weight: ['300', '400'],
 });
 
-// Конфігурація шляхів до твоїх нових картинок з папки public
+// Шляхи до твоїх круглих іконок у папці public
 const platformIcons: { [key: string]: string } = {
-  Spotify: '/spotify.png',
   'Apple Music': '/apple-music.png',
-  YouTube: '/youtube-music.png', // Підправив під твою назву з GitHub
+  Spotify: '/spotify.png',
+  YouTube: '/youtube-music.png',
   SoundCloud: '/soundcloud.png',
-};
-
-// Індивідуальні жорсткі розміри для кожної іконки, щоб нічого не розтягувалося
-const iconSizes: { [key: string]: string } = {
-  Spotify: 'w-5 h-5',         // Кругла — симетрична
-  'Apple Music': 'w-5 h-5',    // Кругла — симетрична
-  YouTube: 'w-6 h-4',         // Прямокутна (ширша, але нижча)
-  SoundCloud: 'w-6 h-4.5',    // Хмаринка (ширша)
 };
 
 function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: boolean; enabled: boolean }) {
@@ -60,6 +52,7 @@ function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: b
   return <>{displayText}</>;
 }
 
+// Релізи зі зміненим порядком стрімінгів (Apple Music тепер перша)
 const releases = [
   {
     id: 1,
@@ -69,8 +62,8 @@ const releases = [
     image: '/deepend.png',
     canScramble: false,
     links: [
-      { name: 'Spotify', url: 'https://open.spotify.com' },
       { name: 'Apple Music', url: 'https://music.apple.com/us/album/deep-end-single/1895507327' },
+      { name: 'Spotify', url: 'https://open.spotify.com/track/4O26Nf20G2C1FwYnIDM7Iu' },
       { name: 'YouTube', url: 'https://music.youtube.com/watch?v=QVCaTgY_r7w&list=RDAMVMQVCaTgY_r7w' },
       { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/deep-end?si=15a04180a465443aa31b13d5ba692493&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing' }
     ]
@@ -83,8 +76,8 @@ const releases = [
     image: '/halfreal.png',
     canScramble: true,
     links: [
-      { name: 'Spotify', url: 'https://open.spotify.com' },
       { name: 'Apple Music', url: 'https://music.apple.com/us/album/half-real-single/6769801424' },
+      { name: 'Spotify', url: 'https://open.spotify.com/track/5uXFfO3P8H12fG98XcY12d' },
       { name: 'YouTube', url: 'https://music.youtube.com/watch?v=Fs0ZWHbaxBg&list=OLAK5uy_myPYbcMPqiegpvjCbv0sgJbqMe_rWa8Pw' },
       { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/half-real' }
     ]
@@ -155,4 +148,45 @@ export default function Music() {
                 </p>
 
                 {/* БЛОК КНОПОК */}
-                <div className="w-full
+                <div className="w-full flex flex-wrap justify-center lg:justify-start gap-x-6 md:gap-x-6 gap-y-4 pt-6 border-t border-[#141414] items-center">
+                  {track.links.map((link) => (
+                    <a
+                      key={link.name}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-500 hover:text-white transition-all duration-300 relative group flex items-center justify-center w-10 h-10 md:w-auto md:h-auto"
+                      title={link.name}
+                    >
+                      {/* ІКОНКА (Для мобільних) */}
+                      <span className="flex md:hidden items-center justify-center w-8 h-8 flex-shrink-0">
+                        {platformIcons[link.name] ? (
+                          <img 
+                            src={platformIcons[link.name]} 
+                            alt={link.name}
+                            // brightness-0 invert робить будь-яку кольорову іконку чисто білою
+                            className="w-6 h-6 object-contain brightness-0 invert opacity-60 group-hover:opacity-100 transition-all duration-300" 
+                          />
+                        ) : (
+                          link.name
+                        )}
+                      </span>
+
+                      {/* ТЕКСТ (Для десктопів) */}
+                      <span className="hidden md:block text-[11px] tracking-[0.25em] uppercase">
+                        {link.name}
+                      </span>
+                      
+                      <span className="absolute left-0 bottom-[-4px] w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full hidden md:block" />
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+}
