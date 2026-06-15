@@ -5,7 +5,6 @@ import { ThemeContext } from './components/ThemeContext';
 import { useTheme } from 'next-themes';
 import SmoothScroll from './components/SmoothScroll';
 import CustomCursor from './components/CustomCursor';
-import Preloader from './components/Preloader';
 import SoundControl from './components/SoundControl';
 import Script from 'next/script';
 import { useState, useEffect } from 'react';
