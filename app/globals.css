@@ -2,10 +2,12 @@
 
 @layer base {
   :root {
+    /* Світла тема: м'який графітовий текст для кращої читабельності */
     --background: #f4f4f4; 
-    --foreground: #2d2d2d; /* Змінив на темно-сірий для м'якості у світлій темі */
+    --foreground: #2d2d2d; 
   }
   .dark {
+    /* Темна тема: абсолютний чорний та чистий білий */
     --background: #000000;
     --foreground: #ffffff;
   }
@@ -23,7 +25,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   
-  /* Плавний перехід кольорів при зміні теми */
+  /* Плавна зміна кольорів при зміні теми */
   transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
               color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   
