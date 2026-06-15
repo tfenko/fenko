@@ -37,34 +37,34 @@ export default function Hero() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-screen bg-background flex items-center justify-center overflow-hidden z-30 transition-colors duration-400"
+      className="relative w-full h-screen bg-background flex items-center justify-center overflow-hidden z-30 transition-colors duration-600"
     >
-      {/* 3D сцена стає прозорішою у світлій темі, щоб не конфліктувати з дизайном */}
-      <div className={`transition-opacity duration-700 ${theme === 'dark' ? 'opacity-100' : 'opacity-20'}`}>
+      {/* Інверсія сцени для світлої теми: тепер 3D виглядає як "негатив", а не просто бліда пляма */}
+      <div className={`absolute inset-0 z-10 transition-all duration-700 ${theme === 'dark' ? 'invert-0' : 'invert-[0.85] grayscale'}`}>
         <ThreeScene onReady={handleSceneReady} />
       </div>
 
-      {/* Затемнення фону */}
-      <div className="absolute inset-0 bg-foreground/60 z-40 pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,var(--background)_85%)] opacity-90 z-40 pointer-events-none" />
+      {/* Адаптивне затемнення: темне для Dark, світле для Light */}
+      <div className={`absolute inset-0 z-20 pointer-events-none transition-colors duration-600 ${theme === 'dark' ? 'bg-black/40' : 'bg-white/40'}`} />
+      <div className="absolute inset-0 z-20 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_10%,var(--background)_85%)] opacity-90" />
 
       {/* Текст */}
       <div 
         ref={contentRef} 
         className="relative z-50 text-center px-4 will-change-transform transition-opacity duration-700"
       >
-        {/* Додано клас text-outline-light для білого контуру у світлій темі */}
-        <h1 className="text-outline-light font-cormorant text-7xl sm:text-8xl md:text-9xl font-light text-foreground tracking-[0.25em] uppercase mb-4 transition-all duration-500">
+        {/* Прибрано text-outline-light. Замість нього font-semibold для контрасту */}
+        <h1 className="font-cormorant text-7xl sm:text-8xl md:text-9xl font-semibold tracking-[0.25em] uppercase mb-4 text-foreground transition-all duration-500">
           FENKO
         </h1>
-        <p className="font-sans text-[10px] md:text-xs text-foreground/50 font-light tracking-[0.5em] uppercase max-w-xl mx-auto leading-relaxed">
+        <p className="font-sans text-[10px] md:text-xs text-foreground/70 font-light tracking-[0.5em] uppercase max-w-xl mx-auto leading-relaxed">
           Some people only exist after midnight
         </p>
       </div>
 
       {/* Скролл маркер */}
       <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-50 opacity-30 flex flex-col items-center gap-2">
-        <span className="text-[8px] font-mono tracking-[0.3em] uppercase text-foreground/60">scroll</span>
+        <span className="text-[8px] font-mono tracking-[0.3em] uppercase text-foreground">scroll</span>
         <div className="w-[1px] h-12 bg-gradient-to-b from-foreground to-transparent animate-pulse" />
       </div>
     </div>
