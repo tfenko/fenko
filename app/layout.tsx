@@ -27,7 +27,7 @@ export default function RootLayout({
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <html lang="en" className="select-none cursor-none bg-black">
+    <html lang="en" className="select-none md:cursor-none bg-black">
       <body className={`${inter.variable} ${cormorant.variable} font-sans bg-black antialiased overflow-x-hidden`}>
         {/* Прелоадер сайту */}
         <Preloader onComplete={() => setIsLoading(false)} />
@@ -36,25 +36,30 @@ export default function RootLayout({
         <div className="film-grain" />
         
         <SmoothScroll>
-          <CustomCursor />
+          {/* Кастомний курсор рендериться ТІЛЬКИ на десктопах */}
+          <div className="hidden md:block">
+            <CustomCursor />
+          </div>
           
           {/* Елементи інтерфейсу після завантаження */}
           {!isLoading && (
             <>
-              {/* Фірмова тонка люкс-рамка по краях всього екрана */}
-              <div className="fixed inset-0 border-[12px] border-black z-[999] pointer-events-none" />
-              <div className="fixed inset-3 border border-white/5 z-[999] pointer-events-none" />
+              {/* Фірмова тонка люкс-рамка — прихована на мобільних (hidden), видна від md:block */}
+              <div className="fixed inset-0 hidden md:block border-[12px] border-black z-[999] pointer-events-none" />
+              <div className="fixed inset-3 hidden md:block border border-white/5 z-[999] pointer-events-none" />
               
-              {/* Мінімалістичний фіксований верхній маркер */}
-              <div className="fixed top-8 left-8 z-[900] mix-blend-difference">
-                <span className="font-cormorant text-lg font-light tracking-[0.3em] text-white uppercase">F //</span>
+              {/* Мінімалістичний фіксований верхній маркер — адаптовані відступи (top-6 на мобілці, top-8 на десктопі) */}
+              <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[900] mix-blend-difference">
+                <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] text-white uppercase">F //</span>
               </div>
               <div className="fixed top-8 right-8 z-[900] mix-blend-difference font-mono text-[9px] tracking-[0.2em] text-gray-500 uppercase hidden sm:block">
                 [ midnight edition ]
               </div>
 
-              {/* КНОПКА КЕРУВАННЯ АТМОСФЕРНИМ ЗВУКОМ */}
-              <SoundControl />
+              {/* КНОПКА КЕРУВАННЯ АТМОСФЕРНИМ ЗВУКОМ — адаптовані відступи для зручного тапу пальцем */}
+              <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[900]">
+                <SoundControl />
+              </div>
             </>
           )}
 
