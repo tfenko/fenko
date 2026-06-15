@@ -29,6 +29,14 @@ body {
   font-family: var(--font-sans);
   transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
               color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Примусово вимикаємо системний курсор усюди */
+  cursor: none !important;
+}
+
+/* ФІКС ДЛЯ КУРСОРА:
+   Примусово вимикаємо стандартний курсор для всіх елементів, 
+   на які можна натиснути */
+a, button, [role="button"], input, select, textarea, label {
   cursor: none !important;
 }
 
