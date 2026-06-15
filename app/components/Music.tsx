@@ -62,7 +62,7 @@ const releases = [
       key: 'A# minor',
       mood: 'MELANCHOLIC // YEARNING',
     },
-    image: '/deepend.png',
+    image: '/deepend.webp',
     canScramble: false,
     links: [
       {
@@ -94,7 +94,7 @@ const releases = [
       key: 'D minor',
       mood: 'INTROSPECTIVE // MYSTERIOUS',
     },
-    image: '/halfreal.png',
+    image: '/halfreal.webp',
     canScramble: true,
     links: [
       {
