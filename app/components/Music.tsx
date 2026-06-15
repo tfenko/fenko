@@ -9,28 +9,20 @@ const cormorant = Cormorant_Garamond({
   weight: ['300', '400'],
 });
 
-// Геометрично вирівняні, пропорційні та стабільні іконки
-const platformIcons: { [key: string]: React.ReactNode } = {
-  Spotify: (
-    <svg className="w-5 h-5 block" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.438-5.305-1.764-8.785-.97-.337.077-.67-.138-.746-.473-.077-.337.138-.67.473-.746 3.81-.87 7.077-.496 9.71 1.115.293.18.386.563.205.867zm1.224-2.722c-.226.367-.707.487-1.074.26-2.69-1.654-6.79-2.134-9.967-1.17-.413.125-.845-.107-.97-.522-.125-.413.107-.847.522-.97 3.637-1.103 8.142-.566 11.23 1.333.366.226.486.707.26 1.07zM17.91 11.4c-.272.44-.847.587-1.287.316-3.132-1.91-8.312-2.08-11.332-1.164-.5.152-1.023-.13-1.174-.633-.153-.502.13-1.022.634-1.174 3.595-1.09 9.32-.9 12.843 1.25.442.27.59.845.317 1.286z"/>
-    </svg>
-  ),
-  'Apple Music': (
-    <svg className="w-5 h-5 block" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.33 13.06c-.28.25-.66.42-1.05.47-.63.08-1.25-.16-1.62-.62-.35-.44-.45-1.02-.27-1.55.15-.46.52-.82.98-.96.47-.14.98-.07 1.39.2.14.09.28.2.39.33v-3.71c0-.44.29-.81.71-.92l2.36-.63c.48-.13.97.23.97.73v1.65c0 .32-.2.61-.51.7l-2.06.56v4.75z"/>
-    </svg>
-  ),
-  YouTube: (
-    <svg className="w-5 h-5 block" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 02.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-    </svg>
-  ),
-  SoundCloud: (
-    <svg className="w-5 h-5 block" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M23.111 13.914a3.111 3.111 0 0 0-3.08-2.736c-.161 0-.322.013-.48.038A4.667 4.667 0 0 0 11 13c0 .08.006.157.013.235-.4-.28-.888-.453-1.424-.453-.133 0-.263.012-.392.031a2.8 2.8 0 0 0-3.072-1.926 3.111 3.111 0 0 0-2.936 2.33 1.556 1.556 0 0 0-.564-.105A1.556 1.556 0 0 0 1.05 14.67v3.888c0 .86.7 1.556 1.556 1.556H21.56a2.333 2.333 0 0 0 2.333-2.333c0-1.25-.98-2.285-2.222-2.324a3.12 3.12 0 0 0-.56-.543z"/>
-    </svg>
-  )
+// Конфігурація шляхів до твоїх нових картинок з папки public
+const platformIcons: { [key: string]: string } = {
+  Spotify: '/spotify.png',
+  'Apple Music': '/apple-music.png',
+  YouTube: '/youtube-music.png', // Підправив під твою назву з GitHub
+  SoundCloud: '/soundcloud.png',
+};
+
+// Індивідуальні жорсткі розміри для кожної іконки, щоб нічого не розтягувалося
+const iconSizes: { [key: string]: string } = {
+  Spotify: 'w-5 h-5',         // Кругла — симетрична
+  'Apple Music': 'w-5 h-5',    // Кругла — симетрична
+  YouTube: 'w-6 h-4',         // Прямокутна (ширша, але нижча)
+  SoundCloud: 'w-6 h-4.5',    // Хмаринка (ширша)
 };
 
 function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: boolean; enabled: boolean }) {
@@ -77,7 +69,7 @@ const releases = [
     image: '/deepend.png',
     canScramble: false,
     links: [
-      { name: 'Spotify', url: 'https://open.spotify.com/track/4O26Nf20G2C1FwYnIDM7Iu' },
+      { name: 'Spotify', url: 'https://open.spotify.com' },
       { name: 'Apple Music', url: 'https://music.apple.com/us/album/deep-end-single/1895507327' },
       { name: 'YouTube', url: 'https://music.youtube.com/watch?v=QVCaTgY_r7w&list=RDAMVMQVCaTgY_r7w' },
       { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/deep-end?si=15a04180a465443aa31b13d5ba692493&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing' }
@@ -91,7 +83,7 @@ const releases = [
     image: '/halfreal.png',
     canScramble: true,
     links: [
-      { name: 'Spotify', url: 'https://open.spotify.com/track/5uXFfO3P8H12fG98XcY12d' },
+      { name: 'Spotify', url: 'https://open.spotify.com' },
       { name: 'Apple Music', url: 'https://music.apple.com/us/album/half-real-single/6769801424' },
       { name: 'YouTube', url: 'https://music.youtube.com/watch?v=Fs0ZWHbaxBg&list=OLAK5uy_myPYbcMPqiegpvjCbv0sgJbqMe_rWa8Pw' },
       { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/half-real' }
@@ -163,36 +155,4 @@ export default function Music() {
                 </p>
 
                 {/* БЛОК КНОПОК */}
-                <div className="w-full flex flex-wrap justify-center lg:justify-start gap-x-2 md:gap-x-6 gap-y-4 pt-6 border-t border-[#141414]">
-                  {track.links.map((link) => (
-                    <a
-                      key={link.name}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-500 hover:text-white transition-all duration-300 relative group flex items-center justify-center w-12 h-12 md:w-auto md:h-auto"
-                      title={link.name}
-                    >
-                      {/* ІКОНКА (Тільки для мобільних) */}
-                      <span className="flex md:hidden text-gray-400 hover:text-white items-center justify-center w-6 h-6 flex-shrink-0">
-                        {platformIcons[link.name] || link.name}
-                      </span>
-
-                      {/* ТЕКСТ (Для десктопів) */}
-                      <span className="hidden md:block text-[11px] tracking-[0.25em] uppercase">
-                        {link.name}
-                      </span>
-                      
-                      <span className="absolute left-0 bottom-[-4px] w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full hidden md:block" />
-                    </a>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
-          ))}
-        </div>
-
-      </div>
-    </section>
-  );
-}
+                <div className="w-full
