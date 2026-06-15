@@ -9,7 +9,7 @@ const cormorant = Cormorant_Garamond({
   weight: ['300', '400'],
 });
 
-// Шляхи до твоїх круглих іконок у папці public
+// Абсолютно точні шляхи до твоїх круглих іконок у папці public
 const platformIcons: { [key: string]: string } = {
   'Apple Music': '/apple-music.png',
   Spotify: '/spotify.png',
@@ -52,7 +52,7 @@ function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: b
   return <>{displayText}</>;
 }
 
-// Релізи зі зміненим порядком стрімінгів (Apple Music тепер перша)
+// Перелік релізів: Apple Music тепер почесно відкриває список лінків
 const releases = [
   {
     id: 1,
@@ -63,7 +63,7 @@ const releases = [
     canScramble: false,
     links: [
       { name: 'Apple Music', url: 'https://music.apple.com/us/album/deep-end-single/1895507327' },
-      { name: 'Spotify', url: 'https://open.spotify.com/track/4f97uWd7vK9L8Z6b8Xz1Y2' },
+      { name: 'Spotify', url: 'https://open.spotify.com/track/6QVCaTgY_r7w' },
       { name: 'YouTube', url: 'https://music.youtube.com/watch?v=QVCaTgY_r7w&list=RDAMVMQVCaTgY_r7w' },
       { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/deep-end?si=15a04180a465443aa31b13d5ba692493&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing' }
     ]
@@ -77,7 +77,7 @@ const releases = [
     canScramble: true,
     links: [
       { name: 'Apple Music', url: 'https://music.apple.com/us/album/half-real-single/6769801424' },
-      { name: 'Spotify', url: 'https://open.spotify.com/track/3b8Z6vK9L8Z6b8Xz1Y2uF3' },
+      { name: 'Spotify', url: 'https://open.spotify.com/track/5Fs0ZWHbaxBg' },
       { name: 'YouTube', url: 'https://music.youtube.com/watch?v=Fs0ZWHbaxBg&list=OLAK5uy_myPYbcMPqiegpvjCbv0sgJbqMe_rWa8Pw' },
       { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/half-real' }
     ]
@@ -91,6 +91,7 @@ export default function Music() {
     <section className="relative z-10 w-full min-h-screen bg-black text-white py-24 md:py-40 px-4 md:px-16 flex flex-col justify-center border-t border-[#141414]">
       <div className="max-w-6xl mx-auto w-full relative z-10">
         
+        {/* Верхній блок заголовка */}
         <div className="mb-16 md:mb-24 border-b border-[#141414] pb-6 flex flex-col sm:flex-row justify-between items-center sm:items-end text-center sm:text-left gap-4">
           <div>
             <p className="font-sans text-[9px] tracking-[0.6em] text-gray-600 uppercase mb-2">Selected Works</p>
@@ -99,6 +100,7 @@ export default function Music() {
           <span className="text-[9px] font-mono text-gray-600 tracking-widest hidden sm:block">FENKO // ARCHIVE</span>
         </div>
 
+        {/* Список релізів */}
         <div className="flex flex-col gap-24 md:gap-40">
           {releases.map((track, index) => (
             <div 
@@ -109,6 +111,7 @@ export default function Music() {
               onMouseEnter={() => setHoveredTrackId(track.id)}
               onMouseLeave={() => setHoveredTrackId(null)}
             >
+              {/* Обкладинка треку */}
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 0.7 }}
@@ -124,6 +127,7 @@ export default function Music() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-60" />
               </motion.div>
 
+              {/* Інформація про трек */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -147,8 +151,8 @@ export default function Music() {
                   {track.description}
                 </p>
 
-                {/* БЛОК КНОПОК */}
-                <div className="w-full flex flex-wrap justify-center lg:justify-start gap-x-4 md:gap-x-6 gap-y-4 pt-6 border-t border-[#141414] items-center">
+                {/* БЛОК СТРІМІНГ-КНОПОК */}
+                <div className="w-full flex flex-wrap justify-center lg:justify-start gap-x-6 md:gap-x-6 gap-y-4 pt-6 border-t border-[#141414] items-center">
                   {track.links.map((link) => (
                     <a
                       key={link.name}
@@ -158,21 +162,21 @@ export default function Music() {
                       className="text-gray-500 hover:text-white transition-all duration-300 relative group flex items-center justify-center w-12 h-12 md:w-auto md:h-auto"
                       title={link.name}
                     >
-                      {/* ІКОНКА (Для мобільних) */}
+                      {/* Мобільна кругла іконка */}
                       <span className="flex md:hidden items-center justify-center w-8 h-8 flex-shrink-0">
                         {platformIcons[link.name] ? (
                           <img 
                             src={platformIcons[link.name]} 
                             alt={link.name}
-                            // Оптимальний фільтр для круглих іконок: знебарвлення + делікатна яскравість
-                            className="w-6 h-6 object-contain grayscale contrast-200 opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300 rounded-full" 
+                            // Чиста, кристальна фізика без руйнівних CSS-фільтрів
+                            className="w-6 h-6 object-contain opacity-60 active:opacity-100 active:scale-95 transition-all duration-200" 
                           />
                         ) : (
                           link.name
                         )}
                       </span>
 
-                      {/* ТЕКСТ (Для десктопів) */}
+                      {/* Текст для десктопних екранів */}
                       <span className="hidden md:block text-[11px] tracking-[0.25em] uppercase">
                         {link.name}
                       </span>
