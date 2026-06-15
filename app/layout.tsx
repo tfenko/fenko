@@ -33,7 +33,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background cursor-none">
-        {/* Переконайся, що в ThemeContext передано defaultTheme="dark" */}
         <ThemeContext>
           <Script src="https://www.googletagmanager.com/gtag/js?id=AW-18240888787" strategy="afterInteractive" />
           <Script id="google-ads-tag" strategy="afterInteractive">
@@ -48,24 +47,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Preloader onComplete={() => setIsLoading(false)} />
           <div className="film-grain" />
           
-          {/* Кнопка теми завжди доступна */}
+          {/* UI елементи, що доступні завжди */}
           <ThemeToggle />
-
-          {!isLoading && (
-            <>
-              {/* Декоративні елементи та UI */}
-              <div className="fixed inset-0 hidden md:block border-[12px] border-background z-[999] pointer-events-none" />
-              <div className="fixed inset-3 hidden md:block border border-foreground/10 z-[999] pointer-events-none" />
+          
+          {/* Декоративні рамки відображаються одразу для візуальної цілісності */}
+          <div className="fixed inset-0 hidden md:block border-[12px] border-background z-[999] pointer-events-none" />
+          <div className="fixed inset-3 hidden md:block border border-foreground/10 z-[999] pointer-events-none" />
               
-              <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[900] mix-blend-difference">
-                <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] uppercase text-foreground">F //</span>
-              </div>
+          <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[900] mix-blend-difference">
+            <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] uppercase text-foreground">F //</span>
+          </div>
               
-              <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[900]">
-                <SoundControl />
-              </div>
-            </>
-          )}
+          <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[900]">
+            <SoundControl />
+          </div>
 
           <SmoothScroll>
             <main className="w-full relative z-10">{children}</main>
