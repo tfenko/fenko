@@ -3,7 +3,11 @@
 import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
-export default function ThreeScene() {
+interface ThreeSceneProps {
+  onReady?: () => void;
+}
+
+export default function ThreeScene({ onReady }: ThreeSceneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,7 +26,7 @@ export default function ThreeScene() {
     let mesh: THREE.Mesh | null = null;
     const textureLoader = new THREE.TextureLoader();
 
-    // Безпечне завантаження з відловом помилок
+    // Безпечне завантаження текстури з тригером готовності
     textureLoader.load(
       '/vibe.png',
       (texture) => {
@@ -34,10 +38,19 @@ export default function ThreeScene() {
         });
         mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
+
+        // Повідомляємо Hero та Preloader, що 3D-сцена успішно завантажена
+        if (onReady) {
+          setTimeout(() => {
+            onReady();
+          }, 100);
+        }
       },
       undefined,
       (err) => {
         console.error("Помилка завантаження картинки vibe.png. Перевірте папку public.", err);
+        // Якщо сталася помилка, все одно пускаємо користувача на сайт, щоб не було вічного завантаження
+        if (onReady) onReady();
       }
     );
 
@@ -89,7 +102,7 @@ export default function ThreeScene() {
         containerRef.current.removeChild(renderer.domElement);
       }
     };
-  }, []);
+  }, [onReady]);
 
   return <div ref={containerRef} className="absolute inset-0 -z-10 bg-black" />;
 }
