@@ -8,10 +8,9 @@ export default function SoundControl() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Ініціалізуємо аудіо лише на клієнті
     audioRef.current = new Audio('/ambient.mp3');
     audioRef.current.loop = true;
-    audioRef.current.volume = 0.4; // Робимо звук м'яким фоном (40% гучності)
+    audioRef.current.volume = 0.4;
 
     return () => {
       if (audioRef.current) {
@@ -34,14 +33,15 @@ export default function SoundControl() {
   return (
     <div 
       onClick={toggleSound}
-      className="fixed bottom-8 right-8 z-[900] flex items-center gap-3 cursor-none select-none mix-blend-difference group"
+      // Додано cursor-none, щоб приховати системну стрілку
+      className="flex items-center gap-3 cursor-none select-none group transition-opacity duration-300 hover:opacity-50"
     >
-      {/* Анімовані лінії звукової хвилі (показуємо тільки коли ON) */}
-      <div className="flex items-end gap-[2px] h-3 w-4 overflow-hidden">
+      {/* Анімовані лінії (використовуємо currentColor, щоб вони завжди були контрастними) */}
+      <div className="flex items-end justify-center gap-[2px] h-3 w-4">
         {[1, 2, 3, 4].map((bar) => (
           <motion.div
             key={bar}
-            className="w-[1px] bg-white"
+            className="w-[1px] bg-foreground"
             initial={{ height: 2 }}
             animate={isPlaying ? { height: [2, 12, 4, 10, 2] } : { height: 2 }}
             transition={{
@@ -54,8 +54,8 @@ export default function SoundControl() {
         ))}
       </div>
 
-      {/* Мінімалістичний текстовий маркер */}
-      <span className="font-mono text-[9px] tracking-[0.2em] text-gray-400 group-hover:text-white transition-colors duration-300 uppercase">
+      {/* Текстовий маркер */}
+      <span className="font-mono text-[9px] tracking-[0.3em] text-foreground uppercase">
         [ sound : {isPlaying ? 'on' : 'off'} ]
       </span>
     </div>
