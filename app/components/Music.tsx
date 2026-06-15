@@ -17,7 +17,7 @@ const platformIcons: { [key: string]: string } = {
 };
 
 const iconSizes: { [key: string]: string } = {
-  'Apple Music': 'w-[18px] h-[22px]', 
+  'Apple Music': 'w-[18px] h-[22px]',
   Spotify: 'w-6 h-6',
   YouTube: 'w-6.5 h-6.5 scale-[1]',
   SoundCloud: 'w-6 h-6',
@@ -55,8 +55,8 @@ const releases = [
     id: 1, 
     title: 'Deep End', 
     type: 'Single // Release', 
-    description: 'The sound of empty city streets at 2 AM, dragging you into an endless ocean of nocturnal reflections. Minimal electronic production meets a heavy, suffocating atmosphere that captures the exact moment water meets the shadows of the skyline. It’s an immersion into the quiet anxiety of isolation, where every beat feels like a heartbeat echoing in an abandoned concrete chamber.', 
-    meta: { bpm: '124', key: 'Am', mood: 'NOCTURNAL' },
+    description: 'The lyrics convey a sense of longing and emotional struggle in a relationship marked by distance and uncertainty. The imagery of water and sinking suggests a deep dive into love, while metaphors like "heavy chain" illustrate the weight of attachment. It is a haunting exploration of unresolved emotions and the sacrificial nature of intimacy.', 
+    meta: { bpm: '80', key: 'A# minor', mood: 'MELANCHOLIC // YEARNING' },
     image: '/deepend.png', 
     canScramble: false, 
     links: [ { name: 'Apple Music', url: '#' }, { name: 'Spotify', url: '#' }, { name: 'YouTube', url: '#' }, { name: 'SoundCloud', url: '#' } ] 
@@ -65,8 +65,8 @@ const releases = [
     id: 2, 
     title: 'Half Real', 
     type: 'Single // Release', 
-    description: 'A glitchy distortion of city lights blurred by relentless rain and the high-speed rush of a midnight drive. This track blends cinematic soul with sharp, trap-influenced percussion, painting the picture of a memory that is starting to fade from your consciousness. It captures the fragile border between a genuine feeling and the manufactured synthetic glow of the neon dark.', 
-    meta: { bpm: '138', key: 'F#m', mood: 'GLITCHED' },
+    description: 'The lyrics explore a haunting relationship characterized by fleeting encounters and emotional turmoil. Navigating the complexities of love that feels both real and illusory, the narrator grapples with the duality of presence. Themes of numbness and desire intertwine, suggesting a connection that exists primarily within the shadows of the night.', 
+    meta: { bpm: '129', key: 'D minor', mood: 'INTROSPECTIVE // MYSTERIOUS' },
     image: '/halfreal.png', 
     canScramble: true, 
     links: [ { name: 'Apple Music', url: '#' }, { name: 'Spotify', url: '#' }, { name: 'YouTube', url: '#' }, { name: 'SoundCloud', url: '#' } ] 
@@ -107,7 +107,6 @@ export default function Music() {
                   {track.description}
                 </p>
 
-                {/* Технічні метадані */}
                 <div className="flex gap-4 font-mono text-[8px] tracking-[0.2em] opacity-50 uppercase mb-8">
                   <span>BPM: {track.meta.bpm}</span>
                   <span>//</span>
