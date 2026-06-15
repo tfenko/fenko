@@ -28,18 +28,24 @@ export default function Hero() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Функція, яка викликається, коли ThreeScene повністю готова
+  const handleSceneReady = () => {
+    document.dispatchEvent(new Event('heroMediaLoaded'));
+  };
+
   return (
     <div
       ref={containerRef}
       className="relative w-full h-screen bg-black flex items-center justify-center overflow-hidden z-30"
     >
-      <ThreeScene />
+      {/* Передаємо тригер готовності всередину 3D сцени */}
+      <ThreeScene onReady={handleSceneReady} />
 
       {/* Затемнення фону */}
       <div className="absolute inset-0 bg-black/60 z-40 pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,#000000_85%)] opacity-90 z-40 pointer-events-none" />
 
-      {/* Текст з новим шрифтом */}
+      {/* Текст */}
       <div 
         ref={contentRef} 
         className="relative z-50 text-center px-4 will-change-transform transition-opacity duration-700"
