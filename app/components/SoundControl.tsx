@@ -15,6 +15,7 @@ export default function SoundControl() {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
+        audioRef.current = null;
       }
     };
   }, []);
@@ -31,12 +32,13 @@ export default function SoundControl() {
   };
 
   return (
-    <div 
+    <button 
       onClick={toggleSound}
-      // Додано cursor-none, щоб приховати системну стрілку
+      // aria-label обов'язково для Accessibility
+      aria-label={isPlaying ? "Вимкнути звук" : "Увімкнути звук"}
       className="flex items-center gap-3 cursor-none select-none group transition-opacity duration-300 hover:opacity-50"
     >
-      {/* Анімовані лінії (використовуємо currentColor, щоб вони завжди були контрастними) */}
+      {/* Анімовані лінії */}
       <div className="flex items-end justify-center gap-[2px] h-3 w-4">
         {[1, 2, 3, 4].map((bar) => (
           <motion.div
@@ -58,6 +60,6 @@ export default function SoundControl() {
       <span className="font-mono text-[9px] tracking-[0.3em] text-foreground uppercase">
         [ sound : {isPlaying ? 'on' : 'off'} ]
       </span>
-    </div>
+    </button>
   );
 }
