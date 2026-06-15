@@ -3,7 +3,7 @@
 @layer base {
   :root {
     --background: #f4f4f4; 
-    --foreground: #000000;
+    --foreground: #2d2d2d; /* Змінив на темно-сірий для м'якості у світлій темі */
   }
   .dark {
     --background: #000000;
@@ -27,7 +27,7 @@ body {
   transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
               color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* Примусово приховуємо системний курсор для твого CustomCursor */
+  /* Примусово приховуємо системний курсор */
   cursor: none !important;
 }
 
