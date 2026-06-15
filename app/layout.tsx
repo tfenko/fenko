@@ -10,7 +10,7 @@ import SoundControl from './components/SoundControl';
 import Script from 'next/script';
 import { useState, useEffect } from 'react';
 
-// Кнопка перемикання теми
+// Повністю контрастна кнопка теми
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -20,7 +20,8 @@ const ThemeToggle = () => {
   return (
     <button 
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-      className="fixed bottom-8 left-8 z-[900] font-mono text-[9px] uppercase tracking-widest hover:opacity-50 transition-opacity mix-blend-difference"
+      className="fixed bottom-8 left-8 z-[900] font-mono text-[9px] uppercase tracking-widest 
+                 px-3 py-1.5 bg-foreground text-background hover:opacity-70 transition-opacity"
     >
       {theme === 'dark' ? '[ LIGHT MODE ]' : '[ DARK MODE ]'}
     </button>
@@ -47,10 +48,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Preloader onComplete={() => setIsLoading(false)} />
           <div className="film-grain" />
           
-          {/* UI елементи, що доступні завжди */}
+          {/* UI елементи */}
           <ThemeToggle />
           
-          {/* Декоративні рамки відображаються одразу для візуальної цілісності */}
           <div className="fixed inset-0 hidden md:block border-[12px] border-background z-[999] pointer-events-none" />
           <div className="fixed inset-3 hidden md:block border border-foreground/10 z-[999] pointer-events-none" />
               
