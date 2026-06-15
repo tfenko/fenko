@@ -3,12 +3,47 @@
 import Hero from './components/Hero';
 import About from './components/About';
 import Music from './components/Music';
-import Footer from './components/Footer'; // Імпортуємо футер назад
+import Footer from './components/Footer';
 
-// ГЛОБАЛЬНІ МЕТАДАНІ ДЛЯ ВКЛАДКИ БРАУЗЕРА
+// ГЛОБАЛЬНІ МЕТАДАНІ ДЛЯ ПОШУКОВОЇ ОПТИМІЗАЦІЇ (SEO) ТА СОЦМЕРЕЖ
 export const metadata = {
-  title: 'Fenko // Soundscapes',
-  description: 'Alternative R&B // Dark Soundscapes',
+  title: 'FENKO // Official Website & Archive',
+  description: 'Official archive of FENKO (fenkomus). Alternative R&B, Dark Soundscapes, and Cinematic Soul Trap production. Author of the novel "Exit from Full Screen Mode".',
+  keywords: [
+    'fenko', 
+    'fenkomus', 
+    'fenko space', 
+    'dark r&b', 
+    'alternative r&b', 
+    'cinematic soul trap', 
+    'deep end fenko', 
+    'half real', 
+    'вихід з повноекранного режиму', 
+    'music producer lviv'
+  ],
+  // Налаштування для гарного відображення посилання в соцмережах (Telegram, Insta, Twitter)
+  openGraph: {
+    title: 'FENKO // Soundscapes & Archive',
+    description: 'Alternative R&B // Dark Soundscapes // Exit from Full Screen Mode',
+    url: 'https://fenko.space',
+    siteName: 'FENKO SPACE',
+    images: [
+      {
+        url: '/deepend.png', // Обкладинка твого треку з папки public, яка стане прев'ю сайту в чатах
+        width: 1200,
+        height: 630,
+        alt: 'FENKO - Deep End Art Cover',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FENKO // Official Website',
+    description: 'Alternative R&B // Dark Soundscapes',
+    images: ['/deepend.png'],
+  },
 };
 
 export default function Home() {
@@ -17,7 +52,7 @@ export default function Home() {
       <Hero />
       <About />
       <Music />
-      <Footer /> {/* Футер тепер на своєму законному місці */}
+      <Footer />
     </>
   );
 }
