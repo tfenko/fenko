@@ -6,6 +6,7 @@ import SmoothScroll from './components/SmoothScroll';
 import CustomCursor from './components/CustomCursor';
 import Preloader from './components/Preloader';
 import SoundControl from './components/SoundControl';
+import Script from 'next/script';
 import { useState } from 'react';
 
 const inter = Inter({ 
@@ -29,6 +30,21 @@ export default function RootLayout({
   return (
     <html lang="en" className="select-none md:cursor-none bg-black">
       <body className={`${inter.variable} ${cormorant.variable} font-sans bg-black antialiased overflow-x-hidden`}>
+        {/* Ініціалізація Google Ads Tag */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-18240888787"
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-tag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'AW-18240888787');
+          `}
+        </Script>
+
         {/* Прелоадер сайту */}
         <Preloader onComplete={() => setIsLoading(false)} />
         
