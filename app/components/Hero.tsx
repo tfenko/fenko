@@ -1,7 +1,7 @@
 'use client';
 
-import ThreeScene from './ThreeScene';
 import { useEffect, useRef } from 'react';
+import ThreeScene from './ThreeScene';
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,7 +45,7 @@ export default function Hero() {
       <div className="absolute inset-0 bg-black/60 z-40 pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,#000000_85%)] opacity-90 z-40 pointer-events-none" />
 
-      {/* Текст */}
+      {/* Текст з фірмовими шрифтами */}
       <div 
         ref={contentRef} 
         className="relative z-50 text-center px-4 will-change-transform transition-opacity duration-700"
