@@ -1,33 +1,58 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Preloader({ onComplete }: { onComplete: () => void }) {
   const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [isMediaLoaded, setIsMediaLoaded] = useState(false);
+  
+  // Використовуємо ref, щоб інтервал завжди бачив актуальний стан завантаження медіа
+  const isMediaLoadedRef = useRef(false);
 
   useEffect(() => {
-    // Емуляція завантаження преміум-сайту з кінематографічним таймінгом
+    // Слухаємо подію від ThreeScene
+    const handleMediaReady = () => {
+      setIsMediaLoaded(true);
+      isMediaLoadedRef.current = true;
+    };
+    document.addEventListener('heroMediaLoaded', handleMediaReady);
+
+    // Кінематографічний інтервал лічильника
     const counterInterval = setInterval(() => {
       setCount((prev) => {
-        if (prev >= 100) {
+        // Якщо ми дійшли до 99%, але 3D-сцена ще не готова — тримаємо 99% і чекаємо
+        if (prev >= 99 && !isMediaLoadedRef.current) {
+          return 99;
+        }
+
+        // Якщо все готово і ми на фініші (99% або 100%)
+        if (prev >= 100 || (prev >= 99 && isMediaLoadedRef.current)) {
           clearInterval(counterInterval);
-          // Невеликий таймаут після 100%, щоб людина встигла прочитати таглайн
+          
+          // Естетична пауза на 100%, щоб людина встигла прочитати таглайн
           setTimeout(() => {
             setIsVisible(false);
-            setTimeout(onComplete, 800); // Час на фінальне розчинення екрану
+            setTimeout(onComplete, 800); // Плавне зникнення штори
           }, 600);
+          
           return 100;
         }
-        
-        // Робимо приріст відсотків нерівномірним (імітація реального завантаження)
-        const randomIncrement = Math.floor(Math.random() * 8) + 2;
-        return Math.min(prev + randomIncrement, 100);
-      });
-    }, 40);
 
-    return () => clearInterval(counterInterval);
+        // Робимо приріст відсотків нерівномірним (імітація реального завантаження)
+        const randomIncrement = Math.floor(Math.random() * 6) + 2;
+        const nextCount = prev + randomIncrement;
+        
+        // Не даємо лічильнику перескочити на 100 раніше, ніж завантажиться медіа
+        return nextCount >= 99 ? 99 : nextCount;
+      });
+    }, 45);
+
+    return () => {
+      clearInterval(counterInterval);
+      document.removeEventListener('heroMediaLoaded', handleMediaReady);
+    };
   }, [onComplete]);
 
   return (
@@ -45,14 +70,14 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
           {/* Верхній маркер */}
           <div className="flex justify-between items-baseline z-10">
             <span className="font-sans text-[9px] tracking-[0.4em] text-gray-600 uppercase">
-              FENKO // DIGITAL INSTALATION
+              FENKO // DIGITAL INSTALLATION
             </span>
             <span className="font-mono text-[9px] text-gray-500 tracking-widest">
               2026 // ED.01
             </span>
           </div>
 
-          {/* Центр: Твій головний таглайн, який плавно мерехтить */}
+          {/* Центр: Головний таглайн, який плавно мерехтить */}
           <div className="text-center z-10 max-w-xl mx-auto">
             <motion.p
               initial={{ opacity: 0 }}
