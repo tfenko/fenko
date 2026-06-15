@@ -21,9 +21,9 @@ export default function CustomCursor() {
       cursorY.set(e.clientY - 8);
     };
 
-    // Слухаємо наведення на посилання/кнопки
     const handleMouseOver = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).tagName === 'A' || (e.target as HTMLElement).tagName === 'BUTTON') {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a') || target.closest('button')) {
         setIsHovered(true);
       }
     };
@@ -42,20 +42,20 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Ядро */}
+      {/* Ядро: використовуємо bg-foreground для автоматичної зміни кольору (білий/чорний) */}
       <motion.div
-        className="fixed top-0 left-0 w-4 h-4 bg-foreground rounded-full z-[9999] pointer-events-none mix-blend-difference"
+        className="fixed top-0 left-0 w-4 h-4 bg-foreground rounded-full z-[9999] pointer-events-none"
         style={{ x: cursorXSpring, y: cursorYSpring }}
         animate={{ scale: isHovered ? 0.5 : 1 }}
       />
       
-      {/* Кільце */}
+      {/* Кільце: використовуємо border-foreground для автоматичного підлаштування */}
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 border border-foreground/50 rounded-full z-[9998] pointer-events-none mix-blend-difference"
+        className="fixed top-0 left-0 w-8 h-8 border border-foreground rounded-full z-[9998] pointer-events-none"
         style={{ x: ringXSpring, y: ringYSpring }} 
         animate={{ 
           scale: isHovered ? 1.5 : 1,
-          borderColor: isHovered ? 'rgba(255, 255, 255, 0.8)' : 'rgba(var(--foreground-rgb), 0.5)'
+          opacity: isHovered ? 0.8 : 0.5
         }}
       />
     </>
