@@ -10,12 +10,9 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     setMounted(true);
-    
-    // Слідкуємо за скролом
     const handleScroll = () => {
       setIsVisible(window.scrollY < 50);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -25,14 +22,15 @@ export default function ThemeToggle() {
   return (
     <motion.button 
       initial={{ opacity: 1 }}
-      animate={{ opacity: isVisible ? 1 : 0 }}
+      animate={{ 
+        opacity: isVisible ? 1 : 0,
+        // Додаємо динамічну зміну pointer-events
+        pointerEvents: isVisible ? 'auto' : 'none' 
+      }}
       transition={{ duration: 0.4 }}
-      // Мікро-анімація натискання для тактильного відчуття
-      whileHover={{ opacity: 0.5, scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
       className="font-mono text-[9px] uppercase tracking-[0.3em] 
-                 text-foreground cursor-none pointer-events-auto origin-left"
+                 hover:opacity-50 text-foreground cursor-none"
     >
       {theme === 'dark' ? '[ LIGHT MODE ]' : '[ DARK MODE ]'}
     </motion.button>
