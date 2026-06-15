@@ -13,8 +13,8 @@ export default function About() {
   return (
     <section className="relative w-full min-h-screen flex items-center justify-center px-6 md:px-12 py-32 overflow-hidden transition-colors duration-600">
       
-      {/* Фоновий ледве помітний елемент — тепер адаптивний за рахунок foreground/5 */}
-      <div className={`${cormorant.className} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[30vw] font-bold text-foreground/[0.03] uppercase select-none pointer-events-none`}>
+      {/* Фоновий текст VIBE */}
+      <div className={`${cormorant.className} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[25vw] font-bold text-foreground/[0.03] uppercase select-none pointer-events-none`}>
         VIBE
       </div>
 
@@ -34,11 +34,12 @@ export default function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1.4, ease: "easeOut" }}
-          className={`${cormorant.className} text-3xl md:text-5xl font-light tracking-[0.05em] uppercase leading-[1.7] text-foreground`}
+          className={`${cormorant.className} text-[22px] sm:text-3xl md:text-5xl font-light tracking-[0.05em] uppercase leading-[1.6] text-foreground`}
         >
-          FENKO is not just music. <br />
-          <span className="italic opacity-80">It is a world you enter.</span> <br />
-          <span className="font-sans text-[10px] md:text-xs block mt-14 tracking-[0.4em] font-light lowercase text-foreground/60">
+          <span className="block mb-1">FENKO IS NOT JUST MUSIC.</span>
+          <span className="italic opacity-80 block">IT IS A WORLD YOU ENTER.</span>
+          
+          <span className="font-sans text-[9px] md:text-xs block mt-12 tracking-[0.3em] font-light lowercase text-foreground/60">
             — a memory, a dream, a late-night drive.
           </span>
         </motion.h2>
