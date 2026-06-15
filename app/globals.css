@@ -27,7 +27,7 @@ body {
   transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
               color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* Примусово приховуємо системний курсор */
+  /* Примусово приховуємо системний курсор для твого CustomCursor */
   cursor: none !important;
 }
 
