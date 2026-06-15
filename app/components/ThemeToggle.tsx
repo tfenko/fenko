@@ -6,7 +6,6 @@ export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Mounted перевірка важлива для Next.js, щоб уникнути помилки гідратації
   useEffect(() => setMounted(true), []);
 
   if (!mounted) return null;
@@ -15,8 +14,8 @@ export default function ThemeToggle() {
     <button 
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
       className="fixed bottom-8 left-8 z-[900] font-mono text-[9px] uppercase tracking-[0.3em] 
-                 px-4 py-2 transition-all duration-300 hover:opacity-60
-                 bg-foreground text-background border border-foreground cursor-none"
+                 transition-opacity duration-300 hover:opacity-50
+                 text-foreground"
     >
       {theme === 'dark' ? '[ LIGHT MODE ]' : '[ DARK MODE ]'}
     </button>
