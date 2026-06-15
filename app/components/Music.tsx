@@ -75,7 +75,7 @@ const releases = [
       },
       {
         name: 'YouTube',
-        url: 'https://music.youtube.com/watch?v=QVCaTgY_r7w&list=OLAK5uy_myDt0WSvtAR2rKNX-p6_k2S4GVc7DAfkQ',
+        url: 'https://music.youtube.com/playlist?list=OLAK5uy_myDt0WSvtAR2rKNX-p6_k2S4GVc7DAfkQ&si=GA2iGhEq4exWtb-8',
       },
       {
         name: 'SoundCloud',
