@@ -9,22 +9,31 @@ import Preloader from './components/Preloader';
 import SoundControl from './components/SoundControl';
 import Script from 'next/script';
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
-// Мінімалістична кнопка, яка виглядає як частина інтерфейсу
+// Кнопка з логікою зникнення при скролі
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    setMounted(true);
+    const handleScroll = () => setIsVisible(window.scrollY < 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   if (!mounted) return null;
+
   return (
-    <button 
+    <motion.button 
+      animate={{ opacity: isVisible ? 1 : 0 }}
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-      className="fixed bottom-8 left-8 z-[900] font-mono text-[9px] uppercase tracking-[0.3em] 
-                 transition-opacity duration-300 hover:opacity-50 text-foreground cursor-none"
+      className="font-mono text-[9px] uppercase tracking-[0.3em] hover:opacity-50 text-foreground cursor-none pointer-events-auto"
     >
       {theme === 'dark' ? '[ LIGHT MODE ]' : '[ DARK MODE ]'}
-    </button>
+    </motion.button>
   );
 };
 
@@ -40,7 +49,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'AW-18240888787');`}
           </Script>
 
-          {/* Курсор */}
           <div className="hidden md:block">
             <CustomCursor />
           </div>
@@ -48,18 +56,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Preloader onComplete={() => setIsLoading(false)} />
           <div className="film-grain" />
           
-          {/* Контрастні UI елементи */}
-          <ThemeToggle />
+          {/* Контейнер для нижнього UI (Тема ліворуч, Звук праворуч) */}
+          <div className="fixed bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 z-[900] flex justify-between pointer-events-none">
+            <div className="pointer-events-auto">
+              <ThemeToggle />
+            </div>
+            <div className="pointer-events-auto">
+              <SoundControl />
+            </div>
+          </div>
           
+          {/* Декоративні рамки */}
           <div className="fixed inset-0 hidden md:block border-[12px] border-background z-[999] pointer-events-none" />
           <div className="fixed inset-3 hidden md:block border border-foreground/10 z-[999] pointer-events-none" />
               
           <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[900] mix-blend-difference">
             <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] uppercase text-foreground">F //</span>
-          </div>
-              
-          <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[900]">
-            <SoundControl />
           </div>
 
           <SmoothScroll>
