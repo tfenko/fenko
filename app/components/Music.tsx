@@ -17,13 +17,13 @@ const platformIcons: { [key: string]: string } = {
   SoundCloud: '/soundcloud.png',
 };
 
+
 // ХІРУРГІЧНЕ ВИРІВНЮВАННЯ РОЗМІРІВ:
-// Оскільки Apple Music без круга — робимо її меншою (w-[18px]). 
-// YouTube Music через внутрішню рамку здавався мікроскопічним — примусово розширюємо до w-7 (28px).
+// Трохи зменшили YouTube (з scale-110 до scale-95), щоб вирівняти внутрішній червоний круг із сусідніми
 const iconSizes: { [key: string]: string } = {
   'Apple Music': 'w-[18px] h-[22px]', 
   Spotify: 'w-6 h-6',
-  YouTube: 'w-7 h-7 scale-110', // Компенсуємо внутрішні рамки та візуальну масу
+  YouTube: 'w-6 h-6 scale-[0.95]', // Акуратний мікро-масштаб для ідеального балансу
   SoundCloud: 'w-6 h-6',
 };
 
