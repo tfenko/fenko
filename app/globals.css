@@ -2,8 +2,9 @@
 
 @layer base {
   :root {
-    --background: #e5e5e5;
-    --foreground: #1a1a1a;
+    /* Робимо фон світлої теми не чисто білим, а ледь помітним теплим сірим */
+    --background: #f4f4f4; 
+    --foreground: #1a1a1a; 
   }
   .dark {
     --background: #000000;
@@ -22,11 +23,13 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  transition: background-color 0.4s ease, color 0.4s ease;
+  /* Плавний перехід при перемиканні */
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+              color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* -------------------------------------------------- */
-/* СУПЕР-ЛЕГКЕ ЗЕРНО (ОПТИМІЗОВАНО ПІД MAC RETINA)    */
+/* ЗЕРНО (FILM GRAIN)                                 */
 /* -------------------------------------------------- */
 .film-grain {
   position: fixed;
@@ -37,9 +40,10 @@ body {
   pointer-events: none;
   z-index: 9998;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.05; /* Легка прозорість для світлої теми */
 }
 
-/* При перемиканні в темну тему зерно інвертується для кращої видимості */
+/* Інверсія для темної теми */
 .dark .film-grain {
   filter: invert(1);
   opacity: 0.03;
