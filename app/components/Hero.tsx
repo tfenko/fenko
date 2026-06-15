@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTheme } from 'next-themes';
 import ThreeScene from './ThreeScene';
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,14 +35,16 @@ export default function Hero() {
   };
 
   return (
-    // Замінено bg-black на bg-background
     <div
       ref={containerRef}
       className="relative w-full h-screen bg-background flex items-center justify-center overflow-hidden z-30 transition-colors duration-400"
     >
-      <ThreeScene onReady={handleSceneReady} />
+      {/* 3D сцена стає прозорішою у світлій темі, щоб не конфліктувати з дизайном */}
+      <div className={`transition-opacity duration-700 ${theme === 'dark' ? 'opacity-100' : 'opacity-20'}`}>
+        <ThreeScene onReady={handleSceneReady} />
+      </div>
 
-      {/* Затемнення фону — зроблено адаптивним (залежить від фону) */}
+      {/* Затемнення фону */}
       <div className="absolute inset-0 bg-foreground/60 z-40 pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,var(--background)_85%)] opacity-90 z-40 pointer-events-none" />
 
@@ -49,7 +53,8 @@ export default function Hero() {
         ref={contentRef} 
         className="relative z-50 text-center px-4 will-change-transform transition-opacity duration-700"
       >
-        <h1 className="font-cormorant text-7xl sm:text-8xl md:text-9xl font-light text-foreground tracking-[0.25em] uppercase mb-4 drop-shadow-[0_0_60px_rgba(255,255,255,0.08)]">
+        {/* Додано клас text-outline-light для білого контуру у світлій темі */}
+        <h1 className="text-outline-light font-cormorant text-7xl sm:text-8xl md:text-9xl font-light text-foreground tracking-[0.25em] uppercase mb-4 transition-all duration-500">
           FENKO
         </h1>
         <p className="font-sans text-[10px] md:text-xs text-foreground/50 font-light tracking-[0.5em] uppercase max-w-xl mx-auto leading-relaxed">
