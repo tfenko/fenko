@@ -28,7 +28,7 @@ export default function ThreeScene({ onReady }: ThreeSceneProps) {
 
     // Безпечне завантаження текстури з тригером готовності
     textureLoader.load(
-      '/vibe.png',
+      '/vibe.webp',
       (texture) => {
         const geometry = new THREE.PlaneGeometry(5.5, 3.2, 1, 1);
         const material = new THREE.MeshBasicMaterial({
@@ -48,7 +48,7 @@ export default function ThreeScene({ onReady }: ThreeSceneProps) {
       },
       undefined,
       (err) => {
-        console.error("Помилка завантаження картинки vibe.png. Перевірте папку public.", err);
+        console.error("Помилка завантаження картинки vibe.webp. Перевірте папку public.", err);
         // Якщо сталася помилка, все одно пускаємо користувача на сайт, щоб не було вічного завантаження
         if (onReady) onReady();
       }
