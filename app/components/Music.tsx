@@ -161,7 +161,13 @@ export default function Music() {
 
                 <div className="w-full flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-4 pt-6 border-t border-foreground/10 items-center">
                   {track.links.map((link) => (
-                    <a key={link.name} href={link.url} className="text-foreground/50 hover:text-foreground transition-colors duration-300 relative group flex items-center justify-center w-12 h-12 md:w-auto md:h-auto">
+                    <a 
+                      key={link.name} 
+                      href={link.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-foreground/50 hover:text-foreground transition-colors duration-300 relative group flex items-center justify-center w-12 h-12 md:w-auto md:h-auto"
+                    >
                       <span className="flex md:hidden items-center justify-center w-8 h-8">
                         <img src={platformIcons[link.name]} alt={link.name} className={`${iconSizes[link.name]} object-contain opacity-70`} />
                       </span>
