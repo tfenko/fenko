@@ -67,7 +67,7 @@ const releases = [
     links: [
       {
         name: 'Apple Music',
-        url: 'https://music.apple.com/ua/album/deep-end/1812343930?i=1812343931',
+        url: 'https://music.apple.com/ua/album/deep-end/1895507327?i=6763819432',
       },
       {
         name: 'Spotify',
@@ -107,7 +107,7 @@ const releases = [
       },
       {
         name: 'YouTube',
-        url: 'https://music.youtube.com/watch?v=xB7YzG3Xv4Y',
+        url: 'https://music.youtube.com/watch?v=Fs0ZWHbaxBg&si=HG0NwzzWarDTfzLj',
       },
       {
         name: 'SoundCloud',
