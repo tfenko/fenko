@@ -63,7 +63,7 @@ const releases = [
     canScramble: false,
     links: [
       { name: 'Apple Music', url: 'https://music.apple.com/us/album/deep-end-single/1895507327' },
-      { name: 'Spotify', url: 'https://open.spotify.com/track/4O26Nf20G2C1FwYnIDM7Iu' },
+      { name: 'Spotify', url: 'https://open.spotify.com/track/4f97uWd7vK9L8Z6b8Xz1Y2' },
       { name: 'YouTube', url: 'https://music.youtube.com/watch?v=QVCaTgY_r7w&list=RDAMVMQVCaTgY_r7w' },
       { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/deep-end?si=15a04180a465443aa31b13d5ba692493&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing' }
     ]
@@ -77,7 +77,7 @@ const releases = [
     canScramble: true,
     links: [
       { name: 'Apple Music', url: 'https://music.apple.com/us/album/half-real-single/6769801424' },
-      { name: 'Spotify', url: 'https://open.spotify.com/track/5uXFfO3P8H12fG98XcY12d' },
+      { name: 'Spotify', url: 'https://open.spotify.com/track/3b8Z6vK9L8Z6b8Xz1Y2uF3' },
       { name: 'YouTube', url: 'https://music.youtube.com/watch?v=Fs0ZWHbaxBg&list=OLAK5uy_myPYbcMPqiegpvjCbv0sgJbqMe_rWa8Pw' },
       { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/half-real' }
     ]
@@ -148,14 +148,14 @@ export default function Music() {
                 </p>
 
                 {/* БЛОК КНОПОК */}
-                <div className="w-full flex flex-wrap justify-center lg:justify-start gap-x-6 md:gap-x-6 gap-y-4 pt-6 border-t border-[#141414] items-center">
+                <div className="w-full flex flex-wrap justify-center lg:justify-start gap-x-4 md:gap-x-6 gap-y-4 pt-6 border-t border-[#141414] items-center">
                   {track.links.map((link) => (
                     <a
                       key={link.name}
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-500 hover:text-white transition-all duration-300 relative group flex items-center justify-center w-10 h-10 md:w-auto md:h-auto"
+                      className="text-gray-500 hover:text-white transition-all duration-300 relative group flex items-center justify-center w-12 h-12 md:w-auto md:h-auto"
                       title={link.name}
                     >
                       {/* ІКОНКА (Для мобільних) */}
@@ -164,8 +164,8 @@ export default function Music() {
                           <img 
                             src={platformIcons[link.name]} 
                             alt={link.name}
-                            // brightness-0 invert робить будь-яку кольорову іконку чисто білою
-                            className="w-6 h-6 object-contain brightness-0 invert opacity-60 group-hover:opacity-100 transition-all duration-300" 
+                            // Оптимальний фільтр для круглих іконок: знебарвлення + делікатна яскравість
+                            className="w-6 h-6 object-contain grayscale contrast-200 opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300 rounded-full" 
                           />
                         ) : (
                           link.name
