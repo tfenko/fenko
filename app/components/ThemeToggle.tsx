@@ -8,6 +8,7 @@ export default function ThemeToggle() {
 
   useEffect(() => setMounted(true), []);
 
+  // Повертаємо null до монтування, щоб уникнути помилок гідратації в Next.js
   if (!mounted) return null;
 
   return (
@@ -15,7 +16,7 @@ export default function ThemeToggle() {
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
       className="fixed bottom-8 left-8 z-[900] font-mono text-[9px] uppercase tracking-[0.3em] 
                  transition-opacity duration-300 hover:opacity-50
-                 text-foreground"
+                 text-foreground cursor-none"
     >
       {theme === 'dark' ? '[ LIGHT MODE ]' : '[ DARK MODE ]'}
     </button>
