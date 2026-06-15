@@ -3,12 +3,15 @@
 import './globals.css';
 import { ThemeContext } from './components/ThemeContext';
 import { useTheme } from 'next-themes';
-import SmoothScroll from './components/SmoothScroll';
-import CustomCursor from './components/CustomCursor';
-import SoundControl from './components/SoundControl';
+import dynamic from 'next/dynamic';
 import Script from 'next/script';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+
+// Динамічне імпортування важких компонентів для прискорення LCP
+const SmoothScroll = dynamic(() => import('./components/SmoothScroll'), { ssr: false });
+const CustomCursor = dynamic(() => import('./components/CustomCursor'), { ssr: false });
+const SoundControl = dynamic(() => import('./components/SoundControl'), { ssr: false });
 
 // Мінімалістична кнопка з логікою зникнення при скролі
 const ThemeToggle = () => {
@@ -32,6 +35,7 @@ const ThemeToggle = () => {
       transition={{ duration: 0.4 }}
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
       className="font-mono text-[9px] uppercase tracking-[0.3em] hover:opacity-50 text-foreground cursor-none pointer-events-auto"
+      aria-label="Toggle theme"
     >
       {theme === 'dark' ? '[ LIGHT MODE ]' : '[ DARK MODE ]'}
     </motion.button>
@@ -43,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background cursor-none">
         <ThemeContext>
-          {/* Аналітика */}
+          {/* Аналітика - підвантажується після інтерактивності */}
           <Script src="https://www.googletagmanager.com/gtag/js?id=AW-18240888787" strategy="afterInteractive" />
           <Script id="google-ads-tag" strategy="afterInteractive">
             {`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'AW-18240888787');`}
