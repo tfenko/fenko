@@ -1,6 +1,4 @@
-// app/layout.tsx
-
-'use client'; // Директива залишається!
+'use client';
 
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals.css';
@@ -21,12 +19,6 @@ const cormorant = Cormorant_Garamond({
   variable: '--font-cormorant',
 });
 
-// ЦІ РЯДКИ ТРЕБА ВИДАЛИТИ АБО ЗАКОМЕНТУВАТИ ТУТ:
-// export const metadata = {
-//   title: 'Fenko',
-//   description: 'Alternative R&B // Dark Soundscapes',
-// };
-
 export default function RootLayout({
   children,
 }: {
@@ -40,7 +32,7 @@ export default function RootLayout({
         {/* Прелоадер сайту */}
         <Preloader onComplete={() => setIsLoading(false)} />
         
-        {/* Невагоме статичне зерно под Retina */}
+        {/* Невагоме статичне зерно під Retina */}
         <div className="film-grain" />
         
         {/* Кастомний курсор рендериться ТІЛЬКИ на десктопах */}
