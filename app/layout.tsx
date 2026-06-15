@@ -19,6 +19,12 @@ const cormorant = Cormorant_Garamond({
   variable: '--font-cormorant',
 });
 
+// ГЛОБАЛЬНІ МЕТАДАНІ ДЛЯ ВКЛАДКИ БРАУЗЕРА
+export const metadata = {
+  title: 'Fenko',
+  description: 'Alternative R&B // Dark Soundscapes',
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -40,14 +46,14 @@ export default function RootLayout({
           <CustomCursor />
         </div>
         
-        {/* ГЛОБАЛЬНИЙ ІНТЕРФЕЙС (Тепер строго ПОЗА МЕЖАМИ SmoothScroll!) */}
+        {/* ГЛОБАЛЬНИЙ ІНТЕРФЕЙС (Поза межами SmoothScroll) */}
         {!isLoading && (
           <>
-            {/* Фірмова тонка люкс-рамка — прихована на мобільних (hidden), видна від md:block */}
+            {/* Фірмова тонка люкс-рамка — тільки для десктопів */}
             <div className="fixed inset-0 hidden md:block border-[12px] border-black z-[999] pointer-events-none" />
             <div className="fixed inset-3 hidden md:block border border-white/5 z-[999] pointer-events-none" />
             
-            {/* Мінімалістичний фіксований верхній маркер — адаптовані відступи (top-6 на мобілці, top-8 на десктопі) */}
+            {/* Мінімалістичний фіксований верхній маркер */}
             <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[900] mix-blend-difference">
               <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] text-white uppercase">F //</span>
             </div>
@@ -55,14 +61,14 @@ export default function RootLayout({
               [ midnight edition ]
             </div>
 
-            {/* КНОПКА КЕРУВАННЯ АТМОСФЕРНИМ ЗВУКОМ — зафіксована на одному місці екрана */}
+            {/* КНОПКА КЕРУВАННЯ АТМОСФЕРНИМ ЗВУКОМ */}
             <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[900]">
               <SoundControl />
             </div>
           </>
         )}
 
-        {/* СУТО КОНТЕНТ СТОРІНКИ ДЛЯ ПЛАВНОГО СКРОЛУ */}
+        {/* СУТО КОНТЕНТ СТОРІНКИ */}
         <SmoothScroll>
           <main className="w-full relative z-10">
             {children}
