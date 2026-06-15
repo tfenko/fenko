@@ -11,13 +11,9 @@ export default function ThemeToggle() {
   useEffect(() => {
     setMounted(true);
     
-    // Слухаємо скрол для приховування
+    // Слідкуємо за скролом для плавного зникнення/появи
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
+      setIsVisible(window.scrollY < 50);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -32,7 +28,7 @@ export default function ThemeToggle() {
       animate={{ opacity: isVisible ? 1 : 0 }}
       transition={{ duration: 0.4 }}
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-      className="fixed bottom-8 left-8 z-[900] font-mono text-[9px] uppercase tracking-[0.3em] 
+      className="font-mono text-[9px] uppercase tracking-[0.3em] 
                  hover:opacity-50 text-foreground cursor-none pointer-events-auto"
     >
       {theme === 'dark' ? '[ LIGHT MODE ]' : '[ DARK MODE ]'}
