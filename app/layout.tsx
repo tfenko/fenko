@@ -1,6 +1,5 @@
 'use client';
 
-import { Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeContext } from './components/ThemeContext';
 import { useTheme } from 'next-themes';
@@ -18,8 +17,10 @@ const ThemeToggle = () => {
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
   return (
-    <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-            className="fixed bottom-8 left-8 z-[900] font-mono text-[9px] uppercase tracking-widest hover:opacity-50 transition-opacity">
+    <button 
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
+      className="fixed bottom-8 left-8 z-[900] font-mono text-[9px] uppercase tracking-widest hover:opacity-50 transition-opacity mix-blend-difference"
+    >
       {theme === 'dark' ? '[ LIGHT MODE ]' : '[ DARK MODE ]'}
     </button>
   );
@@ -30,12 +31,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden">
+      <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background">
         <ThemeContext>
           <Script src="https://www.googletagmanager.com/gtag/js?id=AW-18240888787" strategy="afterInteractive" />
           <Script id="google-ads-tag" strategy="afterInteractive">
             {`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'AW-18240888787');`}
           </Script>
+
+          {/* Курсор відображається тільки на десктопах */}
+          <div className="hidden md:block">
+            <CustomCursor />
+          </div>
 
           <Preloader onComplete={() => setIsLoading(false)} />
           <div className="film-grain" />
@@ -43,11 +49,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {!isLoading && (
             <>
               <ThemeToggle />
+              
+              {/* Рамки */}
               <div className="fixed inset-0 hidden md:block border-[12px] border-background z-[999] pointer-events-none" />
               <div className="fixed inset-3 hidden md:block border border-foreground/10 z-[999] pointer-events-none" />
+              
+              {/* Лого */}
               <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[900] mix-blend-difference">
                 <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] uppercase text-foreground">F //</span>
               </div>
+              
+              {/* Звук */}
               <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[900]">
                 <SoundControl />
               </div>
