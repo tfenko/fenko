@@ -51,16 +51,33 @@ function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: b
 }
 
 const releases = [
-  { id: 1, title: 'Deep End', type: 'Single // Release', description: 'Dark, atmospheric, deep emotional mood...', image: '/deepend.png', canScramble: false, links: [ { name: 'Apple Music', url: '...' }, { name: 'Spotify', url: '...' }, { name: 'YouTube', url: '...' }, { name: 'SoundCloud', url: '...' } ] },
-  { id: 2, title: 'Half Real', type: 'Single // Release', description: 'More cinematic, night-time energy...', image: '/halfreal.png', canScramble: true, links: [ { name: 'Apple Music', url: '...' }, { name: 'Spotify', url: '...' }, { name: 'YouTube', url: '...' }, { name: 'SoundCloud', url: '...' } ] }
+  { 
+    id: 1, 
+    title: 'Deep End', 
+    type: 'Single // Release', 
+    description: 'The sound of empty city streets at 2 AM, dragging you into an endless ocean of nocturnal reflections. Minimal electronic production meets a heavy, suffocating atmosphere that captures the exact moment water meets the shadows of the skyline. It’s an immersion into the quiet anxiety of isolation, where every beat feels like a heartbeat echoing in an abandoned concrete chamber.', 
+    meta: { bpm: '124', key: 'Am', mood: 'NOCTURNAL' },
+    image: '/deepend.png', 
+    canScramble: false, 
+    links: [ { name: 'Apple Music', url: '#' }, { name: 'Spotify', url: '#' }, { name: 'YouTube', url: '#' }, { name: 'SoundCloud', url: '#' } ] 
+  },
+  { 
+    id: 2, 
+    title: 'Half Real', 
+    type: 'Single // Release', 
+    description: 'A glitchy distortion of city lights blurred by relentless rain and the high-speed rush of a midnight drive. This track blends cinematic soul with sharp, trap-influenced percussion, painting the picture of a memory that is starting to fade from your consciousness. It captures the fragile border between a genuine feeling and the manufactured synthetic glow of the neon dark.', 
+    meta: { bpm: '138', key: 'F#m', mood: 'GLITCHED' },
+    image: '/halfreal.png', 
+    canScramble: true, 
+    links: [ { name: 'Apple Music', url: '#' }, { name: 'Spotify', url: '#' }, { name: 'YouTube', url: '#' }, { name: 'SoundCloud', url: '#' } ] 
+  }
 ];
 
 export default function Music() {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
 
   return (
-    // Замінено bg-black на bg-background, додано border-foreground/10
-    <section className="relative z-10 w-full min-h-screen bg-background text-foreground py-24 md:py-40 px-4 md:px-16 flex flex-col justify-center border-t border-foreground/10 transition-colors duration-400">
+    <section className="relative z-10 w-full min-h-screen bg-background text-foreground py-24 md:py-40 px-4 md:px-16 flex flex-col justify-center border-t border-foreground/10 transition-colors duration-600">
       <div className="max-w-6xl mx-auto w-full relative z-10">
         
         <div className="mb-16 md:mb-24 border-b border-foreground/10 pb-6 flex flex-col sm:flex-row justify-between items-center sm:items-end text-center sm:text-left gap-4">
@@ -74,8 +91,10 @@ export default function Music() {
         <div className="flex flex-col gap-24 md:gap-40">
           {releases.map((track, index) => (
             <div key={track.id} className={`flex flex-col lg:flex-row gap-8 lg:gap-20 items-center ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`} onMouseEnter={() => setHoveredTrackId(track.id)} onMouseLeave={() => setHoveredTrackId(null)}>
+              
               <motion.div className="relative w-full lg:w-3/5 aspect-[16/10] overflow-hidden bg-foreground/5 group">
                 <img src={track.image} alt={track.title} className="w-full h-full object-cover grayscale contrast-125 transition-all duration-1000 group-hover:scale-105 group-hover:grayscale-0 group-hover:opacity-90" />
+                <div className="absolute inset-0 bg-foreground/10 opacity-20 group-hover:opacity-0 transition-opacity duration-700" />
               </motion.div>
 
               <motion.div className="w-full lg:w-2/5 flex flex-col items-center lg:items-start text-center lg:text-left">
@@ -83,9 +102,19 @@ export default function Music() {
                 <h3 className={`${cormorant.className} text-2xl md:text-5xl font-light tracking-[0.1em] uppercase mb-4 text-foreground`}>
                   <ScrambleText text={track.title} isHovered={hoveredTrackId === track.id} enabled={track.canScramble} />
                 </h3>
-                <p className="font-sans text-foreground/60 font-light text-xs md:text-sm leading-relaxed mb-8 max-w-sm md:max-w-md mx-auto lg:mx-0">
+                
+                <p className="font-sans text-foreground/70 font-light text-xs md:text-sm leading-relaxed mb-6 max-w-sm md:max-w-md mx-auto lg:mx-0">
                   {track.description}
                 </p>
+
+                {/* Технічні метадані */}
+                <div className="flex gap-4 font-mono text-[8px] tracking-[0.2em] opacity-50 uppercase mb-8">
+                  <span>BPM: {track.meta.bpm}</span>
+                  <span>//</span>
+                  <span>KEY: {track.meta.key}</span>
+                  <span>//</span>
+                  <span>MOOD: {track.meta.mood}</span>
+                </div>
 
                 <div className="w-full flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-4 pt-6 border-t border-foreground/10 items-center">
                   {track.links.map((link) => (
