@@ -11,7 +11,7 @@ import Script from 'next/script';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-// Кнопка з логікою зникнення при скролі
+// Мінімалістична кнопка з логікою зникнення при скролі
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -28,7 +28,9 @@ const ThemeToggle = () => {
 
   return (
     <motion.button 
+      initial={{ opacity: 1 }}
       animate={{ opacity: isVisible ? 1 : 0 }}
+      transition={{ duration: 0.4 }}
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
       className="font-mono text-[9px] uppercase tracking-[0.3em] hover:opacity-50 text-foreground cursor-none pointer-events-auto"
     >
@@ -44,11 +46,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background cursor-none">
         <ThemeContext>
+          {/* Аналітика */}
           <Script src="https://www.googletagmanager.com/gtag/js?id=AW-18240888787" strategy="afterInteractive" />
           <Script id="google-ads-tag" strategy="afterInteractive">
             {`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'AW-18240888787');`}
           </Script>
 
+          {/* Курсор */}
           <div className="hidden md:block">
             <CustomCursor />
           </div>
@@ -56,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Preloader onComplete={() => setIsLoading(false)} />
           <div className="film-grain" />
           
-          {/* Контейнер для нижнього UI (Тема ліворуч, Звук праворуч) */}
+          {/* Контейнер для нижнього UI */}
           <div className="fixed bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 z-[900] flex justify-between pointer-events-none">
             <div className="pointer-events-auto">
               <ThemeToggle />
@@ -66,16 +70,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
           
-          {/* Декоративні рамки */}
+          {/* Рамки */}
           <div className="fixed inset-0 hidden md:block border-[12px] border-background z-[999] pointer-events-none" />
           <div className="fixed inset-3 hidden md:block border border-foreground/10 z-[999] pointer-events-none" />
               
+          {/* Лого */}
           <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[900] mix-blend-difference">
             <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] uppercase text-foreground">F //</span>
           </div>
 
           <SmoothScroll>
-            <main className="w-full relative z-10">{children}</main>
+            <main className="w-full relative z-10 min-h-screen">{children}</main>
           </SmoothScroll>
         </ThemeContext>
       </body>
