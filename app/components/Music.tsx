@@ -51,26 +51,70 @@ function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: b
 }
 
 const releases = [
-  { 
-    id: 1, 
-    title: 'Deep End', 
-    type: 'Single // Release', 
-    description: 'The lyrics convey a sense of longing and emotional struggle in a relationship marked by distance and uncertainty. The imagery of water and sinking suggests a deep dive into love, while metaphors like "heavy chain" illustrate the weight of attachment. It is a haunting exploration of unresolved emotions and the sacrificial nature of intimacy.', 
-    meta: { bpm: '80', key: 'A# minor', mood: 'MELANCHOLIC // YEARNING' },
-    image: '/deepend.png', 
-    canScramble: false, 
-    links: [ { name: 'Apple Music', url: '#' }, { name: 'Spotify', url: '#' }, { name: 'YouTube', url: '#' }, { name: 'SoundCloud', url: '#' } ] 
+  {
+    id: 1,
+    title: 'Deep End',
+    type: 'Single // Release',
+    description:
+      'The lyrics convey a sense of longing and emotional struggle in a relationship marked by distance and uncertainty. The imagery of water and sinking suggests a deep dive into love, while metaphors like "heavy chain" illustrate the weight of attachment. It is a haunting exploration of unresolved emotions and the sacrificial nature of intimacy.',
+    meta: {
+      bpm: '80',
+      key: 'A# minor',
+      mood: 'MELANCHOLIC // YEARNING',
+    },
+    image: '/deepend.png',
+    canScramble: false,
+    links: [
+      {
+        name: 'Apple Music',
+        url: 'https://music.apple.com/ua/album/deep-end/1812343930?i=1812343931',
+      },
+      {
+        name: 'Spotify',
+        url: 'https://open.spotify.com/track/1EG19rhMAOtv57SfzxfG6V',
+      },
+      {
+        name: 'YouTube',
+        url: 'https://music.youtube.com/watch?v=7td0nn1GvCc',
+      },
+      {
+        name: 'SoundCloud',
+        url: 'https://soundcloud.com/fenkomus/deep-end',
+      },
+    ],
   },
-  { 
-    id: 2, 
-    title: 'Half Real', 
-    type: 'Single // Release', 
-    description: 'The lyrics explore a haunting relationship characterized by fleeting encounters and emotional turmoil. Navigating the complexities of love that feels both real and illusory, the narrator grapples with the duality of presence. Themes of numbness and desire intertwine, suggesting a connection that exists primarily within the shadows of the night.', 
-    meta: { bpm: '129', key: 'D minor', mood: 'INTROSPECTIVE // MYSTERIOUS' },
-    image: '/halfreal.png', 
-    canScramble: true, 
-    links: [ { name: 'Apple Music', url: '#' }, { name: 'Spotify', url: '#' }, { name: 'YouTube', url: '#' }, { name: 'SoundCloud', url: '#' } ] 
-  }
+  {
+    id: 2,
+    title: 'Half Real',
+    type: 'Single // Release',
+    description:
+      'The lyrics explore a haunting relationship characterized by fleeting encounters and emotional turmoil. Navigating the complexities of love that feels both real and illusory, the narrator grapples with the duality of presence. Themes of numbness and desire intertwine, suggesting a connection that exists primarily within the shadows of the night.',
+    meta: {
+      bpm: '129',
+      key: 'D minor',
+      mood: 'INTROSPECTIVE // MYSTERIOUS',
+    },
+    image: '/halfreal.png',
+    canScramble: true,
+    links: [
+      {
+        name: 'Apple Music',
+        url: 'https://music.apple.com/ua/album/half-real/6769801424?i=6769801425',
+      },
+      {
+        name: 'Spotify',
+        url: 'https://open.spotify.com/track/6UOYiUahxxA4wWBawrfmzY',
+      },
+      {
+        name: 'YouTube',
+        url: 'https://music.youtube.com/watch?v=xB7YzG3Xv4Y',
+      },
+      {
+        name: 'SoundCloud',
+        url: 'https://soundcloud.com/fenkomus/half-real',
+      },
+    ],
+  },
 ];
 
 export default function Music() {
