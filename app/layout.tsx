@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import Script from 'next/script';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Analytics } from '@vercel/analytics/next';
 
 // Динамічне імпортування важких компонентів для прискорення LCP
 const SmoothScroll = dynamic(() => import('./components/SmoothScroll'), { ssr: false });
@@ -82,6 +83,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SmoothScroll>
             <main className="w-full relative z-10 min-h-screen">{children}</main>
           </SmoothScroll>
+          <Analytics />
         </ThemeContext>
       </body>
     </html>
