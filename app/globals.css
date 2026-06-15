@@ -22,12 +22,13 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
-              color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Плавна зміна кольорів при перемиканні теми */
+  transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+              color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* -------------------------------------------------- */
-/* КОНТУРИ ТЕКСТУ (СВІТЛА ТЕМА -> БІЛИЙ, ТЕМНА -> ЧОРНИЙ) */
+/* КОНТУРИ ТЕКСТУ (ДЛЯ АКЦЕНТІВ)                     */
 /* -------------------------------------------------- */
 :not(.dark) .text-outline-light {
   text-shadow: -1px -1px 0 #ffffff, 1px -1px 0 #ffffff, -1px 1px 0 #ffffff, 1px 1px 0 #ffffff;
