@@ -23,7 +23,7 @@ const platformIcons: { [key: string]: string } = {
 const iconSizes: { [key: string]: string } = {
   'Apple Music': 'w-[18px] h-[22px]', 
   Spotify: 'w-6 h-6',
-  YouTube: 'w-6 h-6 scale-[0.95]', // Акуратний мікро-масштаб для ідеального балансу
+  YouTube: 'w-6.5 h-6.5 scale-[0.95]', // Акуратний мікро-масштаб для ідеального балансу
   SoundCloud: 'w-6 h-6',
 };
 
