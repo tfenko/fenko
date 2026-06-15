@@ -7,8 +7,7 @@ export function ThemeContext({ children }: { children: React.ReactNode }) {
     <ThemeProvider 
       attribute="class" 
       defaultTheme="dark" 
-      forcedTheme="dark" // Це змушує сайт завжди ігнорувати світлу тему при першому завантаженні
-      enableSystem={false}
+      enableSystem={false} // Вимкнено forcedTheme
     >
       {children}
     </ThemeProvider>
