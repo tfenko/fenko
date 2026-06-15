@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 
@@ -27,6 +28,7 @@ export default function CustomCursor() {
         setIsHovered(true);
       }
     };
+    
     const handleMouseOut = () => setIsHovered(false);
 
     window.addEventListener('mousemove', moveCursor);
@@ -42,16 +44,16 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Ядро: використовуємо bg-foreground для автоматичної зміни кольору (білий/чорний) */}
+      {/* Ядро: Додано mix-blend-mode: difference для інверсії кольорів */}
       <motion.div
-        className="fixed top-0 left-0 w-4 h-4 bg-foreground rounded-full z-[9999] pointer-events-none"
+        className="fixed top-0 left-0 w-4 h-4 bg-foreground rounded-full z-[9999] pointer-events-none mix-blend-difference"
         style={{ x: cursorXSpring, y: cursorYSpring }}
         animate={{ scale: isHovered ? 0.5 : 1 }}
       />
       
-      {/* Кільце: використовуємо border-foreground для автоматичного підлаштування */}
+      {/* Кільце: Також додаємо difference для гармонії */}
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 border border-foreground rounded-full z-[9998] pointer-events-none"
+        className="fixed top-0 left-0 w-8 h-8 border border-foreground rounded-full z-[9998] pointer-events-none mix-blend-difference"
         style={{ x: ringXSpring, y: ringYSpring }} 
         animate={{ 
           scale: isHovered ? 1.5 : 1,
