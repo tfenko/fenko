@@ -10,7 +10,7 @@ import SoundControl from './components/SoundControl';
 import Script from 'next/script';
 import { useState, useEffect } from 'react';
 
-// Повністю контрастна кнопка теми
+// МІНІМАЛІСТИЧНА КНОПКА (виглядає як текст, а не блок)
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -20,8 +20,8 @@ const ThemeToggle = () => {
   return (
     <button 
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-      className="fixed bottom-8 left-8 z-[900] font-mono text-[9px] uppercase tracking-widest 
-                 px-3 py-1.5 bg-foreground text-background hover:opacity-70 transition-opacity"
+      className="fixed bottom-8 left-8 z-[900] font-mono text-[9px] uppercase tracking-[0.3em] 
+                 transition-opacity duration-300 hover:opacity-50 text-foreground"
     >
       {theme === 'dark' ? '[ LIGHT MODE ]' : '[ DARK MODE ]'}
     </button>
@@ -35,12 +35,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background cursor-none">
         <ThemeContext>
+          {/* ... Скрипти ... */}
           <Script src="https://www.googletagmanager.com/gtag/js?id=AW-18240888787" strategy="afterInteractive" />
           <Script id="google-ads-tag" strategy="afterInteractive">
             {`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'AW-18240888787');`}
           </Script>
 
-          {/* Курсор завжди доступний */}
           <div className="hidden md:block">
             <CustomCursor />
           </div>
@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Preloader onComplete={() => setIsLoading(false)} />
           <div className="film-grain" />
           
-          {/* UI елементи */}
+          {/* КНОПКА ТЕМИ ТЕПЕР ЯК ТЕКСТ */}
           <ThemeToggle />
           
           <div className="fixed inset-0 hidden md:block border-[12px] border-background z-[999] pointer-events-none" />
