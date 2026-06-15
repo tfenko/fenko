@@ -9,31 +9,30 @@ const cormorant = Cormorant_Garamond({
   weight: ['300', '400'],
 });
 
-// Повністю монохромні, геометрично вирівняні іконки ідентичного розміру
+// Збільшені монохромні іконки з ідеальним оптимізованим балансом форми
 const platformIcons: { [key: string]: React.ReactNode } = {
   Spotify: (
-    <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
+    <svg className="w-6 h-6 transform active:scale-90 transition-transform" viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.438-5.305-1.764-8.785-.97-.337.077-.67-.138-.746-.473-.077-.337.138-.67.473-.746 3.81-.87 7.077-.496 9.71 1.115.293.18.386.563.205.867zm1.224-2.722c-.226.367-.707.487-1.074.26-2.69-1.654-6.79-2.134-9.967-1.17-.413.125-.845-.107-.97-.522-.125-.413.107-.847.522-.97 3.637-1.103 8.142-.566 11.23 1.333.366.226.486.707.26 1.07zM17.91 11.4c-.272.44-.847.587-1.287.316-3.132-1.91-8.312-2.08-11.332-1.164-.5.152-1.023-.13-1.174-.633-.153-.502.13-1.022.634-1.174 3.595-1.09 9.32-.9 12.843 1.25.442.27.59.845.317 1.286z"/>
     </svg>
   ),
   'Apple Music': (
-    <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.33 13.06c-.28.25-.66.42-1.05.47-.63.08-1.25-.16-1.62-.62-.35-.44-.45-1.02-.27-1.55.15-.46.52-.82.98-.96.47-.14.98-.07 1.39.2.14.09.28.2.39.33v-3.71c0-.44.29-.81.71-.92l2.36-.63c.48-.13.97.23.97.73v1.65c0 .32-.2.61-.51.7l-2.06.56v4.75z"/>
+    <svg className="w-6 h-6 transform active:scale-90 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.17 12.11c-.11.43-.33.82-.67 1.12-.47.42-1.07.61-1.67.53-.48-.06-.9-.31-1.16-.72-.2-.33-.26-.74-.15-1.12.13-.43.46-.77.88-.91.43-.14.9-.09 1.29.15.13.08.25.19.34.31v-3.79c0-.4.24-.75.61-.87l3.2-.95c.42-.12.84.18.84.62v2.21c0 .29-.18.55-.45.63l-2.72.81v4.99z"/>
     </svg>
   ),
   YouTube: (
-    <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M23.498 6.163a3.003 3.003 0 00-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 00-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 002.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 002.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+    <svg className="w-6 h-6 transform active:scale-90 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 02.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
     </svg>
   ),
   SoundCloud: (
-    <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M23.111 13.914a3.111 3.111 0 0 0-3.08-2.736c-.161 0-.322.013-.48.038A4.667 4.667 0 0 0 11 13c0 .08.006.157.013.235-.4-.28-.888-.453-1.424-.453-.133 0-.263.012-.392.031a2.8 2.8 0 0 0-3.072-1.926 3.111 3.111 0 0 0-2.936 2.33 1.556 1.556 0 0 0-.564-.105A1.556 1.556 0 0 0 1.05 14.67v3.888c0 .86.7 1.556 1.556 1.556H21.56a2.333 2.333 0 0 0 2.333-2.333c0-1.25-.98-2.285-2.222-2.324a3.12 3.12 0 0 0-.56-.543z"/>
+    <svg className="w-6 h-6 transform active:scale-90 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M11.56 12.78c-.17 0-.33-.06-.46-.17l-1.39-2.77c-.18-.37-.09-.82.28-1 .37-.18.82-.09 1 .28l.83 1.66 4.07-8.15c.18-.37.63-.55 1-.37.37.18.55.63.37 1l-4.91 9.82c-.13.26-.39.42-.69.42zm11.23 2.13a3.44 3.44 0 0 0-3.41-2.86c-.15 0-.3.01-.45.04A4.31 4.31 0 0 0 11.08 15c0 .07.01.14.01.21-.37-.25-.82-.41-1.32-.41-.12 0-.24.01-.36.03A2.58 2.58 0 0 0 6.57 13a2.87 2.87 0 0 0-2.71 2.15 1.44 1.44 0 0 0-.52-.1c-.79 0-1.44.65-1.44 1.44v3.59c0 .79.65 1.44 1.44 1.44h19.94c1.66 0 3-1.34 3-3 0-1.15-.9-2.11-2.05-2.15l-.44-.5z"/>
     </svg>
   )
 };
 
-// Компонент для ефекту цифрового шуму (Text Scramble)
 function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: boolean; enabled: boolean }) {
   const [displayText, setDisplayText] = useState(text);
   const chars = 'XØR█▓░🤖01_//';
@@ -107,7 +106,6 @@ export default function Music() {
     <section className="relative z-10 w-full min-h-screen bg-black text-white py-24 md:py-40 px-4 md:px-16 flex flex-col justify-center border-t border-[#141414]">
       <div className="max-w-6xl mx-auto w-full relative z-10">
         
-        {/* Верхній маркер */}
         <div className="mb-16 md:mb-24 border-b border-[#141414] pb-6 flex flex-col sm:flex-row justify-between items-center sm:items-end text-center sm:text-left gap-4">
           <div>
             <p className="font-sans text-[9px] tracking-[0.6em] text-gray-600 uppercase mb-2">Selected Works</p>
@@ -116,7 +114,6 @@ export default function Music() {
           <span className="text-[9px] font-mono text-gray-600 tracking-widest hidden sm:block">FENKO // ARCHIVE</span>
         </div>
 
-        {/* Список релізів */}
         <div className="flex flex-col gap-24 md:gap-40">
           {releases.map((track, index) => (
             <div 
@@ -127,7 +124,6 @@ export default function Music() {
               onMouseEnter={() => setHoveredTrackId(track.id)}
               onMouseLeave={() => setHoveredTrackId(null)}
             >
-              {/* Блок з обкладинкою */}
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 0.7 }}
@@ -143,7 +139,6 @@ export default function Music() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-60" />
               </motion.div>
 
-              {/* Блок з інформацією */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -168,18 +163,18 @@ export default function Music() {
                 </p>
 
                 {/* БЛОК КНОПОК */}
-                <div className="w-full flex flex-wrap justify-center lg:justify-start gap-x-8 md:gap-x-6 gap-y-4 pt-6 border-t border-[#141414]">
+                <div className="w-full flex flex-wrap justify-center lg:justify-start gap-x-10 md:gap-x-6 gap-y-4 pt-6 border-t border-[#141414]">
                   {track.links.map((link) => (
                     <a
                       key={link.name}
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-500 hover:text-white transition-all duration-300 relative group flex items-center justify-center"
+                      className="text-gray-500 hover:text-white transition-all duration-300 relative group flex items-center justify-center min-w-[24px] min-h-[24px]"
                       title={link.name}
                     >
                       {/* ІКОНКА (Тільки для мобільних) */}
-                      <span className="block md:hidden text-gray-400 hover:text-white transform hover:scale-110 transition-transform duration-200">
+                      <span className="flex md:hidden text-gray-400 hover:text-white items-center justify-center">
                         {platformIcons[link.name] || link.name}
                       </span>
 
@@ -188,7 +183,6 @@ export default function Music() {
                         {link.name}
                       </span>
                       
-                      {/* Лінія підкреслення на десктопі */}
                       <span className="absolute left-0 bottom-[-4px] w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full hidden md:block" />
                     </a>
                   ))}
