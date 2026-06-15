@@ -1,4 +1,6 @@
-'use client';
+// app/layout.tsx
+
+'use client'; // Директива залишається!
 
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals.css';
@@ -19,11 +21,11 @@ const cormorant = Cormorant_Garamond({
   variable: '--font-cormorant',
 });
 
-// ГЛОБАЛЬНІ МЕТАДАНІ ДЛЯ ВКЛАДКИ БРАУЗЕРА
-export const metadata = {
-  title: 'Fenko',
-  description: 'Alternative R&B // Dark Soundscapes',
-};
+// ЦІ РЯДКИ ТРЕБА ВИДАЛИТИ АБО ЗАКОМЕНТУВАТИ ТУТ:
+// export const metadata = {
+//   title: 'Fenko',
+//   description: 'Alternative R&B // Dark Soundscapes',
+// };
 
 export default function RootLayout({
   children,
@@ -38,7 +40,7 @@ export default function RootLayout({
         {/* Прелоадер сайту */}
         <Preloader onComplete={() => setIsLoading(false)} />
         
-        {/* Невагоме статичне зерно під Retina */}
+        {/* Невагоме статичне зерно под Retina */}
         <div className="film-grain" />
         
         {/* Кастомний курсор рендериться ТІЛЬКИ на десктопах */}
@@ -46,14 +48,14 @@ export default function RootLayout({
           <CustomCursor />
         </div>
         
-        {/* ГЛОБАЛЬНИЙ ІНТЕРФЕЙС (Поза межами SmoothScroll) */}
+        {/* ГЛОБАЛЬНИЙ ІНТЕРФЕЙС (Поза межами SmoothScroll!) */}
         {!isLoading && (
           <>
-            {/* Фірмова тонка люкс-рамка — тільки для десктопів */}
+            {/* Фірмова тонка люкс-рамка — прихована на мобільних, видна від md:block */}
             <div className="fixed inset-0 hidden md:block border-[12px] border-black z-[999] pointer-events-none" />
             <div className="fixed inset-3 hidden md:block border border-white/5 z-[999] pointer-events-none" />
             
-            {/* Мінімалістичний фіксований верхній маркер */}
+            {/* Мінімалістичний фіксований верхній маркер — адаптовані відступи */}
             <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[900] mix-blend-difference">
               <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] text-white uppercase">F //</span>
             </div>
@@ -68,7 +70,7 @@ export default function RootLayout({
           </>
         )}
 
-        {/* СУТО КОНТЕНТ СТОРІНКИ */}
+        {/* СУТО КОНТЕНТ СТОРІНКИ ДЛЯ ПЛАВНОГО СКРОЛУ */}
         <SmoothScroll>
           <main className="w-full relative z-10">
             {children}
