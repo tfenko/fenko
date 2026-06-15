@@ -2,9 +2,8 @@
 
 @layer base {
   :root {
-    /* Робимо фон світлої теми не чисто білим, а ледь помітним теплим сірим */
     --background: #f4f4f4; 
-    --foreground: #1a1a1a; 
+    --foreground: #000000; /* Чорний текст для максимального контрасту */
   }
   .dark {
     --background: #000000;
@@ -23,9 +22,20 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  /* Плавний перехід при перемиканні */
   transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
               color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* -------------------------------------------------- */
+/* ЕФЕКТ "ЧОРНОГО КОНТУРУ" ДЛЯ СВІТЛОЇ ТЕМИ */
+/* -------------------------------------------------- */
+/* Застосовується тільки у світлій темі для заголовків */
+:not(.dark) .outline-text {
+  text-shadow: 
+    -0.2px -0.2px 0 #000,
+    0.2px -0.2px 0 #000,
+    -0.2px 0.2px 0 #000,
+    0.2px 0.2px 0 #000;
 }
 
 /* -------------------------------------------------- */
@@ -40,10 +50,9 @@ body {
   pointer-events: none;
   z-index: 9998;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
-  opacity: 0.05; /* Легка прозорість для світлої теми */
+  opacity: 0.08; 
 }
 
-/* Інверсія для темної теми */
 .dark .film-grain {
   filter: invert(1);
   opacity: 0.03;
