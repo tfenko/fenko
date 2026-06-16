@@ -29,10 +29,10 @@ export const metadata = {
     siteName: 'FENKO SPACE',
     images: [
       {
-        url: '/deepend.png', // Обкладинка твого треку з папки public, яка стане прев'ю сайту в чатах
+        url: '/og-image.png', // Твій файл з папки public
         width: 1200,
         height: 630,
-        alt: 'FENKO - Deep End Art Cover',
+        alt: 'FENKO - Official Art Cover',
       },
     ],
     locale: 'en_US',
@@ -41,8 +41,8 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'FENKO // Official Website',
-    description: 'Alternative R&B // Dark Soundscapes',
-    images: ['/deepend.png'],
+    description: 'Alternative R&B // Dark Soundscapes // Exit from Full Screen Mode',
+    images: ['/og-image.png'],
   },
 };
 
