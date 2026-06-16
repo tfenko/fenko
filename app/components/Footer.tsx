@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export default function Footer() {
   const socials = [
-    { name: 'Spotify', url: 'https://open.spotify.com/artist/0', label: 'Listen on Spotify' },
+    { name: 'Spotify', url: 'https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS?si=jpGzjHaHSsWz7knbsVIPDQ', label: 'Listen on Spotify' },
     { name: 'Apple Music', url: 'https://music.apple.com/ua/artist/fenko/1895075050', label: 'Listen on Apple Music' },
     { name: 'YouTube', url: 'https://music.youtube.com/@Fenkomus', label: 'Watch on YouTube' },
     { name: 'SoundCloud', url: 'https://www.soundcloud.com/fenkomus', label: 'Listen on SoundCloud' },
