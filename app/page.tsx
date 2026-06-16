@@ -22,7 +22,7 @@ export const metadata = {
   ],
   // Налаштування для гарного відображення посилання в соцмережах (Telegram, Insta, Twitter)
   openGraph: {
-    title: 'FENKO // Soundscapes & Archive',
+    title: 'FENKO // Official Website',
     description: 'Alternative R&B // Dark Soundscapes // Exit from Full Screen Mode',
     url: 'https://fenko.space',
     siteName: 'FENKO SPACE',
