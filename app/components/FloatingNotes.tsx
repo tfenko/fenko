@@ -5,20 +5,10 @@ import { useState, useRef } from 'react';
 
 const Note = ({ top, left, right, delay }: { top: string; left?: string; right?: string; delay: number }) => (
   <motion.div
-    animate={{ 
-      y: [0, -30, 0],
-      rotate: [0, 15, -15, 0],
-      x: [0, 10, -10, 0]
-    }}
-    transition={{ 
-      duration: 8 + Math.random() * 4, 
-      repeat: Infinity, 
-      delay,
-      ease: "easeInOut" 
-    }}
+    animate={{ y: [0, -30, 0], rotate: [0, 15, -15, 0], x: [0, 10, -10, 0] }}
+    transition={{ duration: 8 + Math.random() * 4, repeat: Infinity, delay, ease: "easeInOut" }}
     style={{ top, left, right }}
-    // z-[9999] — це гарантія того, що вони поверх усього
-    className="absolute pointer-events-none text-foreground/60 text-5xl z-[9999]"
+    className="absolute text-foreground/60 text-4xl md:text-6xl"
   >
     ♪
   </motion.div>
@@ -32,32 +22,24 @@ export default function FloatingNotes() {
   useMotionValueEvent(scrollY, "change", () => {
     setIsScrolling(true);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      setIsScrolling(false);
-    }, 600); // Збільшено час, щоб ноти довше жили при зупинці
+    // Якщо скрол зупинився на 300мс — ховаємо ноти
+    timeoutRef.current = setTimeout(() => setIsScrolling(false), 300);
   });
 
-  // opacity від 0.2 (коли стоїмо) до 0.7 (коли скролимо)
-  const opacity = useSpring(isScrolling ? 0.7 : 0.2, { 
-    stiffness: 60, 
-    damping: 20 
-  });
-
-  const positions = [
-    { top: '10vh', left: '5%' }, { top: '20vh', right: '10%' },
-    { top: '35vh', left: '15%' }, { top: '45vh', right: '5%' },
-    { top: '60vh', left: '10%' }, { top: '75vh', right: '15%' },
-    { top: '85vh', left: '20%' }, { top: '25vh', right: '20%' }
-  ];
+  const opacity = useSpring(isScrolling ? 1 : 0, { stiffness: 100, damping: 20 });
 
   return (
+    // Фіксований шар на весь екран, поверх усього контенту
     <motion.div 
       style={{ opacity }} 
-      // Використовуємо absolute замість fixed для кращої сумісності з блоками
-      className="absolute top-0 left-0 w-full min-h-[200vh] pointer-events-none z-[9999] overflow-visible hidden md:block"
+      className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden hidden md:block"
     >
-      {positions.map((p, i) => (
-        <Note key={i} {...p} delay={i * 0.4} />
+      {[
+        { top: '10%', left: '5%' }, { top: '20%', right: '10%' },
+        { top: '40%', left: '15%' }, { top: '60%', right: '5%' },
+        { top: '75%', left: '10%' }, { top: '85%', right: '15%' }
+      ].map((p, i) => (
+        <Note key={i} {...p} delay={i * 0.5} />
       ))}
     </motion.div>
   );
