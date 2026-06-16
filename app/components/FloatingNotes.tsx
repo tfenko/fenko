@@ -1,35 +1,38 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
-const Note = ({ className, delay }: { className: string; delay: number }) => (
-  <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ 
-      opacity: [0.15, 0.4, 0.15], // Збільшили видимість
-      y: [0, -150, 0],           // Трохи вища амплітуда руху
-      rotate: [0, 360]
-    }}
-    transition={{ 
-      duration: 15 + Math.random() * 10, 
-      repeat: Infinity, 
-      delay: delay,
-      ease: "linear" 
-    }}
-    // z-50 піднімає їх над фоном, але під контентом
-    className={`fixed pointer-events-none text-foreground/30 text-6xl md:text-8xl z-50 ${className}`}
-  >
-    ♪
-  </motion.div>
-);
+const Note = ({ className, delay }: { className: string; delay: number }) => {
+  const { scrollYProgress } = useScroll();
+  // Нота з'являється і рухається тільки при скролі
+  const y = useTransform(scrollYProgress, [0, 1], [0, 500]);
+  const opacity = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0]);
+
+  return (
+    <motion.div
+      style={{ y, opacity }}
+      className={`fixed pointer-events-none text-foreground/40 text-4xl md:text-6xl z-0 ${className}`}
+    >
+      ♪
+    </motion.div>
+  );
+};
 
 export default function FloatingNotes() {
+  // Генеруємо 10 нот з випадковими позиціями
+  const notes = [
+    { top: '5%', left: '5%' }, { top: '15%', right: '10%' },
+    { top: '25%', left: '15%' }, { top: '35%', right: '5%' },
+    { top: '45%', left: '10%' }, { top: '55%', right: '15%' },
+    { top: '65%', left: '5%' }, { top: '75%', right: '10%' },
+    { top: '85%', left: '20%' }, { top: '95%', right: '20%' },
+  ];
+
   return (
-    <div className="fixed inset-0 z-50 pointer-events-none overflow-hidden hidden md:block">
-      <Note className="top-[10%] left-[5%]" delay={0} />
-      <Note className="top-[40%] right-[10%]" delay={3} />
-      <Note className="bottom-[15%] left-[15%]" delay={6} />
-      <Note className="bottom-[30%] right-[5%]" delay={9} />
+    <div className="fixed inset-0 z-0 overflow-hidden hidden md:block pointer-events-none">
+      {notes.map((pos, i) => (
+        <Note key={i} className={`${pos.top ? `top-[${pos.top}]` : ''} ${pos.left ? `left-[${pos.left}]` : ''} ${pos.right ? `right-[${pos.right}]` : ''}`} delay={i} />
+      ))}
     </div>
   );
 }
