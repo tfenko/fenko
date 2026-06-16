@@ -1,56 +1,43 @@
 'use client';
 
-import { motion, useScroll, useMotionValueEvent, useSpring } from 'framer-motion';
-import { useState } from 'react';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
-// Компонент ноти, що отримує стан скролу від батька
-const Note = ({ top, left, right, delay, isScrolling }: { top: string; left?: string; right?: string; delay: number; isScrolling: boolean }) => {
-  const opacity = useSpring(isScrolling ? 0.3 : 0, { stiffness: 50, damping: 20 });
-
-  return (
-    <motion.div
-      style={{ top, left, right, opacity }}
-      animate={{ 
-        y: [0, -30, 0],
-        rotate: [0, 45, -45, 0],
-        x: [0, 10, -10, 0]
-      }}
-      transition={{ 
-        duration: 5 + Math.random() * 5, 
-        repeat: Infinity, 
-        delay,
-        ease: "easeInOut" 
-      }}
-      className="fixed pointer-events-none text-foreground/20 text-5xl z-[1]"
-    >
-      ♪
-    </motion.div>
-  );
-};
+const Note = ({ top, left, right }: { top: string; left?: string; right?: string }) => (
+  <motion.div
+    animate={{ y: [0, -30, 0], rotate: [0, 15, -15, 0], x: [0, 10, -10, 0] }}
+    transition={{ duration: 8 + Math.random() * 4, repeat: Infinity, ease: "easeInOut" }}
+    style={{ top, left, right }}
+    className="fixed pointer-events-none text-foreground/20 text-4xl md:text-6xl z-[1]"
+  >
+    ♪
+  </motion.div>
+);
 
 export default function FloatingNotes() {
+  const [mounted, setMounted] = useState(false);
   const { scrollY } = useScroll();
-  const [isScrolling, setIsScrolling] = useState(false);
+  
+  // Анімація прозорості через трансформацію скролу
+  const scrollRange = useTransform(scrollY, [0, 50, 200], [0, 1, 0]);
+  const opacity = useSpring(scrollRange, { stiffness: 100, damping: 30 });
 
-  // Один слухач на весь компонент замість восьми
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    setIsScrolling(latest > 0);
-    const timer = setTimeout(() => setIsScrolling(false), 300);
-    return () => clearTimeout(timer);
-  });
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return null; // Не рендеримо до клієнта
 
   const positions = [
-    { top: '10%', left: '5%' }, { top: '15%', right: '10%' },
-    { top: '35%', left: '15%' }, { top: '45%', right: '5%' },
-    { top: '60%', left: '10%' }, { top: '75%', right: '15%' },
-    { top: '85%', left: '25%' }, { top: '20%', right: '25%' }
+    { top: '12%', left: '8%' }, { top: '18%', right: '12%' },
+    { top: '35%', left: '18%' }, { top: '42%', right: '7%' },
+    { top: '58%', left: '12%' }, { top: '68%', right: '18%' },
+    { top: '82%', left: '22%' }, { top: '25%', right: '28%' }
   ];
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden hidden md:block">
+    <motion.div style={{ opacity }} className="fixed inset-0 pointer-events-none z-[1] overflow-hidden hidden md:block">
       {positions.map((p, i) => (
-        <Note key={i} {...p} delay={i * 0.5} isScrolling={isScrolling} />
+        <Note key={i} {...p} />
       ))}
-    </div>
+    </motion.div>
   );
 }
