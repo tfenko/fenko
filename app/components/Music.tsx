@@ -11,16 +11,16 @@ const cormorant = Cormorant_Garamond({
 
 const platformIcons: { [key: string]: string } = {
   'Apple Music': '/apple-music.png',
-  Spotify: '/spotify.png',
-  YouTube: '/youtube-music.png',
-  SoundCloud: '/soundcloud.png',
+  'Spotify': '/spotify.png',
+  'YouTube': '/youtube-music.png',
+  'SoundCloud': '/soundcloud.png',
 };
 
 const iconSizes: { [key: string]: string } = {
   'Apple Music': 'w-[18px] h-[22px]',
-  Spotify: 'w-6 h-6',
-  YouTube: 'w-6.5 h-6.5 scale-[1]',
-  SoundCloud: 'w-6 h-6',
+  'Spotify': 'w-6 h-6',
+  'YouTube': 'w-6.5 h-6.5 scale-[1]',
+  'SoundCloud': 'w-6 h-6',
 };
 
 function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: boolean; enabled: boolean }) {
@@ -52,67 +52,33 @@ function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: b
 
 const releases = [
   {
-    id: 1,
-    title: 'Deep End',
-    type: 'Single // Release',
-    description:
-      'The lyrics convey a sense of longing and emotional struggle in a relationship marked by distance and uncertainty. The imagery of water and sinking suggests a deep dive into love, while metaphors like "heavy chain" illustrate the weight of attachment. It is a haunting exploration of unresolved emotions and the sacrificial nature of intimacy.',
-    meta: {
-      bpm: '80',
-      key: 'A# minor',
-      mood: 'MELANCHOLIC // YEARNING',
-    },
-    image: '/deepend.webp',
-    canScramble: false,
-    links: [
-      {
-        name: 'Apple Music',
-        url: 'https://music.apple.com/ua/album/deep-end/1895507327?i=6763819432',
-      },
-      {
-        name: 'Spotify',
-        url: 'https://open.spotify.com/track/1EG19rhMAOtv57SfzxfG6V',
-      },
-      {
-        name: 'YouTube',
-        url: 'https://music.youtube.com/playlist?list=OLAK5uy_myDt0WSvtAR2rKNX-p6_k2S4GVc7DAfkQ&si=GA2iGhEq4exWtb-8',
-      },
-      {
-        name: 'SoundCloud',
-        url: 'https://soundcloud.com/fenkomus/deep-end',
-      },
-    ],
-  },
-  {
     id: 2,
     title: 'Half Real',
     type: 'Single // Release',
-    description:
-      'The lyrics explore a haunting relationship characterized by fleeting encounters and emotional turmoil. Navigating the complexities of love that feels both real and illusory, the narrator grapples with the duality of presence. Themes of numbness and desire intertwine, suggesting a connection that exists primarily within the shadows of the night.',
-    meta: {
-      bpm: '129',
-      key: 'D minor',
-      mood: 'INTROSPECTIVE // MYSTERIOUS',
-    },
+    description: 'The lyrics explore a haunting relationship characterized by fleeting encounters and emotional turmoil. Navigating the complexities of love that feels both real and illusory, the narrator grapples with the duality of presence.',
+    meta: { bpm: '129', key: 'D minor', mood: 'INTROSPECTIVE // MYSTERIOUS' },
     image: '/halfreal.webp',
     canScramble: true,
     links: [
-      {
-        name: 'Apple Music',
-        url: 'https://music.apple.com/ua/album/half-real/6769801424?i=6769801425',
-      },
-      {
-        name: 'Spotify',
-        url: 'https://open.spotify.com/track/6UOYiUahxxA4wWBawrfmzY',
-      },
-      {
-        name: 'YouTube',
-        url: 'https://music.youtube.com/watch?v=Fs0ZWHbaxBg&si=HG0NwzzWarDTfzLj',
-      },
-      {
-        name: 'SoundCloud',
-        url: 'https://soundcloud.com/fenkomus/half-real',
-      },
+      { name: 'Apple Music', url: 'https://music.apple.com/ua/album/half-real/6769801424?i=6769801425' },
+      { name: 'Spotify', url: 'https://open.spotify.com/track/6UOYiUahxxA4wWBawrfmzY' },
+      { name: 'YouTube', url: 'https://music.youtube.com/watch?v=Fs0ZWHbaxBg&si=HG0NwzzWarDTfzLj' },
+      { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/half-real' },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Deep End',
+    type: 'Single // Release',
+    description: 'The lyrics convey a sense of longing and emotional struggle in a relationship marked by distance and uncertainty. The imagery of water and sinking suggests a deep dive into love, while metaphors like "heavy chain" illustrate the weight of attachment.',
+    meta: { bpm: '80', key: 'A# minor', mood: 'MELANCHOLIC // YEARNING' },
+    image: '/deepend.webp',
+    canScramble: false,
+    links: [
+      { name: 'Apple Music', url: 'https://music.apple.com/ua/album/deep-end/1895507327?i=6763819432' },
+      { name: 'Spotify', url: 'https://open.spotify.com/track/1EG19rhMAOtv57SfzxfG6V' },
+      { name: 'YouTube', url: 'https://music.youtube.com/playlist?list=OLAK5uy_myDt0WSvtAR2rKNX-p6_k2S4GVc7DAfkQ&si=GA2iGhEq4exWtb-8' },
+      { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/deep-end' },
     ],
   },
 ];
@@ -123,7 +89,6 @@ export default function Music() {
   return (
     <section className="relative z-10 w-full min-h-screen bg-background text-foreground py-24 md:py-40 px-4 md:px-16 flex flex-col justify-center border-t border-foreground/10 transition-colors duration-600">
       <div className="max-w-6xl mx-auto w-full relative z-10">
-        
         <div className="mb-16 md:mb-24 border-b border-foreground/10 pb-6 flex flex-col sm:flex-row justify-between items-center sm:items-end text-center sm:text-left gap-4">
           <div>
             <p className="font-sans text-[9px] tracking-[0.6em] text-foreground/50 uppercase mb-2">Selected Works</p>
@@ -166,10 +131,11 @@ export default function Music() {
                       href={link.url} 
                       target="_blank" 
                       rel="noopener noreferrer"
+                      aria-label={`Listen to ${track.title} on ${link.name}`}
                       className="text-foreground/50 hover:text-foreground transition-colors duration-300 relative group flex items-center justify-center w-12 h-12 md:w-auto md:h-auto"
                     >
                       <span className="flex md:hidden items-center justify-center w-8 h-8">
-                        <img src={platformIcons[link.name]} alt={link.name} className={`${iconSizes[link.name]} object-contain opacity-70`} />
+                        <img src={platformIcons[link.name]} alt="" className={`${iconSizes[link.name]} object-contain opacity-70`} />
                       </span>
                       <span className="hidden md:block text-[11px] tracking-[0.25em] uppercase">{link.name}</span>
                       <span className="absolute left-0 bottom-[-4px] w-0 h-[1px] bg-foreground transition-all duration-300 group-hover:w-full hidden md:block" />
