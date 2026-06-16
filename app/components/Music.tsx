@@ -58,9 +58,9 @@ const releases = [
     description: 'The new sound is coming. A journey into the depths of the shadows. Stay tuned for the release.',
     meta: { bpm: '---', key: '---', mood: 'PRE-SAVE // SOON' },
     image: '/cover3.webp',
-    canScramble: true,
+    canScramble: false, // Глітч вимкнено для майбутнього релізу
     links: [
-      { name: 'Spotify', url: 'https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS?si=JybK-G68Soep8S7fphpe9w' }, // Заміни на реальне посилання, коли буде
+      { name: 'Spotify', url: 'https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS?si=JybK-G68Soep8S7fphpe9w' },
     ],
   },
   {
@@ -129,7 +129,7 @@ export default function Music() {
                   <ScrambleText text={track.title} isHovered={hoveredTrackId === track.id} enabled={track.canScramble} />
                 </h3>
                 
-                <p className="font-sans text-foreground/70 font-light text-xs md:text-sm leading-relaxed mb-6 max-w-sm md:max-w-md mx-auto lg:mx-0">
+                <p className={`font-sans font-light text-xs md:text-sm leading-relaxed mb-6 max-w-sm md:max-w-md mx-auto lg:mx-0 ${track.id === 3 ? 'text-foreground/40' : 'text-foreground/70'}`}>
                   {track.description}
                 </p>
 
