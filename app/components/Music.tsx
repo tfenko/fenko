@@ -52,6 +52,18 @@ function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: b
 
 const releases = [
   {
+    id: 3,
+    title: 'NEW TRACK',
+    type: 'Upcoming // July 3',
+    description: 'The new sound is coming. A journey into the depths of the shadows. Stay tuned for the release.',
+    meta: { bpm: '---', key: '---', mood: 'PRE-SAVE // SOON' },
+    image: '/cover3.webp',
+    canScramble: true,
+    links: [
+      { name: 'Spotify', url: '#' }, // Заміни на реальне посилання, коли буде
+    ],
+  },
+  {
     id: 2,
     title: 'Half Real',
     type: 'Single // Release',
@@ -103,6 +115,11 @@ export default function Music() {
               
               <motion.div className="relative w-full lg:w-3/5 aspect-[16/10] overflow-hidden bg-foreground/5 group">
                 <img src={track.image} alt={track.title} className="w-full h-full object-cover grayscale contrast-125 transition-all duration-1000 group-hover:scale-105 group-hover:grayscale-0 group-hover:opacity-90" />
+                {track.id === 3 && (
+                   <div className="absolute top-4 right-4 z-20 bg-foreground text-background px-3 py-1 text-[8px] font-mono tracking-widest uppercase">
+                     July 3rd
+                   </div>
+                )}
                 <div className="absolute inset-0 bg-foreground/10 opacity-20 group-hover:opacity-0 transition-opacity duration-700" />
               </motion.div>
 
