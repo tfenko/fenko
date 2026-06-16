@@ -53,14 +53,14 @@ function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: b
 const releases = [
   {
     id: 3,
-    title: 'NEW TRACK',
+    title: 'Release Soon...',
     type: 'Upcoming // July 3',
     description: 'The new sound is coming. A journey into the depths of the shadows. Stay tuned for the release.',
     meta: { bpm: '---', key: '---', mood: 'PRE-SAVE // SOON' },
     image: '/cover3.webp',
     canScramble: true,
     links: [
-      { name: 'Spotify', url: '#' }, // Заміни на реальне посилання, коли буде
+      { name: 'Spotify', url: 'https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS?si=JybK-G68Soep8S7fphpe9w' }, // Заміни на реальне посилання, коли буде
     ],
   },
   {
