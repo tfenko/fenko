@@ -1,27 +1,23 @@
 'use client';
 
-import { motion, useScroll, useMotionValueEvent, useSpring, useTransform } from 'framer-motion';
-import { useState, useRef } from 'react';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
-const Note = ({ top, left, right, delay, isScrolling }: { top: string; left?: string; right?: string; delay: number, isScrolling: boolean }) => {
-  // Кожна нота тепер сама керує своєю прозорістю
-  const opacity = useSpring(isScrolling ? 1 : 0, { stiffness: 100, damping: 20 });
-
+const Note = ({ top, left, right, delay }: { top: string; left?: string; right?: string; delay: number }) => {
   return (
     <motion.div
-      style={{ top, left, right, opacity }}
       animate={{ 
-        y: [0, -30, 0],
-        rotate: [0, 15, -15, 0],
-        x: [0, 10, -10, 0]
+        y: [0, -60, 0],
+        rotate: [0, 20, -20, 0],
+        x: [0, 20, -20, 0]
       }}
       transition={{ 
-        duration: 8 + Math.random() * 4, 
+        duration: 10 + Math.random() * 5, 
         repeat: Infinity, 
         delay,
         ease: "easeInOut" 
       }}
-      className="fixed text-foreground/80 text-5xl z-[9999] pointer-events-none"
+      style={{ top, left, right }}
+      className="fixed pointer-events-none text-foreground/40 text-6xl z-[500] hidden md:block"
     >
       ♪
     </motion.div>
@@ -30,26 +26,20 @@ const Note = ({ top, left, right, delay, isScrolling }: { top: string; left?: st
 
 export default function FloatingNotes() {
   const { scrollY } = useScroll();
-  const [isScrolling, setIsScrolling] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  useMotionValueEvent(scrollY, "change", () => {
-    setIsScrolling(true);
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => setIsScrolling(false), 300);
-  });
+  const opacity = useSpring(useTransform(scrollY, [0, 100], [0, 1]), { stiffness: 50 });
 
   const positions = [
     { top: '10%', left: '5%' }, { top: '20%', right: '10%' },
-    { top: '40%', left: '15%' }, { top: '60%', right: '5%' },
-    { top: '75%', left: '10%' }, { top: '85%', right: '15%' }
+    { top: '40%', left: '15%' }, { top: '50%', right: '5%' },
+    { top: '65%', left: '10%' }, { top: '75%', right: '15%' },
+    { top: '85%', left: '25%' }, { top: '30%', right: '25%' }
   ];
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[9999] hidden md:block">
+    <motion.div style={{ opacity }} className="fixed inset-0 pointer-events-none z-[500]">
       {positions.map((p, i) => (
-        <Note key={i} {...p} delay={i * 0.5} isScrolling={isScrolling} />
+        <Note key={i} {...p} delay={i * 0.7} />
       ))}
-    </div>
+    </motion.div>
   );
 }
