@@ -9,9 +9,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Analytics } from '@vercel/analytics/next';
 
-// Динамічне імпортування важких компонентів
+// Імпортуємо компоненти
 const SmoothScroll = dynamic(() => import('./components/SmoothScroll'), { ssr: false });
 const CustomCursor = dynamic(() => import('./components/CustomCursor'), { ssr: false });
+const FloatingNotes = dynamic(() => import('./components/FloatingNotes'), { ssr: false });
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
@@ -54,13 +55,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'AW-18240888787');`}
           </Script>
 
+          <FloatingNotes />
+
           <div className="hidden md:block">
             <CustomCursor />
           </div>
 
           <div className="film-grain" />
           
-          {/* Контейнер для нижнього UI (без SoundControl) */}
           <div className="fixed bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 z-[900] flex justify-between pointer-events-none">
             <div className="pointer-events-auto">
               <ThemeToggle />
