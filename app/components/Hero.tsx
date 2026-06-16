@@ -52,13 +52,18 @@ export default function Hero() {
           Some people only exist after midnight
         </p>
 
-        {/* Кнопка скролу */}
+        {/* Стильна кнопка [ Listen Now ] */}
         <button 
           onClick={scrollToMusic}
           aria-label="Scroll to music section"
-          className="mt-12 font-mono text-[9px] uppercase tracking-[0.3em] text-foreground hover:opacity-50 transition-opacity cursor-none border border-foreground/20 px-6 py-2"
+          className="mt-12 group relative px-8 py-3 overflow-hidden border border-foreground/20 hover:border-foreground transition-all duration-300 cursor-none"
         >
-          [ View Archive ]
+          {/* Фон, що з'являється при ховері */}
+          <div className="absolute inset-0 bg-foreground scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+          
+          <span className="relative z-10 font-mono text-[9px] uppercase tracking-[0.3em] text-foreground group-hover:text-background transition-colors duration-300">
+            [ Listen Now ]
+          </span>
         </button>
       </motion.div>
 
