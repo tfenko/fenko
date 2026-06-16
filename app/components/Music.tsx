@@ -106,7 +106,7 @@ export default function Music() {
             <p className="font-sans text-[9px] tracking-[0.6em] text-foreground/50 uppercase mb-2">Selected Works</p>
             <h2 className={`${cormorant.className} text-2xl md:text-3xl font-light tracking-[0.2em] uppercase text-foreground/80`}>Soundscapes</h2>
           </div>
-          <span className="text-[9px] font-mono text-foreground/30 tracking-widest hidden sm:block">FENKO // ARCHIVE</span>
+          <span className="text-[9px] font-mono text-foreground/30 tracking-widest hidden sm:block">FENKO // MUSIC </span>
         </div>
 
         <div className="flex flex-col gap-24 md:gap-40">
