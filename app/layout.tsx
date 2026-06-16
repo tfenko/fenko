@@ -1,12 +1,11 @@
 'use client';
 
-import { motion, useScroll, useTransform, useMotionValueEvent, useSpring } from 'framer-motion';
+import { motion, useScroll, useMotionValueEvent, useSpring } from 'framer-motion';
 import { useState } from 'react';
 
 const Note = ({ top, left, right, delay }: { top: string; left?: string; right?: string; delay: number }) => {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
       animate={{ 
         y: [0, -40, 0],
         rotate: [0, 15, -15, 0],
@@ -30,15 +29,17 @@ export default function FloatingNotes() {
   const { scrollY } = useScroll();
   const [isScrolling, setIsScrolling] = useState(false);
   
-  // Ноти з'являються тільки під час скролу
-  useMotionValueEvent(scrollY, "change", () => {
-    setIsScrolling(true);
-    // Таймер зникнення через 200мс після зупинки скролу
-    const timer = setTimeout(() => setIsScrolling(false), 200);
-    return () => clearTimeout(timer);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    // Невеликий поріг для ініціалізації
+    if (latest > 0) {
+      setIsScrolling(true);
+      // Скидаємо статус через 300мс після зупинки
+      const timer = setTimeout(() => setIsScrolling(false), 300);
+      return () => clearTimeout(timer);
+    }
   });
 
-  const opacity = useSpring(isScrolling ? 1 : 0, { stiffness: 40, damping: 15 });
+  const opacity = useSpring(isScrolling ? 1 : 0, { stiffness: 60, damping: 20 });
 
   const positions = [
     { top: '12%', left: '8%' }, { top: '18%', right: '12%' },
