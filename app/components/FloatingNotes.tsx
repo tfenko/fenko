@@ -1,23 +1,36 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useMotionValueEvent, useTransform, useSpring } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 const Note = ({ top, left, right, delay }: { top: string; left?: string; right?: string; delay: number }) => {
-  const { scrollYProgress } = useScroll();
-  // Анімація руху ноти при скролі
-  const y = useTransform(scrollYProgress, [0, 1], [0, 500]);
-  const opacity = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [0, 0.4, 0.4, 0]);
+  const { scrollY } = useScroll();
+  const [isScrolling, setIsScrolling] = useState(false);
+
+  // Логіка зникнення через 150мс після зупинки скролу
+  useMotionValueEvent(scrollY, "change", () => {
+    setIsScrolling(true);
+    const timer = setTimeout(() => setIsScrolling(false), 150);
+    return () => clearTimeout(timer);
+  });
+
+  const opacity = useSpring(isScrolling ? 0.4 : 0, { stiffness: 50, damping: 20 });
 
   return (
     <motion.div
-      style={{ 
-        y, 
-        opacity,
-        top, 
-        left, 
-        right 
+      style={{ top, left, right, opacity }}
+      animate={{ 
+        y: [0, -30, 0],
+        rotate: [0, 45, -45, 0],
+        x: [0, 10, -10, 0]
       }}
-      className="fixed pointer-events-none text-foreground/40 text-4xl md:text-6xl z-[50]"
+      transition={{ 
+        duration: 5 + Math.random() * 5, 
+        repeat: Infinity, 
+        delay,
+        ease: "easeInOut" 
+      }}
+      className="fixed pointer-events-none text-foreground/20 text-5xl z-0"
     >
       ♪
     </motion.div>
@@ -25,24 +38,17 @@ const Note = ({ top, left, right, delay }: { top: string; left?: string; right?:
 };
 
 export default function FloatingNotes() {
-  const notes = [
-    { top: '5%', left: '5%' }, { top: '15%', right: '10%' },
-    { top: '25%', left: '15%' }, { top: '35%', right: '5%' },
-    { top: '45%', left: '10%' }, { top: '55%', right: '15%' },
-    { top: '65%', left: '5%' }, { top: '75%', right: '10%' },
-    { top: '85%', left: '20%' }, { top: '95%', right: '20%' },
+  const positions = [
+    { top: '10%', left: '5%' }, { top: '15%', right: '10%' },
+    { top: '35%', left: '15%' }, { top: '45%', right: '5%' },
+    { top: '60%', left: '10%' }, { top: '75%', right: '15%' },
+    { top: '85%', left: '25%' }, { top: '20%', right: '25%' }
   ];
 
   return (
-    <div className="fixed inset-0 z-[50] overflow-hidden hidden md:block pointer-events-none">
-      {notes.map((pos, i) => (
-        <Note 
-          key={i} 
-          top={pos.top} 
-          left={pos.left} 
-          right={pos.right} 
-          delay={i} 
-        />
+    <div className="fixed inset-0 pointer-events-none z-[5] overflow-hidden hidden md:block">
+      {positions.map((p, i) => (
+        <Note key={i} {...p} delay={i * 0.5} />
       ))}
     </div>
   );
