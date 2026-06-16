@@ -17,7 +17,7 @@ const Note = ({ top, left, right, delay }: { top: string; left?: string; right?:
       ease: "easeInOut" 
     }}
     style={{ top, left, right }}
-    className="fixed pointer-events-none text-foreground/20 text-4xl md:text-6xl z-[1]"
+    className="fixed pointer-events-none text-foreground/40 text-4xl md:text-6xl z-[1]"
   >
     ♪
   </motion.div>
@@ -26,25 +26,19 @@ const Note = ({ top, left, right, delay }: { top: string; left?: string; right?:
 export default function FloatingNotes() {
   const { scrollY } = useScroll();
   const [isScrolling, setIsScrolling] = useState(false);
-  
-  // Виправлено тип для уникнення помилки при збірці
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useMotionValueEvent(scrollY, "change", () => {
     setIsScrolling(true);
-    
-    // Скидаємо таймер при кожному русі
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    
-    // Якщо скрол зупинився на 200мс — ховаємо ноти
     timeoutRef.current = setTimeout(() => {
       setIsScrolling(false);
-    }, 200);
+    }, 400); // Збільшив час до 400мс, щоб ноти довше залишалися видимими
   });
 
-  // Використовуємо spring для плавного зникнення
-  const opacity = useSpring(isScrolling ? 0.3 : 0, { 
-    stiffness: 100, 
+  // Базова прозорість 0.1, при скролі зростає до 0.4
+  const opacity = useSpring(isScrolling ? 0.4 : 0.1, { 
+    stiffness: 80, 
     damping: 30 
   });
 
@@ -56,7 +50,10 @@ export default function FloatingNotes() {
   ];
 
   return (
-    <motion.div style={{ opacity }} className="fixed inset-0 pointer-events-none z-[1] overflow-hidden hidden md:block">
+    <motion.div 
+      style={{ opacity }} 
+      className="fixed inset-0 pointer-events-none z-[1] overflow-hidden hidden md:block"
+    >
       {positions.map((p, i) => (
         <Note key={i} {...p} delay={i * 0.4} />
       ))}
