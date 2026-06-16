@@ -28,9 +28,9 @@ export const metadata = {
     siteName: 'FENKO SPACE',
     images: [
       {
-        url: '/og-image.png', // Твій файл з папки public
+        url: '/og-image.webp', // Твій файл з папки public
         width: 1200,
-        height: 630,
+        height: 631,
         alt: 'FENKO - Official Art Cover',
       },
     ],
