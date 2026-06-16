@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useMotionValueEvent, useSpring, useTransform } from 'framer-motion';
+import { motion, useScroll, useMotionValueEvent, useSpring } from 'framer-motion';
 import { useState, useRef } from 'react';
 
 const Note = ({ top, left, right, delay }: { top: string; left?: string; right?: string; delay: number }) => (
@@ -26,7 +26,9 @@ const Note = ({ top, left, right, delay }: { top: string; left?: string; right?:
 export default function FloatingNotes() {
   const { scrollY } = useScroll();
   const [isScrolling, setIsScrolling] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  
+  // Виправлено тип для уникнення помилки при збірці
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useMotionValueEvent(scrollY, "change", () => {
     setIsScrolling(true);
