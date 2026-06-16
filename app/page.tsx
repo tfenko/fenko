@@ -18,7 +18,6 @@ export const metadata = {
     'cinematic soul trap', 
     'deep end fenko', 
     'half real', 
-    'вихід з повноекранного режиму', 
     'music producer lviv'
   ],
   // Налаштування для гарного відображення посилання в соцмережах (Telegram, Insta, Twitter)
