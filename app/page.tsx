@@ -7,7 +7,7 @@ import Footer from './components/Footer';
 
 // ГЛОБАЛЬНІ МЕТАДАНІ ДЛЯ ПОШУКОВОЇ ОПТИМІЗАЦІЇ (SEO) ТА СОЦМЕРЕЖ
 export const metadata = {
-  title: 'FENKO // Official Website & Archive',
+  title: 'FENKO // Official Website',
   description: 'Official archive of FENKO (fenkomus). Alternative R&B, Dark Soundscapes, and Cinematic Soul Trap production. Author of the novel "Exit from Full Screen Mode".',
   keywords: [
     'fenko', 
