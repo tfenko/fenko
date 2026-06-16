@@ -12,7 +12,6 @@ import { Analytics } from '@vercel/analytics/next';
 // Динамічне імпортування важких компонентів
 const SmoothScroll = dynamic(() => import('./components/SmoothScroll'), { ssr: false });
 const CustomCursor = dynamic(() => import('./components/CustomCursor'), { ssr: false });
-const SoundControl = dynamic(() => import('./components/SoundControl'), { ssr: false });
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
@@ -46,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <title>FENKO // Website</title>
+        <title>FENKO</title>
       </head>
       <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background cursor-none">
         <ThemeContext>
@@ -61,16 +60,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
           <div className="film-grain" />
           
+          {/* Контейнер для нижнього UI (без SoundControl) */}
           <div className="fixed bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 z-[900] flex justify-between pointer-events-none">
             <div className="pointer-events-auto">
               <ThemeToggle />
             </div>
-            <div className="pointer-events-auto">
-              <SoundControl />
-            </div>
           </div>
-          
-          {/* Рамки видалено */}
             
           <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[900] mix-blend-difference">
             <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] uppercase text-foreground">F //</span>
