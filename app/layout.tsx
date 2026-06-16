@@ -1,48 +1,71 @@
 'use client';
 
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import './globals.css';
+import { ThemeContext } from './components/ThemeContext';
+import { useTheme } from 'next-themes';
+import dynamic from 'next/dynamic';
+import Script from 'next/script';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Analytics } from '@vercel/analytics/next';
 
-const Note = ({ top, left, right, delay }: { top: string; left?: string; right?: string; delay: number }) => {
+const SmoothScroll = dynamic(() => import('./components/SmoothScroll'), { ssr: false });
+const CustomCursor = dynamic(() => import('./components/CustomCursor'), { ssr: false });
+// Динамічний імпорт для нот залишаємо
+const FloatingNotes = dynamic(() => import('./components/FloatingNotes'), { ssr: false });
+
+const ThemeToggle = () => {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    setMounted(true);
+    const handleScroll = () => setIsVisible(window.scrollY < 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  
+  if (!mounted) return null;
+
   return (
-    <motion.div
-      animate={{ 
-        y: [0, -40, 0],
-        rotate: [0, 15, -15, 0],
-        x: [0, 10, -10, 0]
-      }}
-      transition={{ 
-        duration: 8 + Math.random() * 4, 
-        repeat: Infinity, 
-        delay,
-        ease: "easeInOut" 
-      }}
-      style={{ top, left, right }}
-      className="fixed pointer-events-none text-foreground/20 text-4xl md:text-6xl z-[1]"
+    <motion.button 
+      initial={{ opacity: 1 }}
+      animate={{ opacity: isVisible ? 1 : 0 }}
+      transition={{ duration: 0.4 }}
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
+      className="font-mono text-[9px] uppercase tracking-[0.3em] hover:opacity-50 text-foreground cursor-none pointer-events-auto"
+      aria-label="Toggle theme"
     >
-      ♪
-    </motion.div>
+      {theme === 'dark' ? '[ LIGHT MODE ]' : '[ DARK MODE ]'}
+    </motion.button>
   );
 };
 
-export default function FloatingNotes() {
-  const { scrollY } = useScroll();
-  
-  // Ноти з'являються, коли скролл > 50px, і плавно зникають
-  const scrollRange = useTransform(scrollY, [0, 50, 200], [0, 1, 0]);
-  const opacity = useSpring(scrollRange, { stiffness: 100, damping: 30 });
-
-  const positions = [
-    { top: '12%', left: '8%' }, { top: '18%', right: '12%' },
-    { top: '35%', left: '18%' }, { top: '42%', right: '7%' },
-    { top: '58%', left: '12%' }, { top: '68%', right: '18%' },
-    { top: '82%', left: '22%' }, { top: '25%', right: '28%' }
-  ];
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <motion.div style={{ opacity }} className="fixed inset-0 pointer-events-none z-[1] overflow-hidden hidden md:block">
-      {positions.map((p, i) => (
-        <Note key={i} {...p} delay={i * 0.4} />
-      ))}
-    </motion.div>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <title>FENKO</title>
+      </head>
+      <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background cursor-none">
+        <ThemeContext>
+          <Script src="https://www.googletagmanager.com/gtag/js?id=AW-18240888787" strategy="afterInteractive" />
+          <FloatingNotes />
+          <div className="hidden md:block"><CustomCursor /></div>
+          <div className="film-grain" />
+          <div className="fixed bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 z-[900] flex justify-between pointer-events-none">
+            <div className="pointer-events-auto"><ThemeToggle /></div>
+          </div>
+          <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[900] mix-blend-difference">
+            <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] uppercase text-foreground">F //</span>
+          </div>
+          <SmoothScroll>
+            <main className="w-full relative z-10 min-h-screen">{children}</main>
+          </SmoothScroll>
+          <Analytics />
+        </ThemeContext>
+      </body>
+    </html>
   );
 }
