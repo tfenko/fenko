@@ -3,13 +3,11 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useTheme } from 'next-themes';
-import { useLenis } from '@studio-freight/react-lenis';
 import ThreeScene from './ThreeScene';
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
-  const lenis = useLenis();
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -25,7 +23,10 @@ export default function Hero() {
   };
 
   const scrollToMusic = () => {
-    lenis?.scrollTo('#music', { offset: 0 });
+    const musicSection = document.getElementById('music');
+    if (musicSection) {
+      musicSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
