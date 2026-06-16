@@ -17,7 +17,8 @@ const Note = ({ top, left, right, delay }: { top: string; left?: string; right?:
       ease: "easeInOut" 
     }}
     style={{ top, left, right }}
-    className="fixed pointer-events-none text-foreground/40 text-4xl md:text-6xl z-[1]"
+    // z-[9999] — це гарантія того, що вони поверх усього
+    className="absolute pointer-events-none text-foreground/60 text-5xl z-[9999]"
   >
     ♪
   </motion.div>
@@ -33,26 +34,27 @@ export default function FloatingNotes() {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       setIsScrolling(false);
-    }, 400); // Збільшив час до 400мс, щоб ноти довше залишалися видимими
+    }, 600); // Збільшено час, щоб ноти довше жили при зупинці
   });
 
-  // Базова прозорість 0.1, при скролі зростає до 0.4
-  const opacity = useSpring(isScrolling ? 0.4 : 0.1, { 
-    stiffness: 80, 
-    damping: 30 
+  // opacity від 0.2 (коли стоїмо) до 0.7 (коли скролимо)
+  const opacity = useSpring(isScrolling ? 0.7 : 0.2, { 
+    stiffness: 60, 
+    damping: 20 
   });
 
   const positions = [
-    { top: '10%', left: '5%' }, { top: '15%', right: '10%' },
-    { top: '30%', left: '15%' }, { top: '45%', right: '5%' },
-    { top: '55%', left: '10%' }, { top: '70%', right: '15%' },
-    { top: '80%', left: '20%' }, { top: '20%', right: '20%' }
+    { top: '10vh', left: '5%' }, { top: '20vh', right: '10%' },
+    { top: '35vh', left: '15%' }, { top: '45vh', right: '5%' },
+    { top: '60vh', left: '10%' }, { top: '75vh', right: '15%' },
+    { top: '85vh', left: '20%' }, { top: '25vh', right: '20%' }
   ];
 
   return (
     <motion.div 
       style={{ opacity }} 
-      className="fixed inset-0 pointer-events-none z-[1] overflow-hidden hidden md:block"
+      // Використовуємо absolute замість fixed для кращої сумісності з блоками
+      className="absolute top-0 left-0 w-full min-h-[200vh] pointer-events-none z-[9999] overflow-visible hidden md:block"
     >
       {positions.map((p, i) => (
         <Note key={i} {...p} delay={i * 0.4} />
