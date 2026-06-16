@@ -1,44 +1,62 @@
 'use client';
 
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useMotionValueEvent, useSpring, useTransform } from 'framer-motion';
+import { useState, useRef } from 'react';
 
-const Note = ({ top, left, right, delay }: { top: string; left?: string; right?: string; delay: number }) => {
-  return (
-    <motion.div
-      animate={{ 
-        y: [0, -60, 0],
-        rotate: [0, 20, -20, 0],
-        x: [0, 20, -20, 0]
-      }}
-      transition={{ 
-        duration: 10 + Math.random() * 5, 
-        repeat: Infinity, 
-        delay,
-        ease: "easeInOut" 
-      }}
-      style={{ top, left, right }}
-      className="fixed pointer-events-none text-foreground/40 text-6xl z-[500] hidden md:block"
-    >
-      ♪
-    </motion.div>
-  );
-};
+const Note = ({ top, left, right, delay }: { top: string; left?: string; right?: string; delay: number }) => (
+  <motion.div
+    animate={{ 
+      y: [0, -30, 0],
+      rotate: [0, 15, -15, 0],
+      x: [0, 10, -10, 0]
+    }}
+    transition={{ 
+      duration: 8 + Math.random() * 4, 
+      repeat: Infinity, 
+      delay,
+      ease: "easeInOut" 
+    }}
+    style={{ top, left, right }}
+    className="fixed pointer-events-none text-foreground/20 text-4xl md:text-6xl z-[1]"
+  >
+    ♪
+  </motion.div>
+);
 
 export default function FloatingNotes() {
   const { scrollY } = useScroll();
-  const opacity = useSpring(useTransform(scrollY, [0, 100], [0, 1]), { stiffness: 50 });
+  const [isScrolling, setIsScrolling] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout>();
+
+  useMotionValueEvent(scrollY, "change", () => {
+    setIsScrolling(true);
+    
+    // Скидаємо таймер при кожному русі
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    
+    // Якщо скрол зупинився на 200мс — ховаємо ноти
+    timeoutRef.current = setTimeout(() => {
+      setIsScrolling(false);
+    }, 200);
+  });
+
+  // Використовуємо spring для плавного зникнення
+  const opacity = useSpring(isScrolling ? 0.3 : 0, { 
+    stiffness: 100, 
+    damping: 30 
+  });
 
   const positions = [
-    { top: '10%', left: '5%' }, { top: '20%', right: '10%' },
-    { top: '40%', left: '15%' }, { top: '50%', right: '5%' },
-    { top: '65%', left: '10%' }, { top: '75%', right: '15%' },
-    { top: '85%', left: '25%' }, { top: '30%', right: '25%' }
+    { top: '10%', left: '5%' }, { top: '15%', right: '10%' },
+    { top: '30%', left: '15%' }, { top: '45%', right: '5%' },
+    { top: '55%', left: '10%' }, { top: '70%', right: '15%' },
+    { top: '80%', left: '20%' }, { top: '20%', right: '20%' }
   ];
 
   return (
-    <motion.div style={{ opacity }} className="fixed inset-0 pointer-events-none z-[500]">
+    <motion.div style={{ opacity }} className="fixed inset-0 pointer-events-none z-[1] overflow-hidden hidden md:block">
       {positions.map((p, i) => (
-        <Note key={i} {...p} delay={i * 0.7} />
+        <Note key={i} {...p} delay={i * 0.4} />
       ))}
     </motion.div>
   );
