@@ -59,7 +59,7 @@ const releases = [
     meta: { bpm: '---', key: '---', mood: 'PRE-SAVE // SOON' },
     image: '/cover3.webp',
     canScramble: false,
-    previewUrl: '/tiser3.mp3', // Шлях до твого тизера
+    previewUrl: '/tiser3.mp3',
     links: [
       { name: 'Spotify', url: 'https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS?si=JybK-G68Soep8S7fphpe9w' },
     ],
@@ -161,12 +161,22 @@ export default function Music() {
                 </div>
 
                 <div className="w-full flex flex-col items-center lg:items-start gap-6">
-                  {/* Кнопка тизера */}
+                  {/* Кнопка тизера з логікою доступності */}
                   <button 
                     onClick={() => togglePlay(track.id, track.previewUrl)}
-                    className="font-mono text-[9px] uppercase tracking-[0.3em] border border-foreground/30 px-6 py-2 hover:bg-foreground hover:text-background transition-all"
+                    disabled={track.id === 3}
+                    className={`font-mono text-[9px] uppercase tracking-[0.3em] border px-6 py-2 transition-all 
+                      ${track.id === 3 
+                        ? 'border-foreground/10 text-foreground/20 cursor-not-allowed' 
+                        : 'border-foreground/30 hover:bg-foreground hover:text-background'
+                      }`}
                   >
-                    {playingId === track.id ? '[ PAUSE PREVIEW ]' : '[ PLAY PREVIEW ]'}
+                    {track.id === 3 
+                      ? '[ NOT AVAILABLE ]' 
+                      : playingId === track.id 
+                        ? '[ PAUSE PREVIEW ]' 
+                        : '[ PLAY PREVIEW ]'
+                    }
                   </button>
 
                   <div className="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-4 pt-6 border-t border-foreground/10 items-center">
