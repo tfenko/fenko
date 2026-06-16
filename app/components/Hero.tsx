@@ -52,13 +52,13 @@ export default function Hero() {
           Some people only exist after midnight
         </p>
 
-        {/* Оновлена "преміальна" кнопка */}
+        {/* Фінальна стильна кнопка */}
         <button 
           onClick={scrollToMusic}
           aria-label="Scroll to music section"
           className="mt-16 px-12 py-4 border border-foreground/30 hover:border-foreground transition-all duration-500 cursor-none backdrop-blur-sm hover:bg-foreground/5"
         >
-          <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-foreground transition-colors duration-500">
+          <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.3em] text-foreground transition-colors duration-500">
             [ Listen Now ]
           </span>
         </button>
