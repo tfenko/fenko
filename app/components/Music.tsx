@@ -58,7 +58,7 @@ const releases = [
     description: 'The new sound is coming. A journey into the depths of the shadows. Stay tuned for the release.',
     meta: { bpm: '---', key: '---', mood: 'PRE-SAVE // SOON' },
     image: '/cover3.webp',
-    canScramble: false, // Глітч вимкнено для майбутнього релізу
+    canScramble: false,
     links: [
       { name: 'Spotify', url: 'https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS?si=JybK-G68Soep8S7fphpe9w' },
     ],
@@ -99,14 +99,14 @@ export default function Music() {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
 
   return (
-    <section className="relative z-10 w-full min-h-screen bg-background text-foreground py-24 md:py-40 px-4 md:px-16 flex flex-col justify-center border-t border-foreground/10 transition-colors duration-600">
+    <section id="music" className="relative z-10 w-full min-h-screen bg-background text-foreground py-24 md:py-40 px-4 md:px-16 flex flex-col justify-center border-t border-foreground/10 transition-colors duration-600">
       <div className="max-w-6xl mx-auto w-full relative z-10">
         <div className="mb-16 md:mb-24 border-b border-foreground/10 pb-6 flex flex-col sm:flex-row justify-between items-center sm:items-end text-center sm:text-left gap-4">
           <div>
             <p className="font-sans text-[9px] tracking-[0.6em] text-foreground/50 uppercase mb-2">Selected Works</p>
             <h2 className={`${cormorant.className} text-2xl md:text-3xl font-light tracking-[0.2em] uppercase text-foreground/80`}>Soundscapes</h2>
           </div>
-          <span className="text-[9px] font-mono text-foreground/30 tracking-widest hidden sm:block">FENKO // MUSIC </span>
+          <span className="text-[9px] font-mono text-foreground/30 tracking-widest hidden sm:block">FENKO // MUSIC</span>
         </div>
 
         <div className="flex flex-col gap-24 md:gap-40">
