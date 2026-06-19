@@ -8,6 +8,7 @@ import Script from 'next/script';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 // Динамічні імпорти для компонентів, що потребують клієнтського рендеру
 const SmoothScroll = dynamic(() => import('./components/SmoothScroll'), { ssr: false });
@@ -81,6 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </SmoothScroll>
           
           <Analytics />
+          <SpeedInsights />
         </ThemeContext>
       </body>
     </html>
