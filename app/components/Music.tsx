@@ -9,7 +9,6 @@ const cormorant = Cormorant_Garamond({
   weight: ['300', '400'],
 });
 
-// Компонент візуалізатора
 const Visualizer = ({ isPlaying }: { isPlaying: boolean }) => (
   <div className="flex items-center gap-[2px] h-3 mr-3">
     {[1, 2, 3].map((i) => (
@@ -70,7 +69,7 @@ function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: b
 }
 
 const releases = [
-  { id: 3, title: 'Release Soon...', type: 'Upcoming // July 3', description: 'The new sound is coming. A journey into the depths of the shadows. Stay tuned for the release.', meta: { bpm: '---', key: '---', mood: 'PRE-SAVE // SOON' }, image: '/cover3.webp', canScramble: false, previewUrl: '/tiser3.mp3', links: [{ name: 'Spotify', url: 'https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS?si=JybK-G68Soep8S7fphpe9w' }] },
+  { id: 3, title: 'Still Get Close', type: 'Upcoming // July 3', description: 'The new sound is coming. A journey into the depths of the shadows. Stay tuned for the release.', meta: { bpm: '---', key: '---', mood: 'PRE-SAVE // SOON' }, image: '/cover3.webp', canScramble: true, previewUrl: '', links: [], preSaveUrl: 'https://distrokid.com/hyperfollow/fenko1/still-get-close' },
   { id: 2, title: 'Half Real', type: 'Single // Release', description: 'The lyrics explore a haunting relationship characterized by fleeting encounters and emotional turmoil. Navigating the complexities of love that feels both real and illusory, the narrator grapples with the duality of presence.', meta: { bpm: '129', key: 'D minor', mood: 'INTROSPECTIVE // MYSTERIOUS' }, image: '/halfreal.webp', canScramble: true, previewUrl: '/tiser2.mp3', links: [{ name: 'Apple Music', url: 'https://music.apple.com/ua/album/half-real/6769801424?i=6769801425' }, { name: 'Spotify', url: 'https://open.spotify.com/track/6UOYiUahxxA4wWBawrfmzY' }, { name: 'YouTube', url: 'https://music.youtube.com/watch?v=Fs0ZWHbaxBg&si=HG0NwzzWarDTfzLj' }, { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/half-real' }] },
   { id: 1, title: 'Deep End', type: 'Single // Release', description: 'The lyrics convey a sense of longing and emotional struggle in a relationship marked by distance and uncertainty. The imagery of water and sinking suggests a deep dive into love, while metaphors like "heavy chain" illustrate the weight of attachment.', meta: { bpm: '80', key: 'A# minor', mood: 'MELANCHOLIC // YEARNING' }, image: '/deepend.webp', canScramble: false, previewUrl: '/tiser1.mp3', links: [{ name: 'Apple Music', url: 'https://music.apple.com/ua/album/deep-end/1895507327?i=6763819432' }, { name: 'Spotify', url: 'https://open.spotify.com/track/1EG19rhMAOtv57SfzxfG6V' }, { name: 'YouTube', url: 'https://music.youtube.com/playlist?list=OLAK5uy_myDt0WSvtAR2rKNX-p6_k2S4GVc7DAfkQ&si=GA2iGhEq4exWtb-8' }, { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/deep-end' }] },
 ];
@@ -138,23 +137,19 @@ export default function Music() {
                 </div>
 
                 <div className="w-full flex flex-col items-center lg:items-start gap-6">
-                  <button 
-                    onClick={() => togglePlay(track.id, track.previewUrl)}
-                    disabled={track.id === 3}
-                    className={`group flex items-center font-mono text-[9px] uppercase tracking-[0.3em] border px-6 py-2 transition-all 
-                      ${track.id === 3 
-                        ? 'border-foreground/10 text-foreground/20 cursor-not-allowed' 
-                        : 'border-foreground/30 hover:bg-foreground hover:text-background'
-                      }`}
-                  >
-                    {track.id !== 3 && playingId === track.id && <Visualizer isPlaying={true} />}
-                    {track.id === 3 
-                      ? '[ NOT AVAILABLE ]' 
-                      : playingId === track.id 
-                        ? '[ PAUSE ]' 
-                        : '[ PLAY PREVIEW ]'
-                    }
-                  </button>
+                  {track.id === 3 ? (
+                    <a href={track.preSaveUrl} target="_blank" rel="noopener noreferrer" className="group flex items-center font-mono text-[9px] uppercase tracking-[0.3em] border border-foreground/30 px-6 py-2 hover:bg-foreground hover:text-background transition-all">
+                      [ PRE-SAVE ]
+                    </a>
+                  ) : (
+                    <button 
+                      onClick={() => togglePlay(track.id, track.previewUrl)}
+                      className="group flex items-center font-mono text-[9px] uppercase tracking-[0.3em] border border-foreground/30 px-6 py-2 hover:bg-foreground hover:text-background transition-all"
+                    >
+                      {playingId === track.id && <Visualizer isPlaying={true} />}
+                      {playingId === track.id ? '[ PAUSE ]' : '[ PLAY PREVIEW ]'}
+                    </button>
+                  )}
 
                   <div className="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-4 pt-6 border-t border-foreground/10 items-center">
                     {track.links.map((link) => (
