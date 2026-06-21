@@ -85,7 +85,7 @@ export default function Hero() {
           className="mt-12 px-12 py-4 border border-foreground/30 hover:border-foreground transition-all duration-500 cursor-none backdrop-blur-sm hover:bg-foreground/5"
         >
           <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.3em] text-foreground transition-colors duration-500">
-            [ Listen Now ]
+            [ Discography ]
           </span>
         </button>
       </motion.div>
