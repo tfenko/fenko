@@ -4,6 +4,7 @@ import { motion, useMotionValue, useTransform, animate, useInView } from 'framer
 import { useEffect, useRef } from 'react';
 
 export default function Footer() {
+  // Логіка лічильника - оновлено число до 8942
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.round(latest).toLocaleString());
   const ref = useRef(null);
@@ -11,7 +12,7 @@ export default function Footer() {
 
   useEffect(() => {
     if (isInView) {
-      animate(count, 9011, { duration: 2.5, ease: "easeOut" });
+      animate(count, 8942, { duration: 2.5, ease: "easeOut" });
     }
   }, [isInView, count]);
 
@@ -43,11 +44,11 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Компактний блок статистики (як на зображенні) */}
+        {/* Компактний блок статистики */}
         <div className="border border-foreground/10 p-8 mb-16 text-center">
           <span className="text-[8px] uppercase tracking-[0.4em] text-foreground/30 block mb-2">Global reach // Total streams</span>
           <motion.span className="font-cormorant text-4xl block mb-2">{rounded}</motion.span>
-          <span className="text-[10px] uppercase tracking-widest text-foreground/30">Streams // As of June 20, 2026</span>
+          <span className="text-[10px] uppercase tracking-widest text-foreground/30">Streams // As of June 21, 2026</span>
         </div>
 
         {/* Футер лінія */}
