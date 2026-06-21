@@ -11,7 +11,7 @@ export default function StatsCounter() {
 
   useEffect(() => {
     if (isInView) {
-      animate(count, 9011, { duration: 2.5, ease: "easeOut" });
+      animate(count, 8942, { duration: 2.5, ease: "easeOut" });
     }
   }, [isInView, count]);
 
@@ -37,7 +37,7 @@ export default function StatsCounter() {
 
       <div className="mt-6 flex flex-col items-center gap-2">
         <span className="text-[8px] font-mono uppercase tracking-[0.3em] text-foreground/20">
-          AS OF JUNE 20, 2026
+          AS OF JUNE 21, 2026
         </span>
         <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-foreground/30 to-transparent mt-2" />
       </div>
