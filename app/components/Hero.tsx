@@ -29,6 +29,12 @@ export default function Hero() {
     }
   };
 
+  const musicLinks = [
+    { name: 'Spotify', url: 'https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS?si=jpGzjHaHSsWz7knbsVIPDQ' },
+    { name: 'Apple Music', url: 'https://music.apple.com/ua/artist/fenko/1895075050' },
+    { name: 'YouTube', url: 'https://music.youtube.com/@Fenkomus' },
+  ];
+
   return (
     <motion.div
       ref={containerRef}
@@ -52,11 +58,26 @@ export default function Hero() {
           Some people only exist after midnight
         </p>
 
+        {/* Кнопки платформ */}
+        <div className="mt-8 flex flex-wrap justify-center gap-6">
+          {musicLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-[9px] uppercase tracking-[0.3em] text-foreground/40 hover:text-foreground transition-colors duration-300"
+            >
+              [ {link.name} ]
+            </a>
+          ))}
+        </div>
+
         {/* Фінальна стильна кнопка */}
         <button 
           onClick={scrollToMusic}
           aria-label="Scroll to music section"
-          className="mt-16 px-12 py-4 border border-foreground/30 hover:border-foreground transition-all duration-500 cursor-none backdrop-blur-sm hover:bg-foreground/5"
+          className="mt-12 px-12 py-4 border border-foreground/30 hover:border-foreground transition-all duration-500 cursor-none backdrop-blur-sm hover:bg-foreground/5"
         >
           <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.3em] text-foreground transition-colors duration-500">
             [ Listen Now ]
