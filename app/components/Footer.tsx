@@ -1,8 +1,21 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform, animate, useInView } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 
 export default function Footer() {
+  // Логіка лічильника
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => Math.round(latest).toLocaleString());
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    if (isInView) {
+      animate(count, 9011, { duration: 2.5, ease: "easeOut" });
+    }
+  }, [isInView, count]);
+
   const socials = [
     { name: 'Spotify', url: 'https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS?si=jpGzjHaHSsWz7knbsVIPDQ', label: 'Listen on Spotify' },
     { name: 'Apple Music', url: 'https://music.apple.com/ua/artist/fenko/1895075050', label: 'Listen on Apple Music' },
@@ -12,19 +25,11 @@ export default function Footer() {
     { name: 'TikTok', url: 'https://www.tiktok.com/@fenkomus', label: 'Follow on TikTok' },
   ];
 
-  const stats = [
-    { platform: 'Spotify', count: '12.4K' },
-    { platform: 'Apple', count: '8.2K' },
-    { platform: 'YouTube', count: '15.1K' },
-    { platform: 'SoundCloud', count: '5.9K' },
-  ];
-
   return (
-    <footer className="relative z-10 w-full bg-foreground/5 text-foreground pt-32 pb-12 px-4 md:px-12 border-t border-foreground/10 transition-colors duration-400">
+    <footer ref={ref} className="relative z-10 w-full bg-foreground/5 text-foreground pt-32 pb-12 px-4 md:px-12 border-t border-foreground/10 transition-colors duration-400">
       <div className="max-w-6xl mx-auto w-full flex flex-col justify-between h-full">
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 mb-24">
-          {/* Ліва частина */}
           <div>
             <h3 className="text-2xl md:text-3xl font-bold tracking-[0.2em] text-foreground mb-4 uppercase">FENKO</h3>
             <p className="text-xs tracking-[0.3em] uppercase text-foreground/60">
@@ -32,7 +37,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Права частина */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
             {socials.map((link, index) => (
               <a 
@@ -49,14 +53,27 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Лічильники */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-24 py-8 border-y border-foreground/10">
-          {stats.map((stat) => (
-            <div key={stat.platform} className="text-center">
-              <span className="block text-[8px] uppercase tracking-[0.3em] text-foreground/40 mb-2">{stat.platform}</span>
-              <span className="font-mono text-lg tracking-[0.1em] text-foreground/80">{stat.count}</span>
-            </div>
-          ))}
+        {/* Новий шикарний блок статистики */}
+        <div className="flex flex-col items-center justify-center py-20 border-y border-foreground/10 my-12 bg-foreground/[0.02]">
+          <span className="text-[9px] uppercase tracking-[0.4em] text-foreground/40 mb-6">
+            Global reach // Total streams
+          </span>
+          
+          <div className="flex items-baseline gap-3">
+            <motion.span className="font-cormorant text-5xl md:text-7xl font-light text-foreground">
+              {rounded}
+            </motion.span>
+            <span className="text-sm font-mono text-foreground/30 uppercase tracking-widest">
+              Streams
+            </span>
+          </div>
+
+          <div className="mt-6 flex flex-col items-center gap-2">
+            <span className="text-[8px] font-mono uppercase tracking-[0.3em] text-foreground/20">
+              AS OF JUNE 20, 2026
+            </span>
+            <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-foreground/30 to-transparent mt-2" />
+          </div>
         </div>
 
         {/* Нижня лінія */}
