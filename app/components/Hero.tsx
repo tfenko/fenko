@@ -45,6 +45,9 @@ export default function Hero() {
         <ThreeScene onReady={handleSceneReady} />
       </div>
 
+      {/* Плавний перехід у темряву внизу екрана для гармонійного скролу */}
+      <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent z-20 pointer-events-none" />
+
       <div className="absolute inset-0 z-20 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,var(--background)_100%)]" />
 
       <motion.div 
