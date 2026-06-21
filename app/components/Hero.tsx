@@ -58,17 +58,19 @@ export default function Hero() {
           Some people only exist after midnight
         </p>
 
-        {/* Кнопки платформ */}
-        <div className="mt-8 flex flex-wrap justify-center gap-6">
+        {/* Акцентні кнопки платформ */}
+        <div className="mt-10 flex flex-wrap justify-center gap-4">
           {musicLinks.map((link) => (
             <a
               key={link.name}
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono text-[9px] uppercase tracking-[0.3em] text-foreground/40 hover:text-foreground transition-colors duration-300"
+              className="px-6 py-2 border border-foreground/20 hover:border-foreground bg-foreground/5 hover:bg-foreground hover:text-background transition-all duration-300"
             >
-              [ {link.name} ]
+              <span className="font-mono text-[9px] uppercase tracking-[0.3em]">
+                {link.name}
+              </span>
             </a>
           ))}
         </div>
