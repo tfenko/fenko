@@ -12,6 +12,13 @@ export default function Footer() {
     { name: 'TikTok', url: 'https://www.tiktok.com/@fenkomus', label: 'Follow on TikTok' },
   ];
 
+  const stats = [
+    { platform: 'Spotify', count: '12.4K' },
+    { platform: 'Apple', count: '8.2K' },
+    { platform: 'YouTube', count: '15.1K' },
+    { platform: 'SoundCloud', count: '5.9K' },
+  ];
+
   return (
     <footer className="relative z-10 w-full bg-foreground/5 text-foreground pt-32 pb-12 px-4 md:px-12 border-t border-foreground/10 transition-colors duration-400">
       <div className="max-w-6xl mx-auto w-full flex flex-col justify-between h-full">
@@ -33,7 +40,7 @@ export default function Footer() {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={link.label} // Важливо для Lighthouse Accessibility
+                aria-label={link.label}
                 className="text-sm tracking-widest text-foreground/60 hover:text-foreground transition-colors duration-300 uppercase font-light"
               >
                 {link.name}
@@ -42,10 +49,19 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Лічильники */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-24 py-8 border-y border-foreground/10">
+          {stats.map((stat) => (
+            <div key={stat.platform} className="text-center">
+              <span className="block text-[8px] uppercase tracking-[0.3em] text-foreground/40 mb-2">{stat.platform}</span>
+              <span className="font-mono text-lg tracking-[0.1em] text-foreground/80">{stat.count}</span>
+            </div>
+          ))}
+        </div>
+
         {/* Нижня лінія */}
-        <div className="pt-8 border-t border-foreground/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] tracking-[0.3em] uppercase text-foreground/50 font-mono">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] tracking-[0.3em] uppercase text-foreground/50 font-mono">
           <p>© {new Date().getFullYear()} FENKO. All night reserved.</p>
-          {/* Додано role="button" та aria-label для доступності */}
           <p 
             role="button" 
             aria-label="Design credits: Designed for the shadows"
@@ -54,7 +70,6 @@ export default function Footer() {
             Designed for the shadows.
           </p>
         </div>
-
       </div>
     </footer>
   );
