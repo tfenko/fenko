@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 
 export default function Footer() {
   // --- РЕДАГУЙ ДАНІ ТУТ ---
-  const TOTAL_STREAMS = 8942;
+  const TOTAL_STREAMS = 9412;
   const CURRENT_DATE = "June 21, 2026";
   // -----------------------
 
