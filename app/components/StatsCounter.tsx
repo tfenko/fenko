@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 
 export default function StatsCounter() {
   // ---------------------------
-  const CURRENT_STREAMS = 8942;
+  const CURRENT_STREAMS = 9412;
   const CURRENT_DATE = "JUNE 21, 2026";
   // ---------------------------
 
