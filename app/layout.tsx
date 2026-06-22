@@ -49,17 +49,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <title>FENKO</title>
       </head>
-      {/* Додаємо FloatingNotes одразу в body, щоб він був "поверх" усього */}
       <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background cursor-none">
+        
+        {/* Google Analytics & Ads Scripts */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-3T3TFTGZX0" strategy="afterInteractive" />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-3T3TFTGZX0');
+            gtag('config', 'AW-18240888787');
+          `}
+        </Script>
         
         <FloatingNotes />
         
         <ThemeContext>
-          <Script src="https://www.googletagmanager.com/gtag/js?id=AW-18240888787" strategy="afterInteractive" />
-          <Script id="google-ads-tag" strategy="afterInteractive">
-            {`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'AW-18240888787');`}
-          </Script>
-
           <div className="hidden md:block">
             <CustomCursor />
           </div>
