@@ -5,8 +5,8 @@ import { useEffect, useRef } from 'react';
 
 export default function Footer() {
   // --- РЕДАГУЙ ДАНІ ТУТ ---
-  const TOTAL_STREAMS = 10036;
-  const CURRENT_DATE = "June 22, 2026";
+  const TOTAL_STREAMS = 10469;
+  const CURRENT_DATE = "June 23, 2026";
   // -----------------------
 
   const count = useMotionValue(0);
