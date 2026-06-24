@@ -1,8 +1,10 @@
 'use client';
+
 import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { usePlayerStore } from '@/store/usePlayerStore';
-import './player.css'; // Твої стилі (переконайся, що вони підключені)
+// Використовуємо відносний шлях, щоб білд на Vercel не сварився на @/
+import { usePlayerStore } from '../../../store/usePlayerStore';
+import './player.css';
 
 export default function PlayerOverlay() {
   const { isOpen, closePlayer } = usePlayerStore();
@@ -34,6 +36,10 @@ export default function PlayerOverlay() {
     if (!isOpen && audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
+      // Скидання стану інтерфейсу при закритті
+      recordRef.current?.classList.remove('is-rotating');
+      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
+      iconPathRef.current?.setAttribute('d', 'M8 5v14l11-7z');
     }
   }, [isOpen]);
 
@@ -41,7 +47,9 @@ export default function PlayerOverlay() {
     <AnimatePresence>
       {isOpen && (
         <motion.div 
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          exit={{ opacity: 0 }}
           className="fixed inset-0 z-[1000] bg-black flex items-center justify-center cursor-none"
         >
           <div className="music-card">
@@ -58,7 +66,10 @@ export default function PlayerOverlay() {
 
             <div className="track-info">
               <h2 className="track-title">Deep End</h2>
-              <button onClick={closePlayer} className="mt-4 text-[10px] uppercase tracking-widest text-white/50 hover:text-white transition-colors">
+              <button 
+                onClick={closePlayer} 
+                className="mt-4 text-[10px] uppercase tracking-widest text-white/50 hover:text-white transition-colors"
+              >
                 [ CLOSE PLAYER ]
               </button>
             </div>
