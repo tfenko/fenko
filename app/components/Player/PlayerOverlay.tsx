@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// Використовуємо відносний шлях, щоб білд на Vercel не сварився на @/
-import { usePlayerStore } from '../../../store/usePlayerStore';
+// ТОЧНИЙ ВІДНОСНИЙ ШЛЯХ: піднімаємось на 2 рівні вгору
+import { usePlayerStore } from '../../store/usePlayerStore';
 import './player.css';
 
 export default function PlayerOverlay() {
@@ -36,7 +36,6 @@ export default function PlayerOverlay() {
     if (!isOpen && audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
-      // Скидання стану інтерфейсу при закритті
       recordRef.current?.classList.remove('is-rotating');
       if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
       iconPathRef.current?.setAttribute('d', 'M8 5v14l11-7z');
