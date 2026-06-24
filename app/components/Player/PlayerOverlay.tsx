@@ -47,7 +47,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     { time: 189.56, text: "Losing light" }
   ];
 
-  // Заморожуємо скрол головної сторінки сайту на фоні, коли оверлей відкритий
+  // Блокування скролу фонової сторінки сайту
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -74,12 +74,13 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     }
   };
 
+  // Ручний скролл блокує автоцентрування на 3 секунди
   const handleLyricsScroll = () => {
     isUserScrolling.current = true;
     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
     scrollTimeout.current = setTimeout(() => {
       isUserScrolling.current = false;
-    }, 4000); // 4 секунди спокою після того, як ти перестав гортати вручну
+    }, 3000);
   };
 
   const handleLineClick = (time: number) => {
@@ -91,13 +92,15 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     }
   };
 
-  // Стежимо за таймінгом аудіо треку
+  // Синхронізація караоке-тексту та автоскролу до центру
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const handleTimeUpdate = () => {
       let currentLineIndex = -1;
+
+      // Точний пошук активного рядка за часом треку
       for (let i = 0; i < lyrics.length; i++) {
         if (audio.currentTime >= lyrics[i].time) {
           currentLineIndex = i;
@@ -108,6 +111,19 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
 
       if (currentLineIndex !== -1 && currentLineIndex !== activeLineIndex) {
         setActiveLineIndex(currentLineIndex);
+
+        // Плавне центрування активного рядка як в Apple Music
+        if (!isUserScrolling.current && lyricsScrollRef.current) {
+          const container = lyricsScrollRef.current;
+          const activeElement = container.children[currentLineIndex] as HTMLElement;
+          
+          if (activeElement) {
+            container.scrollTo({
+              top: activeElement.offsetTop - container.offsetHeight / 2 + activeElement.offsetHeight / 2,
+              behavior: 'smooth'
+            });
+          }
+        }
       }
     };
 
@@ -115,21 +131,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
   }, [activeLineIndex]);
 
-  // Скрол тексту чітко по центру як в Apple Music
-  useEffect(() => {
-    if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
-      const container = lyricsScrollRef.current;
-      const activeElement = container.children[activeLineIndex] as HTMLElement;
-      
-      if (activeElement) {
-        container.scrollTo({
-          top: activeElement.offsetTop - container.offsetHeight / 2 + activeElement.offsetHeight / 2,
-          behavior: 'smooth'
-        });
-      }
-    }
-  }, [activeLineIndex]);
-
+  // Скидання стану плеєра при повному закритті оверлею
   useEffect(() => {
     if (!isOpen && audioRef.current) {
       audioRef.current.pause();
@@ -149,26 +151,28 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           exit={{ opacity: 0 }}
           className={styles.overlay}
         >
-          {/* Живий рідкий градієнт */}
+          {/* Живий рідкий градієнт ззаду */}
           <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
 
-          {/* Контейнер караоке-тексту */}
-          <div className={`${styles.lyricsContainer} ${styles.lyricsActive}`}>
-            <div 
-              className={styles.lyricsScroll} 
-              ref={lyricsScrollRef}
-              onScroll={handleLyricsScroll}
-            >
-              {lyrics.map((line, index) => (
-                <p 
-                  key={index} 
-                  className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
-                  onClick={() => handleLineClick(line.time)}
-                >
-                  {line.text}
-                </p>
-              ))}
-            </div>
+          {/* Текст показується ТІЛЬКИ коли трек запущено (isPlaying === true) */}
+          <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
+            {isPlaying && (
+              <div 
+                className={styles.lyricsScroll} 
+                ref={lyricsScrollRef}
+                onScroll={handleLyricsScroll}
+              >
+                {lyrics.map((line, index) => (
+                  <p 
+                    key={index} 
+                    className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
+                    onClick={() => handleLineClick(line.time)}
+                  >
+                    {line.text}
+                  </p>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Картка плеєра */}
