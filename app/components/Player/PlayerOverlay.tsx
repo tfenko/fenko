@@ -94,9 +94,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
   const audioRef = useRef<HTMLAudioElement>(null);
   const tonearmRef = useRef<HTMLImageElement>(null);
   const lyricsScrollRef = useRef<HTMLDivElement>(null);
-  
-  // ФІКС 1: Створюємо Ref для лірики, щоб слухач часу ЗАВЖДИ бачив актуальний масив
-  const lyricsRef = useRef(TRACKS_DATA[trackKey].lyrics);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
@@ -107,11 +104,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
 
   const currentTrack = TRACKS_DATA[trackKey];
 
-  // Синхронізуємо реф лірики при зміні треку
-  useEffect(() => {
-    lyricsRef.current = TRACKS_DATA[trackKey].lyrics;
-  }, [trackKey]);
-
+  // Блокування скролу сторінки під оверлеєм
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -145,15 +138,21 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
   const handleLineClick = (time: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = time;
+      
       let clickedIndex = -1;
-      const lines = lyricsRef.current;
-      for (let i = 0; i < lines.length; i++) {
-        if (time >= lines[i].time) {
+      const lyrics = TRACKS_DATA[trackKey].lyrics;
+      for (let i = 0; i < lyrics.length; i++) {
+        if (time >= lyrics[i].time) {
           clickedIndex = i;
         }
       }
       setActiveLineIndex(clickedIndex);
-      if (audioRef.current.paused) togglePlay();
+      
+      if (audioRef.current.paused) {
+        audioRef.current.play().catch(() => {});
+        setIsPlaying(true);
+        if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-5deg)';
+      }
     }
   };
 
@@ -163,7 +162,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     if (audioRef.current) audioRef.current.volume = newVolume;
   };
 
-  // ФІКС 2: ЗАЛІЗОБЕТОННИЙ СЛУХАЧ ЧАСУ (Тепер працює абсолютно однаково для обох треків)
+  // ФІКС 1: СЛУХАЧ ЧАСУ БЕЗ ЗАМИКАНЬ (Динамічно бере лірику актуального треку)
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -171,29 +170,24 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     const handleTimeUpdate = () => {
       const currentTime = audio.currentTime;
       let currentLineIndex = -1;
-      const lines = lyricsRef.current; // Беремо дані напряму з актуального рефу
+      const lyrics = TRACKS_DATA[trackKey].lyrics; // Прямий доступ до потрібного масиву
 
-      for (let i = 0; i < lines.length; i++) {
-        if (currentTime >= lines[i].time) {
+      for (let i = 0; i < lyrics.length; i++) {
+        if (currentTime >= lyrics[i].time) {
           currentLineIndex = i;
         } else {
           break;
         }
       }
 
-      setActiveLineIndex((prevIndex) => {
-        if (currentLineIndex !== prevIndex) {
-          return currentLineIndex;
-        }
-        return prevIndex;
-      });
+      setActiveLineIndex(currentLineIndex);
     };
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
-  }, [trackKey]); // Залежить тільки від треку, ніяких внутрішніх підвисань!
+  }, [trackKey]); // Перезапускається строго при зміні синглу
 
-  // АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ
+  // ФІКС 2: ПЛАВНИЙ АВТОСКУРОЛЛ (Завжди бачить DOM-вузли)
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
@@ -202,9 +196,9 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
         activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }
-  }, [activeLineIndex, isPlaying]);
+  }, [activeLineIndex]);
 
-  // Скидання стану
+  // Повне скидання станів при зміні треку або відкритті/закритті
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.pause();
@@ -233,20 +227,19 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
             style={{ background: currentTrack.bgGradient }}
           />
 
+          {/* ФІКС 3: Прибрали {isPlaying &&}, тепер контейнер існує в DOM постійно і рефи не злітають */}
           <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
-            {isPlaying && (
-              <div className={styles.lyricsScroll} ref={lyricsScrollRef} onScroll={handleLyricsScroll}>
-                {currentTrack.lyrics.map((line, index) => (
-                  <p 
-                    key={index} 
-                    className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
-                    onClick={() => handleLineClick(line.time)}
-                  >
-                    {line.text}
-                  </p>
-                ))}
-              </div>
-            )}
+            <div className={styles.lyricsScroll} ref={lyricsScrollRef} onScroll={handleLyricsScroll}>
+              {currentTrack.lyrics.map((line, index) => (
+                <p 
+                  key={index} 
+                  className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
+                  onClick={() => handleLineClick(line.time)}
+                >
+                  {line.text}
+                </p>
+              ))}
+            </div>
           </div>
 
           <div className={`${styles.musicCard} ${isPlaying ? styles.musicCardShifted : ''}`}>
