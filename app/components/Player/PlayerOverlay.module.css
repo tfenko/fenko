@@ -13,6 +13,33 @@
   overflow: hidden;
 }
 
+/* Кнопка закриття у верхньому правому кутку оверлею */
+.closeBtnOverlay {
+  position: absolute;
+  top: 2.5rem;
+  right: 3.5rem;
+  z-index: 100; /* Поверх усіх елементів інтерфейсу */
+  font-size: 11px;
+  font-family: monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.closeBtnOverlay:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
 /* Живий рідкий градієнт обгортки Deep End */
 .bgVideo {
   position: absolute;
@@ -51,7 +78,7 @@
   opacity: 0;
   z-index: 5;
   transition: opacity 1.5s ease;
-  pointer-events: auto !important; /* Повністю відкриваємо блок для миші */
+  pointer-events: auto !important; /* Відкриваємо блок для миші */
 }
 
 .lyricsActive {
@@ -61,17 +88,16 @@
 .lyricsScroll {
   width: 100%;
   height: 100%;
-  overflow-y: scroll !important; /* Форсуємо вертикальний скрол */
+  overflow-y: scroll !important; /* Вертикальний скрол */
   overflow-x: hidden;
   padding: 32vh 0; 
-  /* ФІКС ОБРІЗАННЯ: Створюємо буферну зону зліва для безпечного скейлу літер та світіння */
-  padding-left: 2rem; 
+  padding-left: 2rem; /* Безпечна буферна зона проти обрізання літер */
   scrollbar-width: none;
   -ms-overflow-style: none;
-  pointer-events: auto !important; /* Дозволяємо гортання та кліки по тексту */
+  pointer-events: auto !important; 
   position: relative;
 
-  /* Ефектне розмиття меж зверху та знизу як в Apple Music */
+  /* Розмиття верхньої та нижньої межі як в Apple Music */
   mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
 }
@@ -88,7 +114,7 @@
   display: flex;
   align-items: center; 
   white-space: nowrap; 
-  overflow: visible; /* Дозволяємо тексту вільно виходити за межі стандартного блоку рядка */
+  overflow: visible; 
   
   color: #ffffff;
   font-size: 28px; 
@@ -231,23 +257,6 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
-.closeBtn {
-  margin-top: 1.5rem;
-  font-size: 10px;
-  font-family: monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.4);
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.closeBtn:hover {
-  color: #ffffff;
-}
-
 /* ==========================================
    ПРОГРЕС-БАР ТА МІКШЕР ЗВУКУ (Стилі)
 ========================================== */
@@ -313,7 +322,7 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  padding: 0 2rem; /* Робимо мікшер трохи вужчим за прогрес-бар для естетики */
+  padding: 0 2rem; 
   color: rgba(255, 255, 255, 0.4);
 }
 
