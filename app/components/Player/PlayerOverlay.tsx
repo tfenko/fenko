@@ -9,6 +9,36 @@ interface PlayerOverlayProps {
   onClose: () => void;
 }
 
+// КРИТИЧНО ВАЖЛИВО: Масив винесено за межі компонента, 
+// щоб React не перестворював його при кожному кадрі анімації чи оновленні часу!
+const LYRICS_DATA = [
+  { time: 21.66, text: "Blue light, crawling up the wall" },
+  { time: 25.64, text: "Wait for the tide, wait for the fall" },
+  { time: 30.10, text: "Your ghost is dancing in the smoke" },
+  { time: 34.70, text: "A heavy chain, a velvet choke" },
+  { time: 39.23, text: "You say you're mine, but you're like the sea" },
+  { time: 44.08, text: "Always drifting away from me" },
+  { time: 50.45, text: "Away from me" },
+  { time: 57.12, text: "I'm diving in the deep end for you" },
+  { time: 65.92, text: "There's nothing else that I can do" },
+  { time: 73.03, text: "I'm losing air, I'm losing time" },
+  { time: 77.79, text: "But I'd die to make you mine" },
+  { time: 91.17, text: "Salt on my skin, dust in my lungs" },
+  { time: 95.46, text: "We're speaking in those silent tongues" },
+  { time: 99.74, text: "The water's cold, the moon is high" },
+  { time: 104.31, text: "A beautiful way for us to die" },
+  { time: 108.65, text: "Don't reach for me, just let me sink" },
+  { time: 112.91, text: "I'm closer to you than you think" },
+  { time: 119.18, text: "Yeah, closer than you think" },
+  { time: 128.87, text: "I'm diving in the deep end for you" },
+  { time: 137.68, text: "There's nothing else that I can do" },
+  { time: 144.44, text: "I'm losing air, I'm losing time" },
+  { time: 149.38, text: "But I'd die to make you mine" },
+  { time: 158.32, text: "Yeah, I'd die to make you mine" },
+  { time: 186.05, text: "Drifting" },
+  { time: 189.56, text: "Losing light" }
+];
+
 export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const tonearmRef = useRef<HTMLImageElement>(null);
@@ -19,35 +49,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
   const isUserScrolling = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const lyrics = [
-    { time: 21.66, text: "Blue light, crawling up the wall" },
-    { time: 25.64, text: "Wait for the tide, wait for the fall" },
-    { time: 30.10, text: "Your ghost is dancing in the smoke" },
-    { time: 34.70, text: "A heavy chain, a velvet choke" },
-    { time: 39.23, text: "You say you're mine, but you're like the sea" },
-    { time: 44.08, text: "Always drifting away from me" },
-    { time: 50.45, text: "Away from me" },
-    { time: 57.12, text: "I'm diving in the deep end for you" },
-    { time: 65.92, text: "There's nothing else that I can do" },
-    { time: 73.03, text: "I'm losing air, I'm losing time" },
-    { time: 77.79, text: "But I'd die to make you mine" },
-    { time: 91.17, text: "Salt on my skin, dust in my lungs" },
-    { time: 95.46, text: "We're speaking in those silent tongues" },
-    { time: 99.74, text: "The water's cold, the moon is high" },
-    { time: 104.31, text: "A beautiful way for us to die" },
-    { time: 108.65, text: "Don't reach for me, just let me sink" },
-    { time: 112.91, text: "I'm closer to you than you think" },
-    { time: 119.18, text: "Yeah, closer than you think" },
-    { time: 128.87, text: "I'm diving in the deep end for you" },
-    { time: 137.68, text: "There's nothing else that I can do" },
-    { time: 144.44, text: "I'm losing air, I'm losing time" },
-    { time: 149.38, text: "But I'd die to make you mine" },
-    { time: 158.32, text: "Yeah, I'd die to make you mine" },
-    { time: 186.05, text: "Drifting" },
-    { time: 189.56, text: "Losing light" }
-  ];
-
-  // Блокування скролу фонової сторінки сайту
+  // Заморожуємо скрол фонової сторінки сайту
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -74,56 +76,52 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     }
   };
 
-  // Ручний скролл блокує автоцентрування на 3 секунди
   const handleLyricsScroll = () => {
     isUserScrolling.current = true;
     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
     scrollTimeout.current = setTimeout(() => {
       isUserScrolling.current = false;
-    }, 3000);
+    }, 4000); // Блокуємо автоцентр на 4 секунди при ручному гортанні
   };
 
   const handleLineClick = (time: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = time;
+      // Чистий форсований пошук індексу при кліку
+      let clickedIndex = -1;
+      for (let i = 0; i < LYRICS_DATA.length; i++) {
+        if (time >= LYRICS_DATA[i].time) {
+          clickedIndex = i;
+        }
+      }
+      setActiveLineIndex(clickedIndex);
+      
       if (audioRef.current.paused) {
         togglePlay();
       }
     }
   };
 
-  // Синхронізація караоке-тексту та автоскролу до центру
+  // 1. ВІДСТЕЖЕННЯ ЧАСУ (Працює ізольовано та безперебійно)
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const handleTimeUpdate = () => {
       let currentLineIndex = -1;
+      const currentTime = audio.currentTime;
 
-      // Точний пошук активного рядка за часом треку
-      for (let i = 0; i < lyrics.length; i++) {
-        if (audio.currentTime >= lyrics[i].time) {
+      for (let i = 0; i < LYRICS_DATA.length; i++) {
+        if (currentTime >= LYRICS_DATA[i].time) {
           currentLineIndex = i;
         } else {
           break;
         }
       }
 
-      if (currentLineIndex !== -1 && currentLineIndex !== activeLineIndex) {
+      // Оновлюємо стан тільки якщо індекс реально змінився
+      if (currentLineIndex !== activeLineIndex) {
         setActiveLineIndex(currentLineIndex);
-
-        // Плавне центрування активного рядка як в Apple Music
-        if (!isUserScrolling.current && lyricsScrollRef.current) {
-          const container = lyricsScrollRef.current;
-          const activeElement = container.children[currentLineIndex] as HTMLElement;
-          
-          if (activeElement) {
-            container.scrollTo({
-              top: activeElement.offsetTop - container.offsetHeight / 2 + activeElement.offsetHeight / 2,
-              behavior: 'smooth'
-            });
-          }
-        }
       }
     };
 
@@ -131,7 +129,22 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
   }, [activeLineIndex]);
 
-  // Скидання стану плеєра при повному закритті оверлею
+  // 2. АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ (Як в Apple Music)
+  useEffect(() => {
+    if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
+      const container = lyricsScrollRef.current;
+      const activeElement = container.children[activeLineIndex] as HTMLElement;
+      
+      if (activeElement) {
+        activeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center' // Текст завжди тримається суворо по центру екрана
+        });
+      }
+    }
+  }, [activeLineIndex, isPlaying]); // Спрацьовує і при зміні рядка, і при старті плеєра
+
+  // Скидання стану плеєра при закритті
   useEffect(() => {
     if (!isOpen && audioRef.current) {
       audioRef.current.pause();
@@ -151,10 +164,10 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           exit={{ opacity: 0 }}
           className={styles.overlay}
         >
-          {/* Живий рідкий градієнт ззаду */}
+          {/* Рідкий фоновий градієнт */}
           <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
 
-          {/* Текст показується ТІЛЬКИ коли трек запущено (isPlaying === true) */}
+          {/* Контейнер тексту: показуємо і вмикаємо класи ТІЛЬКИ коли трек грає */}
           <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
             {isPlaying && (
               <div 
@@ -162,7 +175,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
                 ref={lyricsScrollRef}
                 onScroll={handleLyricsScroll}
               >
-                {lyrics.map((line, index) => (
+                {LYRICS_DATA.map((line, index) => (
                   <p 
                     key={index} 
                     className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
