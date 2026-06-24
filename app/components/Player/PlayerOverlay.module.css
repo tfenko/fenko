@@ -1,139 +1,235 @@
+/* ==========================================
+   ГОЛОВНИЙ ОВЕРЛЕЙ (Повноекранне вікно)
+========================================== */
 .overlay {
   position: fixed;
   inset: 0;
   z-index: 1000;
   background-color: #000000;
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 5rem;
   padding: 2rem;
-  font-family: sans-serif;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
 }
 
-/* Контейнер для тексту лірики */
-.lyricsContainer {
-  width: 50%;
-  max-height: 70vh;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  mask-image: linear-gradient(to bottom, transparent, white 20%, white 80%, transparent);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, white 20%, white 80%, transparent);
-}
-
-/* Приховуємо скроллбар */
-.lyricsContainer::-webkit-scrollbar {
-  display: none;
-}
-
-.lyricLine {
-  font-size: 1.5rem;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.2);
-  transition: color 0.3s ease, transform 0.3s ease;
-  cursor: pointer;
-}
-
-.lyricLine.active {
-  color: #ffffff;
-  transform: scale(1.03);
-}
-
-/* Картка плеєра справа */
-.musicCard {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 3rem;
-  border-radius: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-  width: 380px;
-}
-
-.recordContainer {
-  position: relative;
-  width: 280px;
-  height: 280px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.tonearm {
+/* МІНІМАЛІЗМ: Живий рідкий градієнт в точних кольорах обгортки Deep End */
+.bgVideo {
   position: absolute;
-  top: -10px;
-  right: 30px;
-  width: 100px;
-  z-index: 10;
-  transform-origin: top right;
-  transform: rotate(-25deg);
-  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  background: linear-gradient(135deg, #050b14, #0a1118, #0e2530, #131a22, #050b14);
+  background-size: 400% 400%; 
+  filter: blur(60px) brightness(0); 
+  transition: filter 2s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
 }
 
-.record {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+/* Коли трек грає — плавно вмикаємо яскравість та запускаємо переливання фону */
+.bgVideoActive {
+  filter: blur(60px) brightness(0.65);
+  animation: fluidGradient 18s ease infinite;
 }
 
-.isRotating {
-  animation: rotateRecord 20s linear infinite;
+@keyframes fluidGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-@keyframes rotateRecord {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+/* ==========================================
+   КОНТЕЙНЕР КАРАОКЕ-ТЕКСТУ (Зліва)
+========================================== */
+.lyricsContainer {
+  position: relative;
+  z-index: 2;
+  width: 50%;
+  height: 75vh;
+  overflow-y: auto; 
+  overflow-x: hidden;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+  pointer-events: auto; 
+  
+  mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
 }
 
-.playBtn {
-  position: absolute;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
+/* Ховаємо дефолтний скролбар браузера */
+.lyricsContainer::-webkit-scrollbar { 
+  display: none; 
+}
+.lyricsContainer { 
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+
+/* Поява лірики при відтворенні */
+.lyricsActive {
+  opacity: 1;
+}
+
+/* Рядок тексту — стабільна геометрія зі збільшеним шрифтом */
+.lyricLine {
+  margin: 0;
+  padding: 0;
+  height: 85px; 
   display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(10px);
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.playBtn:hover {
-  transform: scale(1.05);
-}
-
-.trackInfo {
-  text-align: center;
-}
-
-.trackTitle {
+  align-items: center; 
+  white-space: nowrap; 
+  overflow: visible; 
+  
   color: #ffffff;
-  font-size: 1.5rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.25rem;
+  font-size: 28px; 
+  font-weight: 700; 
+  opacity: 0.18; 
+  
+  transform-origin: left center; 
+  transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), text-shadow 0.6s ease;
+  cursor: pointer;
 }
 
-.trackArtist {
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
+.lyricLine:hover {
+  opacity: 0.5;
+}
+
+/* АКТИВНИЙ РЯДОК — Ефектне виділення */
+.lyricLineActive {
+  opacity: 1;
+  transform: scale(1.18); 
+  text-shadow: 0 0 25px rgba(255, 255, 255, 0.45); 
+}
+
+/* ==========================================
+   КАРТКА ПЛЕЄРА (Справа)
+========================================== */
+.musicCard {
+  position: relative;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.45); 
+  padding: 45px; 
+  border-radius: 40px;
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Коли трек грає — зміщуємо картку вбік за твоїм макетом */
+.musicCardShifted {
+  transform: translateX(110%);
+}
+
+/* Контейнер платівки */
+.recordContainer { 
+  position: relative; 
+  width: 340px; 
+  height: 340px; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+}
+
+/* Сама платівка */
+.record { 
+  width: 100%; 
+  height: 100%; 
+  border-radius: 50%; 
+  object-fit: cover; 
+  border: 10px solid #000; 
+  box-shadow: 0 0 40px rgba(0,0,0,0.6); 
+  display: block; 
+}
+
+/* Тонарм під велику платівку */
+.tonearm { 
+  position: absolute; 
+  top: -25px; 
+  right: 80px; 
+  width: 260px; 
+  transform-origin: 20px 20px; 
+  transform: rotate(-30deg); 
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); 
+  z-index: 10; 
+  pointer-events: none; 
+}
+
+/* Кнопка Play всередині вінілу */
+.playBtn { 
+  position: absolute; 
+  width: 85px; 
+  height: 85px; 
+  border-radius: 50%; 
+  border: 1px solid rgba(255, 255, 255, 0.2); 
+  background: rgba(255, 255, 255, 0.15); 
+  backdrop-filter: blur(10px); 
+  color: white; 
+  z-index: 20; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  transition: all 0.3s ease; 
+  padding: 0; 
+  cursor: pointer;
+}
+
+.playBtn:hover { 
+  background: rgba(255, 255, 255, 0.3); 
+  transform: scale(1.1); 
+}
+
+/* Анімація обертання вінілу */
+.isRotating { 
+  animation: rotate 3s linear infinite; 
+}
+
+@keyframes rotate { 
+  from { transform: rotate(0deg); } 
+  to { transform: rotate(360deg); } 
+}
+
+/* Інфо про трек */
+.trackInfo { 
+  margin-top: 35px; 
+  text-align: center; 
+}
+
+.trackTitle { 
+  font-size: 26px; 
+  color: white; 
+  margin: 0; 
+  letter-spacing: 1px; 
+  font-weight: 600; 
+}
+
+.artistLink {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.artistName { 
+  font-size: 16px; 
+  color: rgba(255, 255, 255, 0.5); 
+  margin: 6px 0 0 0; 
+  text-transform: uppercase; 
+  letter-spacing: 2px; 
+  transition: color 0.3s ease;
+}
+
+.artistLink:hover .artistName {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .closeBtn {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   font-size: 10px;
   font-family: monospace;
   text-transform: uppercase;
