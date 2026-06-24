@@ -17,7 +17,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
 
-  // ПОВНИЙ СПИСОК ЛІРИКИ З ТВОГО HTML
+  // ПОВНИЙ СПИСОК ЛІРИКИ З ТВОГО HTML-МАКЕТУ
   const lyrics = [
     { time: 21.66, text: "Blue light, crawling up the wall" },
     { time: 25.64, text: "Wait for the tide, wait for the fall" },
@@ -58,11 +58,11 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     } else {
       audio.pause();
       setIsPlaying(false);
-      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
+      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-30deg)';
     }
   };
 
-  // Відстеження часу для скролу та підсвічування караоке
+  // Відстеження часу для автоскролу та підсвічування рядків
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -94,14 +94,14 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
   }, [activeLineIndex]);
 
-  // Очищення стану та скидання аудіо при закритті
+  // Повне скидання стану при закритті вікна
   useEffect(() => {
     if (!isOpen && audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       setIsPlaying(false);
       setActiveLineIndex(-1);
-      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
+      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-30deg)';
     }
   }, [isOpen]);
 
@@ -114,29 +114,31 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           exit={{ opacity: 0 }}
           className={styles.overlay}
         >
-          {/* Фоновий глітч-ефект */}
-          <div className={styles.bgVideo} />
+          {/* Живий рідкий градієнт на фоні */}
+          <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
 
-          {/* Блок тексту зліва */}
-          <div className={styles.lyricsContainer} ref={lyricsContainerRef}>
-            {lyrics.map((line, index) => (
-              <p 
-                key={index} 
-                className={`${styles.lyricLine} ${index === activeLineIndex ? styles.active : ''}`}
-                onClick={() => {
-                  if (audioRef.current) {
-                    audioRef.current.currentTime = line.time;
-                    if (audioRef.current.paused) togglePlay();
-                  }
-                }}
-              >
-                {line.text}
-              </p>
-            ))}
+          {/* Контейнер караоке-тексту зліва */}
+          <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`} ref={lyricsContainerRef}>
+            <div className={styles.lyricsScroll}>
+              {lyrics.map((line, index) => (
+                <p 
+                  key={index} 
+                  className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
+                  onClick={() => {
+                    if (audioRef.current) {
+                      audioRef.current.currentTime = line.time;
+                      if (audioRef.current.paused) togglePlay();
+                    }
+                  }}
+                >
+                  {line.text}
+                </p>
+              ))}
+            </div>
           </div>
 
-          {/* Блок програвача справа */}
-          <div className={styles.musicCard}>
+          {/* Картка плеєра справа */}
+          <div className={`${styles.musicCard} ${isPlaying ? styles.musicCardShifted : ''}`}>
             <div className={styles.recordContainer}>
               <img src="/tonarm.png" alt="Tonearm" className={styles.tonearm} ref={tonearmRef} />
               <img 
@@ -146,7 +148,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
               />
               
               <button onClick={togglePlay} className={styles.playBtn}>
-                <svg viewBox="0 0 24 24" width="28" height="28" fill="white">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="white">
                   {isPlaying ? (
                     <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
                   ) : (
@@ -158,7 +160,10 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
 
             <div className={styles.trackInfo}>
               <h2 className={styles.trackTitle}>Deep End</h2>
-              <p className={styles.trackArtist}>FENKO</p>
+              <a href="https://fenko.space" target="_blank" rel="noopener noreferrer" className={styles.artistLink}>
+                <p className={styles.artistName}>FENKO</p>
+              </a>
+              <br />
               <button onClick={onClose} className={styles.closeBtn}>
                 [ CLOSE PLAYER ]
               </button>
