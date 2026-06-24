@@ -24,7 +24,7 @@
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: rgba(255, 255, 255, 0.4);
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.05);
   padding: 0.6rem 1.2rem;
@@ -40,7 +40,7 @@
   transform: translateY(-1px);
 }
 
-/* Живий рідкий градієнт (Колір тепер прилітає динамічно з пропсів) */
+/* Живий рідкий градієнт */
 .bgVideo {
   position: absolute;
   top: 0;
@@ -66,7 +66,7 @@
 }
 
 /* ==========================================
-   КОНТЕЙНЕР КАРАОКЕ-ТЕКСТУ (Зліва)
+   КОНТЕЙНЕР КАРАОКЕ-ТЕКСТУ (Зліва на ПК)
 ========================================== */
 .lyricsContainer {
   position: absolute;
@@ -75,7 +75,7 @@
   height: 75vh;
   opacity: 0;
   z-index: 5;
-  transition: opacity 1.5s ease;
+  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: auto !important;
 }
 
@@ -94,7 +94,6 @@
   -ms-overflow-style: none;
   pointer-events: auto !important; 
   position: relative;
-
   mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
 }
@@ -131,13 +130,13 @@
 /* АКТИВНИЙ РЯДОК */
 .lyricLineActive {
   opacity: 1 !important;
-  transform: scale(1.18) !important; 
+  transform: scale(1.12) !important; 
   text-shadow: 0 0 25px rgba(255, 255, 255, 0.45); 
   cursor: none !important;
 }
 
 /* ==========================================
-   КАРТКА ПЛЕЄРА (Справа)
+   КАРТКА ПЛЕЄРА (Справа на ПК)
 ========================================== */
 .musicCard {
   position: relative;
@@ -155,6 +154,7 @@
   transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Зсув картки вбік при старті треку на ПК */
 .musicCardShifted {
   transform: translateX(110%);
 }
@@ -316,7 +316,119 @@
 }
 
 /* ==========================================
-   ФІКС ДЛЯ ПЛАНШЕТІВ ТА ТЕЛЕФОНІВ (TOUCH)
+   MОБІЛЬНА ОПТИМІЗАЦІЯ (Планшети та Смартфони)
+========================================== */
+@media (max-width: 1024px) {
+  .overlay {
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 2rem 1.5rem;
+    padding-top: 6.5rem; /* Захисна зона під верхню кнопку */
+  }
+
+  .closeBtnOverlay {
+    top: 2rem;
+    right: 50%;
+    transform: translateX(50%); /* Центруємо кнопку закриття зверху на мобках */
+    font-size: 10px;
+    padding: 0.5rem 1rem;
+  }
+
+  .closeBtnOverlay:hover {
+    transform: translateX(50%) translateY(-1px);
+  }
+
+  /* Перерозподіл картки плеєра */
+  .musicCard {
+    width: 100%;
+    max-width: 400px;
+    padding: 25px;
+    border-radius: 30px;
+    margin-bottom: 2rem;
+    transform: translateY(0%);
+    transition: all 1s ease-in-out;
+  }
+
+  /* Замість зсуву вбік — картка трохи зменшується і піднімається доверху */
+  .musicCardShifted {
+    transform: translateY(-5%) scale(0.92);
+  }
+
+  .recordContainer {
+    width: 200px; /* Зменшуємо вініл, щоб вліз на екрани смартфонів */
+    height: 200px;
+  }
+
+  .record {
+    border: 6px solid #000;
+  }
+
+  .tonearm {
+    width: 150px;
+    top: -15px;
+    right: 40px;
+  }
+
+  .playBtn {
+    width: 60px;
+    height: 60px;
+  }
+
+  .trackInfo {
+    margin-top: 20px;
+  }
+
+  .trackTitle {
+    font-size: 20px;
+  }
+
+  .artistName {
+    font-size: 13px;
+  }
+
+  /* Перерозподіл контейнера лірики — тепер він СУВОРO під плеєром */
+  .lyricsContainer {
+    position: relative;
+    left: 0;
+    width: 100%;
+    height: 38vh; /* Обмежуємо висоту, щоб лірика не вилазила за край нижнього дисплея */
+    margin-top: 0;
+  }
+
+  .lyricsScroll {
+    padding: 15vh 0; /* Менший скрол-буфер для мобілок */
+    padding-left: 0;
+    text-align: center; /* Центруємо текст для кращого сприйняття пальцем */
+  }
+
+  .lyricLine {
+    height: 60px; /* Компактніші рядки */
+    font-size: 20px; /* Зменшуємо шрифт для мобільних версток */
+    justify-content: center;
+    transform-origin: center center;
+    white-space: normal; /* Дозволяємо перенесення занадто довгих рядків */
+    text-align: center;
+  }
+
+  .lyricLineActive {
+    transform: scale(1.1) !important;
+  }
+}
+
+/* Додатковий фікс під зовсім малі девайси (на кшталт iPhone SE) */
+@media (max-width: 380px) {
+  .recordContainer {
+    width: 160px;
+    height: 160px;
+  }
+  .lyricLine {
+    font-size: 17px;
+    height: 50px;
+  }
+}
+
+/* ==========================================
+   НАЙПОВНІШИЙ ТАЧ-ФІКС СИСТЕМНОГО КУРСOРА
 ========================================== */
 @media (pointer: coarse) {
   .closeBtnOverlay,
@@ -325,6 +437,6 @@
   .playBtn,
   .artistLink,
   .volumeSlider {
-    cursor: auto !important; /* Повертаємо дефолтне торкання пальцем */
+    cursor: auto !important;
   }
 }
