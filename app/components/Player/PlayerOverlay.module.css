@@ -1,5 +1,5 @@
 /* ==========================================
-   ГОЛОВНИЙ ОВЕРЛЕЙ (Повноекранне вікно)
+   ГОЛОВНИЙ ОВЕРЛЕЙ
 ========================================== */
 .overlay {
   position: fixed;
@@ -9,13 +9,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5rem;
-  padding: 2rem;
   font-family: 'Segoe UI', sans-serif;
   overflow: hidden;
 }
 
-/* МІНІМАЛІЗМ: Живий рідкий градієнт в точних кольорах обгортки Deep End */
+/* Живий рідкий градієнт обгортки Deep End */
 .bgVideo {
   position: absolute;
   top: 0;
@@ -46,12 +44,28 @@
    КОНТЕЙНЕР КАРАОКЕ-ТЕКСТУ (Зліва)
 ========================================== */
 .lyricsContainer {
-  position: relative;
-  z-index: 2;
+  position: absolute;
+  left: 12%; 
   width: 50%;
   height: 75vh;
+  overflow-y: auto; 
+  overflow-x: hidden;
   opacity: 0;
+  z-index: 2;
   transition: opacity 1.5s ease;
+  pointer-events: auto; 
+  
+  /* Оригінальний макіяж розмиття меж без використання before/after */
+  mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+}
+
+.lyricsContainer::-webkit-scrollbar { 
+  display: none; 
+}
+.lyricsContainer { 
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
 }
 
 .lyricsActive {
@@ -59,39 +73,10 @@
 }
 
 .lyricsScroll {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto; 
-  overflow-x: hidden;
-  padding: 32vh 0; /* Даємо відступ зверху і знизу, як у твоєму HTML */
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.lyricsScroll::-webkit-scrollbar { 
-  display: none; 
-}
-
-/* ФІКС ЧОРНИХ РАМОК: Робимо розмиття абсолютно прозорим без брудних ліній */
-.lyricsContainer::before,
-.lyricsContainer::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 20%;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.lyricsContainer::before {
-  top: 0;
-  background: linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0) 100%);
-}
-
-.lyricsContainer::after {
-  bottom: 0;
-  background: linear-gradient(to top, #000000 0%, rgba(0, 0, 0, 0) 100%);
+  display: flex;
+  flex-direction: column;
+  padding: 32vh 0; 
+  will-change: transform;
 }
 
 /* Рядок тексту */
@@ -119,7 +104,7 @@
   opacity: 0.5;
 }
 
-/* АКТИВНИЙ РЯДОК — Повертаємо твій фірмовий масштаб 1.18 та неон */
+/* АКТИВНИЙ РЯДОК */
 .lyricLineActive {
   opacity: 1 !important;
   transform: scale(1.18) !important; 
@@ -127,11 +112,11 @@
 }
 
 /* ==========================================
-   КАРТКА ПЛЕЄРА (Справа)
+   КАРТКА ПЛЕЄРА
 ========================================== */
 .musicCard {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   background: rgba(0, 0, 0, 0.45); 
   padding: 45px; 
   border-radius: 40px;
@@ -141,6 +126,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  transform: translateX(0%); /* Спочатку по центру екрана */
+  transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Коли трек грає — жостко зміщуємо картку праворуч */
+.musicCardShifted {
+  transform: translateX(110%);
 }
 
 .recordContainer { 
@@ -169,7 +161,7 @@
   right: 80px; 
   width: 260px; 
   transform-origin: 20px 20px; 
-  transform: rotate(-30deg); 
+  transform: rotate(-25deg); 
   transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); 
   z-index: 10; 
   pointer-events: none; 
