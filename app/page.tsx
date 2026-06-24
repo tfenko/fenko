@@ -1,26 +1,16 @@
-// app/page.tsx
-
 import Hero from './components/Hero';
 import About from './components/About';
-import Music from './components/Music';
 import Footer from './components/Footer';
+import HomeContent from './components/HomeContent';
 
-// ГЛОБАЛЬНІ МЕТАДАНІ ДЛЯ ПОШУКОВОЇ ОПТИМІЗАЦІЇ (SEO) ТА СОЦМЕРЕЖ
 export const metadata = {
   title: 'FENKO // Official Website',
   description: 'Official archive of FENKO (fenkomus). Alternative R&B, Dark Soundscapes, and Cinematic Soul Trap production. Author of the novel "Exit from Full Screen Mode".',
   keywords: [
-    'fenko', 
-    'fenkomus', 
-    'fenko space', 
-    'dark r&b', 
-    'alternative r&b', 
-    'cinematic soul trap', 
-    'deep end fenko', 
-    'half real', 
-    'music producer lviv'
+    'fenko', 'fenkomus', 'fenko space', 'dark r&b', 
+    'alternative r&b', 'cinematic soul trap', 'deep end fenko', 
+    'half real', 'music producer lviv'
   ],
-  // Налаштування для гарного відображення посилання в соцмережах (Telegram, Insta, Twitter)
   openGraph: {
     title: 'FENKO // Official Website',
     description: 'Alternative R&B // Dark Soundscapes // Exit from Full Screen Mode',
@@ -28,7 +18,7 @@ export const metadata = {
     siteName: 'FENKO SPACE',
     images: [
       {
-        url: '/og-image.webp', // Твій файл з папки public
+        url: '/og-image.webp', 
         width: 1200,
         height: 631,
         alt: 'FENKO - Official Art Cover',
@@ -50,7 +40,8 @@ export default function Home() {
     <>
       <Hero />
       <About />
-      <Music />
+      {/* Клієнтський міст для роботи плеєра */}
+      <HomeContent />
       <Footer />
     </>
   );
