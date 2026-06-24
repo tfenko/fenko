@@ -9,8 +9,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 5vw; /* Гнучкий відступ між лірикою та карткою */
+  padding: 2rem 5vw;
   font-family: 'Segoe UI', sans-serif;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* Кнопка закриття у верхньому правому кутку оверлею */
@@ -66,16 +69,16 @@
 }
 
 /* ==========================================
-   КОНТЕЙНЕР КАРАОКЕ-ТЕКСТУ (Зліва на ПК)
+   КОНТЕЙНЕР КАРАОКЕ-ТЕКСТУ (Гнучкий зліва на ПК)
 ========================================== */
 .lyricsContainer {
-  position: absolute;
-  left: 12%; 
-  width: 50%;
+  position: relative; /* ФІКС: Більше ніяких абсолютних left: 12% */
+  flex: 1;
+  max-width: 600px; /* Текст не розповзається ширше норми */
   height: 75vh;
   opacity: 0;
   z-index: 5;
-  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 1.5s ease;
   pointer-events: auto !important;
 }
 
@@ -88,7 +91,7 @@
   height: 100%;
   overflow-y: scroll !important; 
   overflow-x: hidden;
-  padding: 32vh 0; 
+  padding: 35vh 0; 
   padding-left: 2rem; 
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -136,13 +139,13 @@
 }
 
 /* ==========================================
-   КАРТКА ПЛЕЄРА (Справа на ПК)
+   КАРТКА ПЛЕЄРА (Гнучка справа на ПК)
 ========================================== */
 .musicCard {
   position: relative;
   z-index: 10;
   background: rgba(0, 0, 0, 0.45); 
-  padding: 45px; 
+  padding: 40px; 
   border-radius: 40px;
   backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -150,19 +153,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-shrink: 0; /* ФІКС: Картка ніколи не стискається і не ламає пропорції */
+  width: 420px; /* Задаємо безпечну базову ширину контейнера */
+  max-width: 90vw;
+  box-sizing: border-box;
   transform: translateX(0%); 
   transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Зсув картки вбік при старті треку на ПК */
 .musicCardShifted {
-  transform: translateX(110%);
+  transform: translateX(0%); /* ТУТ МОЖЕШ СТАВИТИ ЗСУВ, АЛЕ БЕЗПЕЧНІШЕ ЛИШИТИ 0, ЩОБ ПРИ ЗУМІ ВОНО НЕ ТІКАЛО */
 }
 
 .recordContainer { 
   position: relative; 
-  width: 340px; 
-  height: 340px; 
+  width: 100%;
+  max-width: 320px; 
+  aspect-ratio: 1/1;
   display: flex; 
   justify-content: center; 
   align-items: center; 
@@ -182,8 +190,8 @@
 .tonearm { 
   position: absolute; 
   top: -25px; 
-  right: 80px; 
-  width: 260px; 
+  right: 15%; 
+  width: 70%; 
   transform-origin: 20px 20px; 
   transform: rotate(-25deg); 
   transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); 
@@ -193,8 +201,8 @@
 
 .playBtn { 
   position: absolute; 
-  width: 85px; 
-  height: 85px; 
+  width: 80px; 
+  height: 80px; 
   border-radius: 50%; 
   border: 1px solid rgba(255, 255, 255, 0.2); 
   background: rgba(255, 255, 255, 0.15); 
@@ -224,12 +232,12 @@
 }
 
 .trackInfo { 
-  margin-top: 35px; 
+  margin-top: 30px; 
   text-align: center; 
 }
 
 .trackTitle { 
-  font-size: 26px; 
+  font-size: 24px; 
   color: white; 
   margin: 0; 
   letter-spacing: 1px; 
@@ -243,7 +251,7 @@
 }
 
 .artistName { 
-  font-size: 16px; 
+  font-size: 15px; 
   color: rgba(255, 255, 255, 0.5); 
   margin: 6px 0 0 0; 
   text-transform: uppercase; 
@@ -271,8 +279,9 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  padding: 0 2rem; 
+  padding: 0 1rem; 
   color: rgba(255, 255, 255, 0.4);
+  box-sizing: border-box;
 }
 
 .volumeIcon {
@@ -316,119 +325,117 @@
 }
 
 /* ==========================================
-   MОБІЛЬНА ОПТИМІЗАЦІЯ (Планшети та Смартфони)
+   MОБІЛЬНА ОПТИМІЗАЦІЯ (Анімації та Верстка без багів)
 ========================================== */
 @media (max-width: 1024px) {
   .overlay {
     flex-direction: column;
     justify-content: flex-start;
-    padding: 2rem 1.5rem;
-    padding-top: 6.5rem; /* Захисна зона під верхню кнопку */
+    gap: 1.5rem;
+    padding: 1.5rem;
+    padding-top: 5.5rem; 
   }
 
   .closeBtnOverlay {
-    top: 2rem;
+    top: 1.5rem;
     right: 50%;
-    transform: translateX(50%); /* Центруємо кнопку закриття зверху на мобках */
+    transform: translateX(50%); /* Чіткий центр, кнопка не з'їжджає */
     font-size: 10px;
     padding: 0.5rem 1rem;
   }
 
   .closeBtnOverlay:hover {
-    transform: translateX(50%) translateY(-1px);
+    transform: translateX(50%) translateY(0);
   }
 
-  /* Перерозподіл картки плеєра */
+  /* ФІКС АНІМАЦІЇ НА ТЕЛЕФОНІ: Прибираємо важкі 3D зсуви, робимо плавний static-контейнер */
   .musicCard {
     width: 100%;
-    max-width: 400px;
-    padding: 25px;
-    border-radius: 30px;
-    margin-bottom: 2rem;
-    transform: translateY(0%);
-    transition: all 1s ease-in-out;
+    max-width: 340px;
+    padding: 20px;
+    border-radius: 24px;
+    margin-bottom: 0;
+    transform: none !important; /* Вбиваємо криві зсуви */
+    transition: none !important;
   }
 
-  /* Замість зсуву вбік — картка трохи зменшується і піднімається доверху */
   .musicCardShifted {
-    transform: translateY(-5%) scale(0.92);
+    transform: none !important; /* Плеєр стоїть стабільно, лірика крутиться під ним */
   }
 
   .recordContainer {
-    width: 200px; /* Зменшуємо вініл, щоб вліз на екрани смартфонів */
-    height: 200px;
+    max-width: 160px; /* Робимо вініл компактним */
   }
 
   .record {
-    border: 6px solid #000;
+    border: 5px solid #000;
   }
 
   .tonearm {
-    width: 150px;
-    top: -15px;
-    right: 40px;
+    width: 110px;
+    top: -10px;
+    right: 25px;
   }
 
   .playBtn {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
   }
 
   .trackInfo {
-    margin-top: 20px;
+    margin-top: 15px;
   }
 
   .trackTitle {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .artistName {
-    font-size: 13px;
+    font-size: 12px;
   }
 
-  /* Перерозподіл контейнера лірики — тепер він СУВОРO під плеєром */
+  /* Лірика строго внизу */
   .lyricsContainer {
     position: relative;
-    left: 0;
+    left: auto;
     width: 100%;
-    height: 38vh; /* Обмежуємо висоту, щоб лірика не вилазила за край нижнього дисплея */
-    margin-top: 0;
+    height: 35vh; 
+    max-width: 100%;
   }
 
   .lyricsScroll {
-    padding: 15vh 0; /* Менший скрол-буфер для мобілок */
+    padding: 12vh 0; 
     padding-left: 0;
-    text-align: center; /* Центруємо текст для кращого сприйняття пальцем */
+    text-align: center; 
   }
 
   .lyricLine {
-    height: 60px; /* Компактніші рядки */
-    font-size: 20px; /* Зменшуємо шрифт для мобільних версток */
+    height: 50px; 
+    font-size: 18px; 
     justify-content: center;
     transform-origin: center center;
-    white-space: normal; /* Дозволяємо перенесення занадто довгих рядків */
+    white-space: normal; /* Текст адаптується під ширину екрана смартфона і не вилазить вбік */
     text-align: center;
   }
 
   .lyricLineActive {
-    transform: scale(1.1) !important;
+    transform: scale(1.08) !important;
   }
 }
 
-/* Додатковий фікс під зовсім малі девайси (на кшталт iPhone SE) */
-@media (max-width: 380px) {
+/* Фікс під екстремально малі екрани */
+@media (max-width: 360px) {
   .recordContainer {
-    width: 160px;
-    height: 160px;
+    max-width: 130px;
   }
   .lyricLine {
-    font-size: 17px;
-    height: 50px;
+    font-size: 15px;
+    height: 45px;
   }
 }
 
 /* ==========================================
-   НАЙПОВНІШИЙ ТАЧ-ФІКС СИСТЕМНОГО КУРСOРА
+   ТАЧ-ФІКС СИСТЕМНОГО КУРСOРА
 ========================================== */
 @media (pointer: coarse) {
   .closeBtnOverlay,
@@ -440,8 +447,6 @@
     cursor: auto !important;
   }
 
-  /* ФІКС: Повністю приховуємо блок мікшера звуку на мобільних і планшетах,
-     оскільки мобільні ОС блокують пряму зміну гучності аудіо-тегів */
   .volumeContainer {
     display: none !important;
   }
