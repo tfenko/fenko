@@ -169,7 +169,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
               </button>
             </div>
 
-            <audio ref={audioRef} src="/deep-end.mp3" preload="auto" />
+            <audio ref={audioRef} src="/Deep-End.mp3" preload="auto" />
           </div>
         </motion.div>
       )}
