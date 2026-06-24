@@ -1,81 +1,98 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { usePlayerStore } from '../../store/usePlayerStore';
-// Імпортуємо як CSS модуль, бо саме такий файл створено у твоїй папці
-import styles from './PlayerOverlay.module.css';
+import './globals.css';
+import { ThemeContext } from './components/ThemeContext';
+import { useTheme } from 'next-themes';
+import dynamic from 'next/dynamic';
+import Script from 'next/script';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+// Ось єдиний імпорт плеєра, який тут потрібен!
+import PlayerOverlay from './components/Player/PlayerOverlay';
 
-export default function PlayerOverlay() {
-  const { isOpen, closePlayer } = usePlayerStore();
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const recordRef = useRef<HTMLImageElement>(null);
-  const tonearmRef = useRef<HTMLImageElement>(null);
-  const iconPathRef = useRef<SVGPathElement>(null);
+const SmoothScroll = dynamic(() => import('./components/SmoothScroll'), { ssr: false });
+const CustomCursor = dynamic(() => import('./components/CustomCursor'), { ssr: false });
+const FloatingNotes = dynamic(() => import('./components/FloatingNotes'), { ssr: false });
 
-  const togglePlay = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (audio.paused) {
-      audio.play();
-      // Зверни увагу: класи тепер беруться з об'єкта styles
-      recordRef.current?.classList.add(styles.isRotating);
-      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-5deg)';
-      iconPathRef.current?.setAttribute('d', 'M7 5h4v14H7V5zm6 0h4v14h-4V5z');
-    } else {
-      audio.pause();
-      recordRef.current?.classList.remove(styles.isRotating);
-      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
-      iconPathRef.current?.setAttribute('d', 'M8 5v14l11-7z');
-    }
-  };
+const ThemeToggle = () => {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    if (!isOpen && audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      recordRef.current?.classList.remove(styles.isRotating);
-      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
-      iconPathRef.current?.setAttribute('d', 'M8 5v14l11-7z');
-    }
-  }, [isOpen]);
+    setMounted(true);
+    const handleScroll = () => setIsVisible(window.scrollY < 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  
+  if (!mounted) return null;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: 1 }} 
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[1000] bg-black flex items-center justify-center cursor-none"
-        >
-          <div className={styles.musicCard}>
-            <div className={styles.recordContainer}>
-              <img src="/tonarm.png" alt="Tonearm" className={styles.tonearm} ref={tonearmRef} />
-              <img src="/DeepEnd Cover.png" alt="Record" className={styles.record} ref={recordRef} />
-              
-              <button onClick={togglePlay} className={styles.playBtn}>
-                <svg viewBox="0 0 24 24" width="32" height="32" fill="white">
-                  <path ref={iconPathRef} d="M8 5v14l11-7z"/>
-                </svg>
-              </button>
-            </div>
+    <motion.button 
+      initial={{ opacity: 1 }}
+      animate={{ opacity: isVisible ? 1 : 0 }}
+      transition={{ duration: 0.4 }}
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
+      className="font-mono text-[9px] uppercase tracking-[0.3em] hover:opacity-50 text-foreground cursor-none pointer-events-auto"
+      aria-label="Toggle theme"
+    >
+      {theme === 'dark' ? '[ LIGHT MODE ]' : '[ DARK MODE ]'}
+    </motion.button>
+  );
+};
 
-            <div className={styles.trackInfo}>
-              <h2 className={styles.trackTitle}>Deep End</h2>
-              <button 
-                onClick={closePlayer} 
-                className="mt-4 text-[10px] uppercase tracking-widest text-white/50 hover:text-white transition-colors"
-              >
-                [ CLOSE PLAYER ]
-              </button>
-            </div>
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <title>FENKO</title>
+      </head>
+      <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background cursor-none">
+        
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-3T3TFTGZX0" strategy="afterInteractive" />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-3T3TFTGZX0');
+            gtag('config', 'AW-18240888787');
+          `}
+        </Script>
+        
+        <FloatingNotes />
+        
+        <ThemeContext>
+          {/* Виклик плеєра */}
+          <PlayerOverlay />
 
-            <audio ref={audioRef} src="/Deep End.wav" />
+          <div className="hidden md:block">
+            <CustomCursor />
           </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+
+          <div className="film-grain" />
+          
+          <div className="fixed bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 z-[900] flex justify-between pointer-events-none">
+            <div className="pointer-events-auto">
+              <ThemeToggle />
+            </div>
+          </div>
+            
+          <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[900] mix-blend-difference">
+            <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] uppercase text-foreground">F //</span>
+          </div>
+
+          <SmoothScroll>
+            <main className="w-full relative z-10 min-h-screen">{children}</main>
+          </SmoothScroll>
+          
+          <Analytics />
+          <SpeedInsights />
+        </ThemeContext>
+      </body>
+    </html>
   );
 }
