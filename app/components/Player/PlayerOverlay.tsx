@@ -9,8 +9,6 @@ interface PlayerOverlayProps {
   onClose: () => void;
 }
 
-// КРИТИЧНО ВАЖЛИВО: Масив винесено за межі компонента, 
-// щоб React не перестворював його при кожному кадрі анімації чи оновленні часу!
 const LYRICS_DATA = [
   { time: 21.66, text: "Blue light, crawling up the wall" },
   { time: 25.64, text: "Wait for the tide, wait for the fall" },
@@ -46,19 +44,20 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
+  const [trackProgress, setTrackProgress] = useState(0);
+  const [trackDuration, setTrackDuration] = useState(0);
+  const [volume, setVolume] = useState(1); // Гучність від 0 до 1
+
   const isUserScrolling = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Заморожуємо скрол фонової сторінки сайту
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
+    return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
   const togglePlay = () => {
@@ -79,38 +78,59 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
   const handleLyricsScroll = () => {
     isUserScrolling.current = true;
     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-    scrollTimeout.current = setTimeout(() => {
-      isUserScrolling.current = false;
-    }, 4000); // Блокуємо автоцентр на 4 секунди при ручному гортанні
+    scrollTimeout.current = setTimeout(() => { isUserScrolling.current = false; }, 3000);
   };
 
   const handleLineClick = (time: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = time;
-      // Чистий форсований пошук індексу при кліку
-      let clickedIndex = -1;
-      for (let i = 0; i < LYRICS_DATA.length; i++) {
-        if (time >= LYRICS_DATA[i].time) {
-          clickedIndex = i;
-        }
-      }
-      setActiveLineIndex(clickedIndex);
-      
-      if (audioRef.current.paused) {
-        togglePlay();
-      }
+      setTrackProgress(time);
+      if (audioRef.current.paused) togglePlay();
     }
   };
 
-  // 1. ВІДСТЕЖЕННЯ ЧАСУ (Працює ізольовано та безперебійно)
+  // Керування прогресом (перемотка мишкою)
+  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = parseFloat(e.target.value);
+    if (audioRef.current) {
+      audioRef.current.currentTime = newTime;
+      setTrackProgress(newTime);
+    }
+  };
+
+  // Керування мікшером звуку
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
+    }
+  };
+
+  // Форматування часу (напр. 03:45)
+  const formatTime = (time: number) => {
+    if (isNaN(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
+  // Метадані аудіо (дізнаємось довжину треку)
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
+      setTrackDuration(audioRef.current.duration);
+    }
+  };
+
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const handleTimeUpdate = () => {
-      let currentLineIndex = -1;
       const currentTime = audio.currentTime;
+      setTrackProgress(currentTime);
 
+      let currentLineIndex = -1;
       for (let i = 0; i < LYRICS_DATA.length; i++) {
         if (currentTime >= LYRICS_DATA[i].time) {
           currentLineIndex = i;
@@ -119,8 +139,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
         }
       }
 
-      // Оновлюємо стан тільки якщо індекс реально змінився
-      if (currentLineIndex !== activeLineIndex) {
+      if (currentLineIndex !== -1 && currentLineIndex !== activeLineIndex) {
         setActiveLineIndex(currentLineIndex);
       }
     };
@@ -129,28 +148,25 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
   }, [activeLineIndex]);
 
-  // 2. АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ (Як в Apple Music)
+  // Автоскролл
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
       const activeElement = container.children[activeLineIndex] as HTMLElement;
-      
       if (activeElement) {
-        activeElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center' // Текст завжди тримається суворо по центру екрана
-        });
+        activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }
-  }, [activeLineIndex, isPlaying]); // Спрацьовує і при зміні рядка, і при старті плеєра
+  }, [activeLineIndex, isPlaying]);
 
-  // Скидання стану плеєра при закритті
+  // Скидання при закритті
   useEffect(() => {
     if (!isOpen && audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       setIsPlaying(false);
       setActiveLineIndex(-1);
+      setTrackProgress(0);
       if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
     }
   }, [isOpen]);
@@ -164,17 +180,11 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           exit={{ opacity: 0 }}
           className={styles.overlay}
         >
-          {/* Рідкий фоновий градієнт */}
           <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
 
-          {/* Контейнер тексту: показуємо і вмикаємо класи ТІЛЬКИ коли трек грає */}
           <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
             {isPlaying && (
-              <div 
-                className={styles.lyricsScroll} 
-                ref={lyricsScrollRef}
-                onScroll={handleLyricsScroll}
-              >
+              <div className={styles.lyricsScroll} ref={lyricsScrollRef} onScroll={handleLyricsScroll}>
                 {LYRICS_DATA.map((line, index) => (
                   <p 
                     key={index} 
@@ -188,23 +198,14 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
             )}
           </div>
 
-          {/* Картка плеєра */}
           <div className={`${styles.musicCard} ${isPlaying ? styles.musicCardShifted : ''}`}>
             <div className={styles.recordContainer}>
               <img src="/tonarm.png" alt="Tonearm" className={styles.tonearm} ref={tonearmRef} />
-              <img 
-                src="/deepend.webp" 
-                alt="Record" 
-                className={`${styles.record} ${isPlaying ? styles.isRotating : ''}`} 
-              />
+              <img src="/deepend.webp" alt="Record" className={`${styles.record} ${isPlaying ? styles.isRotating : ''}`} />
               
               <button onClick={togglePlay} className={styles.playBtn}>
                 <svg viewBox="0 0 24 24" width="32" height="32" fill="white">
-                  {isPlaying ? (
-                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                  ) : (
-                    <path d="M8 5v14l11-7z"/>
-                  )}
+                  {isPlaying ? <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/> : <path d="M8 5v14l11-7z"/>}
                 </svg>
               </button>
             </div>
@@ -214,13 +215,53 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
               <a href="https://fenko.space" target="_blank" rel="noopener noreferrer" className={styles.artistLink}>
                 <p className={styles.artistName}>FENKO</p>
               </a>
-              <br />
-              <button onClick={onClose} className={styles.closeBtn}>
-                [ CLOSE PLAYER ]
-              </button>
             </div>
 
-            <audio ref={audioRef} src="/Deep-End.mp3" preload="auto" />
+            {/* ==========================================
+               ПРОГРЕС-БАР ТА МІКШЕР ЗВУКУ
+            ========================================== */}
+            <div className={styles.controlsWrapper}>
+              {/* Прогрес-бар */}
+              <div className={styles.sliderContainer}>
+                <div className={styles.timeLabel}>{formatTime(trackProgress)}</div>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max={trackDuration || 100} 
+                  value={trackProgress} 
+                  onChange={handleProgressChange} 
+                  className={styles.audioSlider}
+                />
+                <div className={styles.timeLabel}>{formatTime(trackDuration)}</div>
+              </div>
+
+              {/* Мікшер звуку */}
+              <div className={styles.volumeContainer}>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" className={styles.volumeIcon}>
+                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                </svg>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="1" 
+                  step="0.01" 
+                  value={volume} 
+                  onChange={handleVolumeChange} 
+                  className={styles.volumeSlider}
+                />
+              </div>
+            </div>
+
+            <button onClick={onClose} className={styles.closeBtn}>
+              [ CLOSE PLAYER ]
+            </button>
+
+            <audio 
+              ref={audioRef} 
+              src="/Deep-End.mp3" 
+              preload="auto" 
+              onLoadedMetadata={handleLoadedMetadata}
+            />
           </div>
         </motion.div>
       )}
