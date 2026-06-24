@@ -9,8 +9,6 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-// Ось єдиний імпорт плеєра, який тут потрібен!
-import PlayerOverlay from './components/Player/PlayerOverlay';
 
 const SmoothScroll = dynamic(() => import('./components/SmoothScroll'), { ssr: false });
 const CustomCursor = dynamic(() => import('./components/CustomCursor'), { ssr: false });
@@ -66,9 +64,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <FloatingNotes />
         
         <ThemeContext>
-          {/* Виклик плеєра */}
-          <PlayerOverlay />
-
           <div className="hidden md:block">
             <CustomCursor />
           </div>
