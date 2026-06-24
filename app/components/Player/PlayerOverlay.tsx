@@ -137,8 +137,8 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
             </div>
           </div>
 
-          {/* Картка плеєра справа */}
-          <div className={`${styles.musicCard} ${isPlaying ? styles.musicCardShifted : ''}`}>
+          {/* Картка плеєра справа (тепер стоїть стабільно на місці) */}
+          <div className={styles.musicCard}>
             <div className={styles.recordContainer}>
               <img src="/tonarm.png" alt="Tonearm" className={styles.tonearm} ref={tonearmRef} />
               <img 
@@ -169,6 +169,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
               </button>
             </div>
 
+            {/* Точна назва твого mp3-файлу з папки public */}
             <audio ref={audioRef} src="/Deep-End.mp3" preload="auto" />
           </div>
         </motion.div>
