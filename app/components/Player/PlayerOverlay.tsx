@@ -41,25 +41,24 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const tonearmRef = useRef<HTMLImageElement>(null);
   const lyricsScrollRef = useRef<HTMLDivElement>(null);
-  const progressSliderRef = useRef<HTMLInputElement>(null); 
-  const currentTimeLabelRef = useRef<HTMLDivElement>(null); 
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
-  const [trackDuration, setTrackDuration] = useState(0);
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(1); // Стан для мікшера звуку (від 0 до 1)
 
   const isUserScrolling = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Заморожуємо фоновий скрол сторінки сайту
+  // Заморожуємо скрол фонової сторінки сайту
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   const togglePlay = () => {
@@ -80,59 +79,46 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
   const handleLyricsScroll = () => {
     isUserScrolling.current = true;
     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-    scrollTimeout.current = setTimeout(() => { isUserScrolling.current = false; }, 3000);
+    scrollTimeout.current = setTimeout(() => {
+      isUserScrolling.current = false;
+    }, 4000);
   };
 
   const handleLineClick = (time: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = time;
-      if (audioRef.current.paused) togglePlay();
-    }
-  };
-
-  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseFloat(e.target.value);
-    if (audioRef.current) {
-      audioRef.current.currentTime = newTime;
-      if (currentTimeLabelRef.current) {
-        currentTimeLabelRef.current.textContent = formatTime(newTime);
+      let clickedIndex = -1;
+      for (let i = 0; i < LYRICS_DATA.length; i++) {
+        if (time >= LYRICS_DATA[i].time) {
+          clickedIndex = i;
+        }
+      }
+      setActiveLineIndex(clickedIndex);
+      
+      if (audioRef.current.paused) {
+        togglePlay();
       }
     }
   };
 
+  // Керування мікшером гучності
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-    if (audioRef.current) audioRef.current.volume = newVolume;
-  };
-
-  const formatTime = (time: number) => {
-    if (isNaN(time)) return "0:00";
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
-
-  const handleLoadedMetadata = () => {
     if (audioRef.current) {
-      setTrackDuration(audioRef.current.duration);
+      audioRef.current.volume = newVolume;
     }
   };
 
-  // НАЙНАДІЙНІШИЙ НА ТЕПЕРІШНІЙ ЧАС СИНХРОНІЗАТОР (Пряме підключення до об'єкта Audio без замикань React)
+  // 1. ВІДСТЕЖЕННЯ ЧАСУ
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    audio.ontimeupdate = () => {
+    const handleTimeUpdate = () => {
+      let currentLineIndex = -1;
       const currentTime = audio.currentTime;
 
-      // Рухаємо повзунок прогресу та лічильник секунд напрямую в DOM
-      if (progressSliderRef.current) progressSliderRef.current.value = currentTime.toString();
-      if (currentTimeLabelRef.current) currentTimeLabelRef.current.textContent = formatTime(currentTime);
-
-      // Вираховуємо поточний рядок тексту
-      let currentLineIndex = -1;
       for (let i = 0; i < LYRICS_DATA.length; i++) {
         if (currentTime >= LYRICS_DATA[i].time) {
           currentLineIndex = i;
@@ -141,25 +127,21 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
         }
       }
 
-      // Оновлюємо активний індекс через функціональний сеттер
-      setActiveLineIndex((prevIndex) => {
-        if (currentLineIndex !== prevIndex) {
-          return currentLineIndex;
-        }
-        return prevIndex;
-      });
+      if (currentLineIndex !== -1 && currentLineIndex !== activeLineIndex) {
+        setActiveLineIndex(currentLineIndex);
+      }
     };
 
-    return () => {
-      audio.ontimeupdate = null;
-    };
-  }, []); 
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
+  }, [activeLineIndex]);
 
-  // ЕФЕКТ АВТОСКРОЛУ APPLE MUSIC (Спрацьовує чітко при зміні індексу)
+  // 2. АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
       const activeElement = container.children[activeLineIndex] as HTMLElement;
+      
       if (activeElement) {
         activeElement.scrollIntoView({
           behavior: 'smooth',
@@ -167,7 +149,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
         });
       }
     }
-  }, [activeLineIndex]);
+  }, [activeLineIndex, isPlaying]);
 
   // Скидання стану плеєра при закритті
   useEffect(() => {
@@ -176,8 +158,6 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
       audioRef.current.currentTime = 0;
       setIsPlaying(false);
       setActiveLineIndex(-1);
-      if (progressSliderRef.current) progressSliderRef.current.value = "0";
-      if (currentTimeLabelRef.current) currentTimeLabelRef.current.textContent = "0:00";
       if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
     }
   }, [isOpen]);
@@ -191,37 +171,44 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           exit={{ opacity: 0 }}
           className={styles.overlay}
         >
-          {/* Рідкий фоновий градієнт */}
           <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
 
-          {/* Контейнер тексту: теги існують у DOM ЗАВЖДИ, видимість регулюється чисто через CSS клас */}
           <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
-            <div 
-              className={styles.lyricsScroll} 
-              ref={lyricsScrollRef}
-              onScroll={handleLyricsScroll}
-            >
-              {LYRICS_DATA.map((line, index) => (
-                <p 
-                  key={index} 
-                  className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
-                  onClick={() => handleLineClick(line.time)}
-                >
-                  {line.text}
-                </p>
-              ))}
-            </div>
+            {isPlaying && (
+              <div 
+                className={styles.lyricsScroll} 
+                ref={lyricsScrollRef}
+                onScroll={handleLyricsScroll}
+              >
+                {LYRICS_DATA.map((line, index) => (
+                  <p 
+                    key={index} 
+                    className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
+                    onClick={() => handleLineClick(line.time)}
+                  >
+                    {line.text}
+                  </p>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Картка плеєра справа */}
           <div className={`${styles.musicCard} ${isPlaying ? styles.musicCardShifted : ''}`}>
             <div className={styles.recordContainer}>
               <img src="/tonarm.png" alt="Tonearm" className={styles.tonearm} ref={tonearmRef} />
-              <img src="/deepend.webp" alt="Record" className={`${styles.record} ${isPlaying ? styles.isRotating : ''}`} />
+              <img 
+                src="/deepend.webp" 
+                alt="Record" 
+                className={`${styles.record} ${isPlaying ? styles.isRotating : ''}`} 
+              />
               
               <button onClick={togglePlay} className={styles.playBtn}>
                 <svg viewBox="0 0 24 24" width="32" height="32" fill="white">
-                  {isPlaying ? <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/> : <path d="M8 5v14l11-7z"/>}
+                  {isPlaying ? (
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                  ) : (
+                    <path d="M8 5v14l11-7z"/>
+                  )}
                 </svg>
               </button>
             </div>
@@ -233,48 +220,27 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
               </a>
             </div>
 
-            {/* КОНТРОЛЕР ПЛЕЄРА */}
-            <div className={styles.controlsWrapper}>
-              <div className={styles.sliderContainer}>
-                <div className={styles.timeLabel} ref={currentTimeLabelRef}>0:00</div>
-                <input 
-                  type="range" 
-                  min="0" 
-                  max={trackDuration || 100} 
-                  defaultValue="0"
-                  onChange={handleProgressChange} 
-                  className={styles.audioSlider}
-                  ref={progressSliderRef}
-                />
-                <div className={styles.timeLabel}>{formatTime(trackDuration)}</div>
-              </div>
-
-              <div className={styles.volumeContainer}>
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" className={styles.volumeIcon}>
-                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                </svg>
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="1" 
-                  step="0.01" 
-                  value={volume} 
-                  onChange={handleVolumeChange} 
-                  className={styles.volumeSlider}
-                />
-              </div>
+            {/* МІКШЕР ЗВУКУ (Абсолютно чистий інпут без зайвих перемальовок) */}
+            <div className={styles.volumeContainer}>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" className={styles.volumeIcon}>
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+              </svg>
+              <input 
+                type="range" 
+                min="0" 
+                max="1" 
+                step="0.01" 
+                value={volume} 
+                onChange={handleVolumeChange} 
+                className={styles.volumeSlider}
+              />
             </div>
 
             <button onClick={onClose} className={styles.closeBtn}>
               [ CLOSE PLAYER ]
             </button>
 
-            <audio 
-              ref={audioRef} 
-              src="/Deep-End.mp3" 
-              preload="auto" 
-              onLoadedMetadata={handleLoadedMetadata}
-            />
+            <audio ref={audioRef} src="/Deep-End.mp3" preload="auto" />
           </div>
         </motion.div>
       )}
