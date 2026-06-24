@@ -17,6 +17,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
 
+  // ПОВНИЙ СПИСОК ЛІРИКИ З ТВОГО HTML
   const lyrics = [
     { time: 21.66, text: "Blue light, crawling up the wall" },
     { time: 25.64, text: "Wait for the tide, wait for the fall" },
@@ -28,9 +29,24 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     { time: 57.12, text: "I'm diving in the deep end for you" },
     { time: 65.92, text: "There's nothing else that I can do" },
     { time: 73.03, text: "I'm losing air, I'm losing time" },
-    { time: 77.79, text: "But I'd die to make you mine" }
+    { time: 77.79, text: "But I'd die to make you mine" },
+    { time: 91.17, text: "Salt on my skin, dust in my lungs" },
+    { time: 95.46, text: "We're speaking in those silent tongues" },
+    { time: 99.74, text: "The water's cold, the moon is high" },
+    { time: 104.31, text: "A beautiful way for us to die" },
+    { time: 108.65, text: "Don't reach for me, just let me sink" },
+    { time: 112.91, text: "I'm closer to you than you think" },
+    { time: 119.18, text: "Yeah, closer than you think" },
+    { time: 128.87, text: "I'm diving in the deep end for you" },
+    { time: 137.68, text: "There's nothing else that I can do" },
+    { time: 144.44, text: "I'm losing air, I'm losing time" },
+    { time: 149.38, text: "But I'd die to make you mine" },
+    { time: 158.32, text: "Yeah, I'd die to make you mine" },
+    { time: 186.05, text: "Drifting" },
+    { time: 189.56, text: "Losing light" }
   ];
 
+  // Керування треком та тонармом
   const togglePlay = () => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -46,7 +62,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     }
   };
 
-  // Стежимо за часом відтворення для караоке
+  // Відстеження часу для скролу та підсвічування караоке
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -62,7 +78,6 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
       if (currentLineIndex !== -1 && currentLineIndex !== activeLineIndex) {
         setActiveLineIndex(currentLineIndex);
         
-        // Автоматичний плавний скролл до активного рядка
         if (lyricsContainerRef.current) {
           const activeElement = lyricsContainerRef.current.children[currentLineIndex] as HTMLElement;
           if (activeElement) {
@@ -79,7 +94,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
   }, [activeLineIndex]);
 
-  // Скидання стану при закритті вікна
+  // Очищення стану та скидання аудіо при закритті
   useEffect(() => {
     if (!isOpen && audioRef.current) {
       audioRef.current.pause();
@@ -99,6 +114,9 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           exit={{ opacity: 0 }}
           className={styles.overlay}
         >
+          {/* Фоновий глітч-ефект */}
+          <div className={styles.bgVideo} />
+
           {/* Блок тексту зліва */}
           <div className={styles.lyricsContainer} ref={lyricsContainerRef}>
             {lyrics.map((line, index) => (
@@ -122,7 +140,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
             <div className={styles.recordContainer}>
               <img src="/tonarm.png" alt="Tonearm" className={styles.tonearm} ref={tonearmRef} />
               <img 
-                src="/DeepEnd Cover.png" 
+                src="/deepend-cover.png" 
                 alt="Record" 
                 className={`${styles.record} ${isPlaying ? styles.isRotating : ''}`} 
               />
@@ -146,7 +164,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
               </button>
             </div>
 
-            <audio ref={audioRef} src="/Deep End.wav" />
+            <audio ref={audioRef} src="/deep-end.mp3" preload="auto" />
           </div>
         </motion.div>
       )}
