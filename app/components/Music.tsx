@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Cormorant_Garamond } from 'next/font/google';
+// Імпортуємо наш глобальний стор плеєра
+import { usePlayerStore } from '../store/usePlayerStore';
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -79,7 +81,22 @@ export default function Music() {
   const [playingId, setPlayingId] = useState<number | null>(null);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
+  // Витягуємо екшен для відкриття повноекранного плеєра
+  const openPlayer = usePlayerStore((state) => state.openPlayer);
+
   const togglePlay = (id: number, url: string) => {
+    // Якщо це Deep End (id: 1), відкриваємо твій інтерактивний HTML-плеєр
+    if (id === 1) {
+      // Якщо в цей момент грав короткий тізер іншого треку — глушимо його
+      if (audio) {
+        audio.pause();
+        setPlayingId(null);
+      }
+      openPlayer();
+      return;
+    }
+
+    // Стара логіка для інших тізерів (наприклад, Half Real)
     if (playingId === id) {
       audio?.pause();
       setPlayingId(null);
