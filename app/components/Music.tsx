@@ -74,12 +74,27 @@ const releases = [
   { id: 1, title: 'Deep End', type: 'Single // Release', description: 'The lyrics convey a sense of longing and emotional struggle in a relationship marked by distance and uncertainty. The imagery of water and sinking suggests a deep dive into love, while metaphors like "heavy chain" illustrate the weight of attachment.', meta: { bpm: '80', key: 'A# minor', mood: 'MELANCHOLIC // YEARNING' }, image: '/deepend.webp', canScramble: false, previewUrl: '/tiser1.mp3', links: [{ name: 'Apple Music', url: 'https://music.apple.com/ua/album/deep-end/1895507327?i=6763819432' }, { name: 'Spotify', url: 'https://open.spotify.com/track/1EG19rhMAOtv57SfzxfG6V' }, { name: 'YouTube', url: 'https://music.youtube.com/playlist?list=OLAK5uy_myDt0WSvtAR2rKNX-p6_k2S4GVc7DAfkQ&si=GA2iGhEq4exWtb-8' }, { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/deep-end' }] },
 ];
 
-export default function Music() {
+interface MusicProps {
+  onOpenPlayer: () => void;
+}
+
+export default function Music({ onOpenPlayer }: MusicProps) {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
   const [playingId, setPlayingId] = useState<number | null>(null);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
   const togglePlay = (id: number, url: string) => {
+    // Якщо клікнули на Deep End, гасимо поточне локальне аудіо і відкриваємо оверлей
+    if (id === 1) {
+      if (audio) {
+        audio.pause();
+        setPlayingId(null);
+      }
+      onOpenPlayer();
+      return;
+    }
+
+    // Рідна логіка для прев'ю інших треків
     if (playingId === id) {
       audio?.pause();
       setPlayingId(null);
