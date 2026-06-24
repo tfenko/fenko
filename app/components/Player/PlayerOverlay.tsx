@@ -62,13 +62,23 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     }
   };
 
-  // Оригінальний скролл та блокування при ручному гортанні (3 секунди)
+  // Фіксація ручного гортання тексту користувачем
   const handleLyricsScroll = () => {
     isUserScrolling.current = true;
     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
     scrollTimeout.current = setTimeout(() => {
       isUserScrolling.current = false;
-    }, 3000);
+    }, 3000); // Блокуємо автоцентрування на 3 секунди
+  };
+
+  // Клік по рядку — ставимо точний час треку
+  const handleLineClick = (time: number) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      if (audioRef.current.paused) {
+        togglePlay();
+      }
+    }
   };
 
   useEffect(() => {
@@ -86,11 +96,16 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
       if (currentLineIndex !== -1 && currentLineIndex !== activeLineIndex) {
         setActiveLineIndex(currentLineIndex);
         
-        // Автоматичний плавний скролл до центру, якщо користувач не гортає сам
+        // Плавний автоскролл активного рядка строго по центру
         if (!isUserScrolling.current && lyricsContainerRef.current) {
-          const activeElement = lyricsContainerRef.current.children[0]?.children[currentLineIndex] as HTMLElement;
+          const container = lyricsContainerRef.current;
+          const activeElement = container.children[currentLineIndex] as HTMLElement;
+          
           if (activeElement) {
-            activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            container.scrollTo({
+              top: activeElement.offsetTop - container.offsetHeight / 2 + activeElement.offsetHeight / 2,
+              behavior: 'smooth'
+            });
           }
         }
       }
@@ -119,26 +134,22 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           exit={{ opacity: 0 }}
           className={styles.overlay}
         >
-          {/* Фон вмикається і переливається тільки коли трек грає */}
+          {/* Живий рідкий градієнт на фоні */}
           <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
 
-          {/* Текст зліва (Оригінальний контейнер з маскою) */}
-          <div 
-            className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}
-            onScroll={handleLyricsScroll}
-            ref={lyricsContainerRef}
-          >
-            <div className={styles.lyricsScroll}>
+          {/* Контейнер караоке-тексту зліва */}
+          <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
+            {/* Важливе вирівнювання: і реф, і подія скролу тепер лежать на одному тегу */}
+            <div 
+              className={styles.lyricsScroll} 
+              ref={lyricsContainerRef}
+              onScroll={handleLyricsScroll}
+            >
               {lyrics.map((line, index) => (
                 <p 
                   key={index} 
                   className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
-                  onClick={() => {
-                    if (audioRef.current) {
-                      audioRef.current.currentTime = line.time;
-                      if (audioRef.current.paused) togglePlay();
-                    }
-                  }}
+                  onClick={() => handleLineClick(line.time)}
                 >
                   {line.text}
                 </p>
@@ -146,7 +157,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
             </div>
           </div>
 
-          {/* Картка плеєра (Рухається вправо за умови isPlaying) */}
+          {/* Картка плеєра справа */}
           <div className={`${styles.musicCard} ${isPlaying ? styles.musicCardShifted : ''}`}>
             <div className={styles.recordContainer}>
               <img src="/tonarm.png" alt="Tonearm" className={styles.tonearm} ref={tonearmRef} />
