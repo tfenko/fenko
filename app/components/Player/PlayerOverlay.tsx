@@ -118,8 +118,9 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
 
           {/* Контейнер караоке-тексту зліва */}
-          <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`} ref={lyricsContainerRef}>
-            <div className={styles.lyricsScroll}>
+          <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
+            {/* ОПТИМІЗАЦІЯ: Реф перенесено сюди для максимальної плавності */}
+            <div className={styles.lyricsScroll} ref={lyricsContainerRef}>
               {lyrics.map((line, index) => (
                 <p 
                   key={index} 
