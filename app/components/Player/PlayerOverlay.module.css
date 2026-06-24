@@ -51,7 +51,7 @@
   opacity: 0;
   z-index: 5;
   transition: opacity 1.5s ease;
-  pointer-events: auto !important; /* Повністю відкриваємо блок для миші */
+  pointer-events: auto !important;
 }
 
 .lyricsActive {
@@ -61,15 +61,17 @@
 .lyricsScroll {
   width: 100%;
   height: 100%;
-  overflow-y: scroll !important; /* Форсуємо вертикальний скрол */
+  overflow-y: scroll !important; 
   overflow-x: hidden;
   padding: 32vh 0; 
+  /* ФІКС ОБРІЗАННЯ: Створюємо буферну зону зліва для безпечного скейлу літер та світіння */
+  padding-left: 2rem; 
   scrollbar-width: none;
   -ms-overflow-style: none;
-  pointer-events: auto !important; /* Дозволяємо гортання та кліки по тексту */
+  pointer-events: auto !important;
   position: relative;
 
-  /* Ефектне розмиття меж зверху та знизу як в Apple Music */
+  /* Надійне розмиття верхньої та нижньої межі без зачіпання лівого краю */
   mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
 }
@@ -86,7 +88,7 @@
   display: flex;
   align-items: center; 
   white-space: nowrap; 
-  overflow: visible; 
+  overflow: visible; /* Дозволяємо тексту вільно виходити за межі стандартного блоку рядка */
   
   color: #ffffff;
   font-size: 28px; 
