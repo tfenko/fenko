@@ -15,7 +15,6 @@ const TRACKS_DATA = {
     title: "Deep End",
     audioSrc: "/Deep-End.mp3",
     coverSrc: "/deepend.webp",
-    // Твій фірмовий глибокий синьо-океанічний градієнт
     bgGradient: "linear-gradient(135deg, #050b14, #0a1118, #0e2530, #131a22, #050b14)",
     lyrics: [
       { time: 21.66, text: "Blue light, crawling up the wall" },
@@ -49,7 +48,6 @@ const TRACKS_DATA = {
     title: "Half Real",
     audioSrc: "/Half-Real.mp3",
     coverSrc: "/halfreal-2.webp",
-    // Кастомний похмурий чорно-червоний градієнт під обкладинку Half Real
     bgGradient: "linear-gradient(135deg, #000000, #150505, #2d0b0b, #100303, #000000)",
     lyrics: [
       { time: 3.05, text: "I see your shadow in the light again" },
@@ -156,6 +154,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     if (audioRef.current) audioRef.current.volume = newVolume;
   };
 
+  // 1. ВІДСТЕЖЕННЯ ЧАСУ
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -179,8 +178,9 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
-  }, [activeLineIndex, trackKey]);
+  }, [activeLineIndex, trackKey, currentTrack.lyrics]);
 
+  // 2. АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
@@ -191,6 +191,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     }
   }, [activeLineIndex, isPlaying]);
 
+  // Скидання стану при закритті або перемиканні синглів
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.pause();
@@ -214,10 +215,9 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
             [ CLOSE PLAYER ]
           </button>
 
-          {/* ФІКС: Динамічно передаємо унікальний градієнт з об'єкта треку в інлайн-стиль background */}
           <div 
             className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} 
-            style={{ background: currentTrack.bgGradient, backgroundSize: '400% 400%' }}
+            style={{ background: currentTrack.bgGradient }}
           />
 
           <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
