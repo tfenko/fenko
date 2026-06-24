@@ -17,7 +17,6 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
 
-  // ПОВНИЙ СПИСОК ЛІРИКИ З ТВОГО HTML-МАКЕТУ
   const lyrics = [
     { time: 21.66, text: "Blue light, crawling up the wall" },
     { time: 25.64, text: "Wait for the tide, wait for the fall" },
@@ -46,7 +45,6 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     { time: 189.56, text: "Losing light" }
   ];
 
-  // Керування треком та тонармом
   const togglePlay = () => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -62,7 +60,6 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     }
   };
 
-  // Відстеження часу для автоскролу та підсвічування рядків
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -94,7 +91,6 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
   }, [activeLineIndex]);
 
-  // Повне скидання стану при закритті вікна
   useEffect(() => {
     if (!isOpen && audioRef.current) {
       audioRef.current.pause();
@@ -114,12 +110,9 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           exit={{ opacity: 0 }}
           className={styles.overlay}
         >
-          {/* Живий рідкий градієнт на фоні */}
           <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
 
-          {/* Контейнер караоке-тексту зліва */}
           <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
-            {/* ОПТИМІЗАЦІЯ: Реф перенесено сюди для максимальної плавності */}
             <div className={styles.lyricsScroll} ref={lyricsContainerRef}>
               {lyrics.map((line, index) => (
                 <p 
@@ -138,7 +131,6 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
             </div>
           </div>
 
-          {/* Картка плеєра справа (тепер стоїть стабільно на місці) */}
           <div className={styles.musicCard}>
             <div className={styles.recordContainer}>
               <img src="/tonarm.png" alt="Tonearm" className={styles.tonearm} ref={tonearmRef} />
@@ -170,7 +162,6 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
               </button>
             </div>
 
-            {/* Точна назва твого mp3-файлу з папки public */}
             <audio ref={audioRef} src="/Deep-End.mp3" preload="auto" />
           </div>
         </motion.div>
