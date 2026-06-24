@@ -44,21 +44,18 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
-  const [volume, setVolume] = useState(1); // Стан для мікшера звуку (від 0 до 1)
+  const [volume, setVolume] = useState(1);
 
   const isUserScrolling = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Заморожуємо скрол фонової сторінки сайту
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
+    return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
   const togglePlay = () => {
@@ -79,9 +76,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
   const handleLyricsScroll = () => {
     isUserScrolling.current = true;
     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-    scrollTimeout.current = setTimeout(() => {
-      isUserScrolling.current = false;
-    }, 4000);
+    scrollTimeout.current = setTimeout(() => { isUserScrolling.current = false; }, 4000);
   };
 
   const handleLineClick = (time: number) => {
@@ -94,23 +89,16 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
         }
       }
       setActiveLineIndex(clickedIndex);
-      
-      if (audioRef.current.paused) {
-        togglePlay();
-      }
+      if (audioRef.current.paused) togglePlay();
     }
   };
 
-  // Керування мікшером гучності
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
+    if (audioRef.current) audioRef.current.volume = newVolume;
   };
 
-  // 1. ВІДСТЕЖЕННЯ ЧАСУ
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -136,22 +124,16 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
   }, [activeLineIndex]);
 
-  // 2. АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
       const activeElement = container.children[activeLineIndex] as HTMLElement;
-      
       if (activeElement) {
-        activeElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
-        });
+        activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }
   }, [activeLineIndex, isPlaying]);
 
-  // Скидання стану плеєра при закритті
   useEffect(() => {
     if (!isOpen && audioRef.current) {
       audioRef.current.pause();
@@ -171,15 +153,16 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           exit={{ opacity: 0 }}
           className={styles.overlay}
         >
+          {/* Фіксована кнопка закриття у верхньому правому кутку всього екрана */}
+          <button onClick={onClose} className={styles.closeBtnOverlay}>
+            [ CLOSE PLAYER ]
+          </button>
+
           <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
 
           <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
             {isPlaying && (
-              <div 
-                className={styles.lyricsScroll} 
-                ref={lyricsScrollRef}
-                onScroll={handleLyricsScroll}
-              >
+              <div className={styles.lyricsScroll} ref={lyricsScrollRef} onScroll={handleLyricsScroll}>
                 {LYRICS_DATA.map((line, index) => (
                   <p 
                     key={index} 
@@ -196,19 +179,11 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           <div className={`${styles.musicCard} ${isPlaying ? styles.musicCardShifted : ''}`}>
             <div className={styles.recordContainer}>
               <img src="/tonarm.png" alt="Tonearm" className={styles.tonearm} ref={tonearmRef} />
-              <img 
-                src="/deepend.webp" 
-                alt="Record" 
-                className={`${styles.record} ${isPlaying ? styles.isRotating : ''}`} 
-              />
+              <img src="/deepend.webp" alt="Record" className={`${styles.record} ${isPlaying ? styles.isRotating : ''}`} />
               
               <button onClick={togglePlay} className={styles.playBtn}>
                 <svg viewBox="0 0 24 24" width="32" height="32" fill="white">
-                  {isPlaying ? (
-                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                  ) : (
-                    <path d="M8 5v14l11-7z"/>
-                  )}
+                  {isPlaying ? <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/> : <path d="M8 5v14l11-7z"/>}
                 </svg>
               </button>
             </div>
@@ -220,7 +195,6 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
               </a>
             </div>
 
-            {/* МІКШЕР ЗВУКУ (Абсолютно чистий інпут без зайвих перемальовок) */}
             <div className={styles.volumeContainer}>
               <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" className={styles.volumeIcon}>
                 <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
@@ -235,10 +209,6 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
                 className={styles.volumeSlider}
               />
             </div>
-
-            <button onClick={onClose} className={styles.closeBtn}>
-              [ CLOSE PLAYER ]
-            </button>
 
             <audio ref={audioRef} src="/Deep-End.mp3" preload="auto" />
           </div>
