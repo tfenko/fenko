@@ -4,12 +4,19 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './PlayerOverlay.module.css';
 
-// 1. ДАНІ ДЛЯ ВСІХ ТРЕКІВ НА САЙТІ
+interface PlayerOverlayProps {
+  isOpen: boolean;
+  onClose: () => void;
+  trackKey: 'deepend' | 'halfreal';
+}
+
 const TRACKS_DATA = {
   deepend: {
     title: "Deep End",
     audioSrc: "/Deep-End.mp3",
     coverSrc: "/deepend.webp",
+    // Твій фірмовий глибокий синьо-океанічний градієнт
+    bgGradient: "linear-gradient(135deg, #050b14, #0a1118, #0e2530, #131a22, #050b14)",
     lyrics: [
       { time: 21.66, text: "Blue light, crawling up the wall" },
       { time: 25.64, text: "Wait for the tide, wait for the fall" },
@@ -42,6 +49,8 @@ const TRACKS_DATA = {
     title: "Half Real",
     audioSrc: "/Half-Real.mp3",
     coverSrc: "/halfreal-2.webp",
+    // Кастомний похмурий чорно-червоний градієнт під обкладинку Half Real
+    bgGradient: "linear-gradient(135deg, #000000, #150505, #2d0b0b, #100303, #000000)",
     lyrics: [
       { time: 3.05, text: "I see your shadow in the light again" },
       { time: 10.07, text: "But I don't know if you were ever here" },
@@ -83,12 +92,6 @@ const TRACKS_DATA = {
   }
 };
 
-interface PlayerOverlayProps {
-  isOpen: boolean;
-  onClose: () => void;
-  trackKey: 'deepend' | 'halfreal'; // Плеєр тепер чітко знає, який ключ треку відкривати
-}
-
 export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverlayProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const tonearmRef = useRef<HTMLImageElement>(null);
@@ -101,7 +104,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
   const isUserScrolling = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Дістаємо дані саме того треку, який зараз активний
   const currentTrack = TRACKS_DATA[trackKey];
 
   useEffect(() => {
@@ -154,7 +156,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     if (audioRef.current) audioRef.current.volume = newVolume;
   };
 
-  // 1. ВІДСТЕЖЕННЯ ЧАСУ
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -178,9 +179,8 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
-  }, [activeLineIndex, trackKey]); // Додано трек у залежності для безпечного перемикання
+  }, [activeLineIndex, trackKey]);
 
-  // 2. АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
@@ -191,7 +191,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     }
   }, [activeLineIndex, isPlaying]);
 
-  // Повне скидання при закритті або зміні треку
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.pause();
@@ -215,7 +214,11 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
             [ CLOSE PLAYER ]
           </button>
 
-          <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
+          {/* ФІКС: Динамічно передаємо унікальний градієнт з об'єкта треку в інлайн-стиль background */}
+          <div 
+            className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} 
+            style={{ background: currentTrack.bgGradient, backgroundSize: '400% 400%' }}
+          />
 
           <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
             {isPlaying && (
