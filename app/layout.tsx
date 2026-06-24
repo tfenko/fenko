@@ -9,6 +9,8 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+// Імпортуємо наш повноекранний плеєр
+import PlayerOverlay from './components/Player/PlayerOverlay';
 
 // Динамічні імпорти для компонентів, що потребують клієнтського рендеру
 const SmoothScroll = dynamic(() => import('./components/SmoothScroll'), { ssr: false });
@@ -66,6 +68,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <FloatingNotes />
         
         <ThemeContext>
+          {/* Глобальний плеєр, що чекає на клік кнопки з Music.tsx */}
+          <PlayerOverlay />
+
           <div className="hidden md:block">
             <CustomCursor />
           </div>
