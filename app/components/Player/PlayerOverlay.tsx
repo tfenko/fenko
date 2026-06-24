@@ -12,7 +12,7 @@ interface PlayerOverlayProps {
 export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const tonearmRef = useRef<HTMLImageElement>(null);
-  const lyricsScrollRef = useRef<HTMLDivElement>(null); // Реф суворо на блок зі скролом
+  const lyricsScrollRef = useRef<HTMLDivElement>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
@@ -47,6 +47,18 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     { time: 189.56, text: "Losing light" }
   ];
 
+  // Заморожуємо скрол головної сторінки сайту на фоні, коли оверлей відкритий
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const togglePlay = () => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -62,13 +74,12 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     }
   };
 
-  // ФІКС СКРОЛУ: блокуємо автоцентрування, коли користувач гортає сам
   const handleLyricsScroll = () => {
     isUserScrolling.current = true;
     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
     scrollTimeout.current = setTimeout(() => {
       isUserScrolling.current = false;
-    }, 3000);
+    }, 4000); // 4 секунди спокою після того, як ти перестав гортати вручну
   };
 
   const handleLineClick = (time: number) => {
@@ -80,14 +91,13 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     }
   };
 
-  // Стежимо за часом відтворення
+  // Стежимо за таймінгом аудіо треку
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const handleTimeUpdate = () => {
       let currentLineIndex = -1;
-      
       for (let i = 0; i < lyrics.length; i++) {
         if (audio.currentTime >= lyrics[i].time) {
           currentLineIndex = i;
@@ -105,22 +115,21 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
   }, [activeLineIndex]);
 
-  // ФІКС АВТОСКРОЛУ: виконується окремо, щоб не збивати крок рендеру класів підсвічування
+  // Скрол тексту чітко по центру як в Apple Music
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
       const activeElement = container.children[activeLineIndex] as HTMLElement;
       
       if (activeElement) {
-        activeElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
+        container.scrollTo({
+          top: activeElement.offsetTop - container.offsetHeight / 2 + activeElement.offsetHeight / 2,
+          behavior: 'smooth'
         });
       }
     }
   }, [activeLineIndex]);
 
-  // Скидання при закритті
   useEffect(() => {
     if (!isOpen && audioRef.current) {
       audioRef.current.pause();
@@ -143,8 +152,8 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           {/* Живий рідкий градієнт */}
           <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
 
-          {/* Контейнер тексту */}
-          <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
+          {/* Контейнер караоке-тексту */}
+          <div className={`${styles.lyricsContainer} ${styles.lyricsActive}`}>
             <div 
               className={styles.lyricsScroll} 
               ref={lyricsScrollRef}
