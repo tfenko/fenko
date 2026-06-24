@@ -75,7 +75,6 @@ const releases = [
 ];
 
 interface MusicProps {
-  // ФІКС ТИПІЗАЦІЇ: Тепер функція строго вимагає ключ треку
   onOpenPlayer: (trackKey: 'deepend' | 'halfreal') => void;
 }
 
@@ -85,32 +84,28 @@ export default function Music({ onOpenPlayer }: MusicProps) {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
   const togglePlay = (id: number, url: string) => {
-    // 1. Якщо клікнули на Deep End — тушимо локальний прев'ю-звук і відкриваємо плеєр
+    // Чистимо локальні аудіо-прев'ю перед відкриттям великого плеєра
+    if (audio) {
+      audio.pause();
+      setPlayingId(null);
+    }
+
+    // ТУТ БУВ БАГ: Тепер кожен ID викликає СВІЙ унікальний ключ треку в оверлеї
     if (id === 1) {
-      if (audio) {
-        audio.pause();
-        setPlayingId(null);
-      }
       onOpenPlayer('deepend');
       return;
     }
 
-    // 2. Якщо клікнули на Half Real — теж тушимо тізери й запускаємо його караоке-плеєр
     if (id === 2) {
-      if (audio) {
-        audio.pause();
-        setPlayingId(null);
-      }
       onOpenPlayer('halfreal');
       return;
     }
 
-    // Рідна логіка для прев'ю інших треків (якщо знадобиться для майбутніх)
+    // Логіка для інших треків (якщо з'являться звичайні прев'ю без оверлею)
     if (playingId === id) {
       audio?.pause();
       setPlayingId(null);
     } else {
-      audio?.pause();
       const newAudio = new Audio(url);
       newAudio.play();
       setAudio(newAudio);
