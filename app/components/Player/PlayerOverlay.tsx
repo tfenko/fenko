@@ -94,6 +94,9 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
   const audioRef = useRef<HTMLAudioElement>(null);
   const tonearmRef = useRef<HTMLImageElement>(null);
   const lyricsScrollRef = useRef<HTMLDivElement>(null);
+  
+  // ФІКС 1: Створюємо Ref для лірики, щоб слухач часу ЗАВЖДИ бачив актуальний масив
+  const lyricsRef = useRef(TRACKS_DATA[trackKey].lyrics);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
@@ -103,6 +106,11 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const currentTrack = TRACKS_DATA[trackKey];
+
+  // Синхронізуємо реф лірики при зміні треку
+  useEffect(() => {
+    lyricsRef.current = TRACKS_DATA[trackKey].lyrics;
+  }, [trackKey]);
 
   useEffect(() => {
     if (isOpen) {
@@ -138,8 +146,9 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     if (audioRef.current) {
       audioRef.current.currentTime = time;
       let clickedIndex = -1;
-      for (let i = 0; i < currentTrack.lyrics.length; i++) {
-        if (time >= currentTrack.lyrics[i].time) {
+      const lines = lyricsRef.current;
+      for (let i = 0; i < lines.length; i++) {
+        if (time >= lines[i].time) {
           clickedIndex = i;
         }
       }
@@ -154,7 +163,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     if (audioRef.current) audioRef.current.volume = newVolume;
   };
 
-  // ФІКС 1: НАДІЙНИЙ СЛУХАЧ ЧАСУ (Масив залежностей реагує строго на зміну треку)
+  // ФІКС 2: ЗАЛІЗОБЕТОННИЙ СЛУХАЧ ЧАСУ (Тепер працює абсолютно однаково для обох треків)
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -162,17 +171,16 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     const handleTimeUpdate = () => {
       const currentTime = audio.currentTime;
       let currentLineIndex = -1;
+      const lines = lyricsRef.current; // Беремо дані напряму з актуального рефу
 
-      // Рахуємо індекс на основі поточної лірики
-      for (let i = 0; i < currentTrack.lyrics.length; i++) {
-        if (currentTime >= currentTrack.lyrics[i].time) {
+      for (let i = 0; i < lines.length; i++) {
+        if (currentTime >= lines[i].time) {
           currentLineIndex = i;
         } else {
           break;
         }
       }
 
-      // Оновлюємо через функціональний сеттер, щоб уникнути жорсткого замикання в ефекті
       setActiveLineIndex((prevIndex) => {
         if (currentLineIndex !== prevIndex) {
           return currentLineIndex;
@@ -183,9 +191,9 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
-  }, [trackKey, currentTrack.lyrics]); // Більше немає activeLineIndex, подія не перезапускає сама себе!
+  }, [trackKey]); // Залежить тільки від треку, ніяких внутрішніх підвисань!
 
-  // ФІКС 2: АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ (Реагує строго на зміну індексу)
+  // АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
@@ -196,7 +204,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     }
   }, [activeLineIndex, isPlaying]);
 
-  // Скидання стану при закритті або перемиканні синглів
+  // Скидання стану
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.pause();
