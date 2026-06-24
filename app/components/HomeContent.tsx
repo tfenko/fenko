@@ -1,24 +1,23 @@
 'use client';
 
 import { useState } from 'react';
-import Music from './Music'; // або звідки він у тебе імпортується
+import Music from './Music';
 import PlayerOverlay from './Player/PlayerOverlay';
 
 export default function HomeContent() {
-  // Замість boolean використовуємо рядок або null
+  // Стан обов'язково має приймати null або рядок з ключем треку!
   const [activeTrack, setActiveTrack] = useState<'deepend' | 'halfreal' | null>(null);
 
   return (
     <>
-      {/* Якщо твій компонент Music очікує нову функцію, передаємо вибір треку */}
-      {/* Для тесту, або якщо Music поки приймає старий пропс, залишаємо увімкнення дефолтного 'deepend' */}
-      <Music onOpenPlayer={() => setActiveTrack('deepend')} />
+      {/* Кліки по треках змінюють стан на 'deepend' або 'halfreal' */}
+      <Music onOpenPlayer={(trackKey) => setActiveTrack(trackKey)} />
       
-      {/* Фікс помилки TypeScript: тепер передаємо обов'язковий trackKey */}
+      {/* КРИТИЧНЕ МІСЦЕ: trackKey має братися СУВОРO зі стану activeTrack */}
       <PlayerOverlay 
         isOpen={activeTrack !== null} 
         onClose={() => setActiveTrack(null)} 
-        trackKey={activeTrack || 'deepend'} 
+        trackKey={activeTrack || 'deepend'} // Якщо activeTrack змінить значення на 'halfreal', плеєр перемикнеться!
       />
     </>
   );
