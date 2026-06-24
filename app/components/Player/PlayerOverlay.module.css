@@ -13,6 +13,7 @@
   overflow: hidden;
 }
 
+/* Живий рідкий градієнт обгортки Deep End */
 .bgVideo {
   position: absolute;
   top: 0;
@@ -48,9 +49,9 @@
   width: 50%;
   height: 75vh;
   opacity: 0;
-  z-index: 2;
+  z-index: 5;
   transition: opacity 1.5s ease;
-  pointer-events: none; /* Пропускаємо кліки крізь зовнішню рамку */
+  pointer-events: auto !important; /* Повністю відкриваємо блок для миші */
 }
 
 .lyricsActive {
@@ -60,19 +61,21 @@
 .lyricsScroll {
   width: 100%;
   height: 100%;
-  overflow-y: auto !important; 
+  overflow-y: scroll !important; /* Форсуємо вертикальний скрол */
   overflow-x: hidden;
   padding: 32vh 0; 
   scrollbar-width: none;
   -ms-overflow-style: none;
-  pointer-events: auto !important; /* Розблоковуємо мишу на самому тексті */
+  pointer-events: auto !important; /* Дозволяємо гортання та кліки по тексту */
+  position: relative;
 
+  /* Ефектне розмиття меж зверху та знизу як в Apple Music */
   mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
 }
 
 .lyricsScroll::-webkit-scrollbar { 
-  display: none; 
+  display: none !important; 
 }
 
 /* Рядок тексту */
@@ -100,7 +103,7 @@
   opacity: 0.5;
 }
 
-/* АКТИВНИЙ РЯДОК — Ефект вильоту вперед */
+/* АКТИВНИЙ РЯДОК — Підсвічування та масштаб */
 .lyricLineActive {
   opacity: 1 !important;
   transform: scale(1.18) !important; 
@@ -112,7 +115,7 @@
 ========================================== */
 .musicCard {
   position: relative;
-  z-index: 3;
+  z-index: 10;
   background: rgba(0, 0, 0, 0.45); 
   padding: 45px; 
   border-radius: 40px;
@@ -126,6 +129,7 @@
   transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Зсув картки вбік при старті треку */
 .musicCardShifted {
   transform: translateX(110%);
 }
