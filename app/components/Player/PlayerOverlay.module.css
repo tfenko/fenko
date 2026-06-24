@@ -247,3 +247,81 @@
 .closeBtn:hover {
   color: #ffffff;
 }
+
+/* ==========================================
+   ПРОГРЕС-БАР ТА МІКШЕР ЗВУКУ (Стилі)
+========================================== */
+.controlsWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+.sliderContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.timeLabel {
+  font-size: 11px;
+  font-family: monospace;
+  color: rgba(255, 255, 255, 0.4);
+  min-width: 30px;
+}
+
+/* Кастомізація повзунка прогресу */
+.audioSlider, .volumeSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.audioSlider:hover, .volumeSlider:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Кругляшок повзунка (Thumb) */
+.audioSlider::-webkit-slider-thumb, .volumeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  transition: transform 0.1s ease;
+}
+
+.audioSlider::-webkit-slider-thumb:hover, .volumeSlider::-webkit-slider-thumb:hover {
+  transform: scale(1.3);
+}
+
+/* Мікшер гучності */
+.volumeContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0 2rem; /* Робимо мікшер трохи вужчим за прогрес-бар для естетики */
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.volumeIcon {
+  flex-shrink: 0;
+  transition: color 0.3s ease;
+}
+
+.volumeContainer:hover .volumeIcon {
+  color: rgba(255, 255, 255, 0.8);
+}
