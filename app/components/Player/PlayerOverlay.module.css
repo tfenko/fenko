@@ -9,14 +9,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5vw; /* Гнучкий відступ між лірикою та карткою */
+  gap: 5vw;
   padding: 2rem 5vw;
   font-family: 'Segoe UI', sans-serif;
   overflow: hidden;
   box-sizing: border-box;
 }
 
-/* Кнопка закриття у верхньому правому кутку оверлею */
 .closeBtnOverlay {
   position: absolute;
   top: 2.5rem;
@@ -43,7 +42,6 @@
   transform: translateY(-1px);
 }
 
-/* Живий рідкий градієнт */
 .bgVideo {
   position: absolute;
   top: 0;
@@ -69,12 +67,12 @@
 }
 
 /* ==========================================
-   КОНТЕЙНЕР КАРАОКЕ-ТЕКСТУ (Гнучкий зліва на ПК)
+   КОНТЕЙНЕР ЛІРИКИ
 ========================================== */
 .lyricsContainer {
-  position: relative; /* ФІКС: Більше ніяких абсолютних left: 12% */
+  position: relative;
   flex: 1;
-  max-width: 600px; /* Текст не розповзається ширше норми */
+  max-width: 600px;
   height: 75vh;
   opacity: 0;
   z-index: 5;
@@ -105,7 +103,6 @@
   display: none !important; 
 }
 
-/* Рядок тексту */
 .lyricLine {
   margin: 0;
   padding: 0;
@@ -114,12 +111,10 @@
   align-items: center; 
   white-space: nowrap; 
   overflow: visible; 
-  
   color: #ffffff;
   font-size: 28px; 
   font-weight: 700; 
   opacity: 0.18; 
-  
   transform-origin: left center; 
   transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), text-shadow 0.6s ease;
   cursor: none !important; 
@@ -130,7 +125,6 @@
   opacity: 0.5;
 }
 
-/* АКТИВНИЙ РЯДОК */
 .lyricLineActive {
   opacity: 1 !important;
   transform: scale(1.12) !important; 
@@ -139,7 +133,7 @@
 }
 
 /* ==========================================
-   КАРТКА ПЛЕЄРА (Гнучка справа на ПК)
+   КАРТКА ПЛЕЄРА
 ========================================== */
 .musicCard {
   position: relative;
@@ -153,17 +147,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex-shrink: 0; /* ФІКС: Картка ніколи не стискається і не ламає пропорції */
-  width: 420px; /* Задаємо безпечну базову ширину контейнера */
+  flex-shrink: 0; 
+  width: 420px; 
   max-width: 90vw;
   box-sizing: border-box;
   transform: translateX(0%); 
   transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Зсув картки вбік при старті треку на ПК */
 .musicCardShifted {
-  transform: translateX(0%); /* ТУТ МОЖЕШ СТАВИТИ ЗСУВ, АЛЕ БЕЗПЕЧНІШЕ ЛИШИТИ 0, ЩОБ ПРИ ЗУМІ ВОНО НЕ ТІКАЛО */
+  transform: translateX(0%); 
 }
 
 .recordContainer { 
@@ -325,7 +318,7 @@
 }
 
 /* ==========================================
-   MОБІЛЬНА ОПТИМІЗАЦІЯ (Анімації та Верстка без багів)
+   MОБІЛЬНА ОПТИМІЗАЦІЯ
 ========================================== */
 @media (max-width: 1024px) {
   .overlay {
@@ -339,7 +332,7 @@
   .closeBtnOverlay {
     top: 1.5rem;
     right: 50%;
-    transform: translateX(50%); /* Чіткий центр, кнопка не з'їжджає */
+    transform: translateX(50%); 
     font-size: 10px;
     padding: 0.5rem 1rem;
   }
@@ -348,23 +341,22 @@
     transform: translateX(50%) translateY(0);
   }
 
-  /* ФІКС АНІМАЦІЇ НА ТЕЛЕФОНІ: Прибираємо важкі 3D зсуви, робимо плавний static-контейнер */
   .musicCard {
     width: 100%;
     max-width: 340px;
     padding: 20px;
     border-radius: 24px;
     margin-bottom: 0;
-    transform: none !important; /* Вбиваємо криві зсуви */
+    transform: none !important; 
     transition: none !important;
   }
 
   .musicCardShifted {
-    transform: none !important; /* Плеєр стоїть стабільно, лірика крутиться під ним */
+    transform: none !important; 
   }
 
   .recordContainer {
-    max-width: 160px; /* Робимо вініл компактним */
+    max-width: 160px; 
   }
 
   .record {
@@ -394,7 +386,6 @@
     font-size: 12px;
   }
 
-  /* Лірика строго внизу */
   .lyricsContainer {
     position: relative;
     left: auto;
@@ -414,7 +405,7 @@
     font-size: 18px; 
     justify-content: center;
     transform-origin: center center;
-    white-space: normal; /* Текст адаптується під ширину екрана смартфона і не вилазить вбік */
+    white-space: normal; 
     text-align: center;
   }
 
@@ -423,7 +414,6 @@
   }
 }
 
-/* Фікс під екстремально малі екрани */
 @media (max-width: 360px) {
   .recordContainer {
     max-width: 130px;
@@ -434,9 +424,6 @@
   }
 }
 
-/* ==========================================
-   ТАЧ-ФІКС СИСТЕМНОГО КУРСOРА
-========================================== */
 @media (pointer: coarse) {
   .closeBtnOverlay,
   .lyricLine,
