@@ -104,7 +104,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
 
   const currentTrack = TRACKS_DATA[trackKey];
 
-  // Блокування скролу сторінки під оверлеєм
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -162,7 +161,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     if (audioRef.current) audioRef.current.volume = newVolume;
   };
 
-  // ФІКС 1: СЛУХАЧ ЧАСУ БЕЗ ЗАМИКАНЬ (Динамічно бере лірику актуального треку)
+  // ФІКС 1: НАДІЙНИЙ СЛУХАЧ ЧАСУ БЕЗ ОБМЕЖЕНЬ НА -1 (Працює ідеально під довгі інтро)
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -170,7 +169,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     const handleTimeUpdate = () => {
       const currentTime = audio.currentTime;
       let currentLineIndex = -1;
-      const lyrics = TRACKS_DATA[trackKey].lyrics; // Прямий доступ до потрібного масиву
+      const lyrics = TRACKS_DATA[trackKey].lyrics;
 
       for (let i = 0; i < lyrics.length; i++) {
         if (currentTime >= lyrics[i].time) {
@@ -180,14 +179,15 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
         }
       }
 
+      // Оновлюємо стан завжди, навіть якщо індекс -1 на початку інтро треку
       setActiveLineIndex(currentLineIndex);
     };
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
-  }, [trackKey]); // Перезапускається строго при зміні синглу
+  }, [trackKey]);
 
-  // ФІКС 2: ПЛАВНИЙ АВТОСКУРОЛЛ (Завжди бачить DOM-вузли)
+  // ФІКС 2: БЕЗПЕРЕБІЙНИЙ АВТОСКУРОЛЛ ДО ЦЕНТРУ
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
@@ -198,7 +198,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     }
   }, [activeLineIndex]);
 
-  // Повне скидання станів при зміні треку або відкритті/закритті
+  // Скидання станів при перемиканні або закритті
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.pause();
@@ -227,7 +227,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
             style={{ background: currentTrack.bgGradient }}
           />
 
-          {/* ФІКС 3: Прибрали {isPlaying &&}, тепер контейнер існує в DOM постійно і рефи не злітають */}
           <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
             <div className={styles.lyricsScroll} ref={lyricsScrollRef} onScroll={handleLyricsScroll}>
               {currentTrack.lyrics.map((line, index) => (
