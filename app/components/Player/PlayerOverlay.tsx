@@ -16,6 +16,8 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
+  const isUserScrolling = useRef(false);
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const lyrics = [
     { time: 21.66, text: "Blue light, crawling up the wall" },
@@ -56,8 +58,17 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     } else {
       audio.pause();
       setIsPlaying(false);
-      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-30deg)';
+      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
     }
+  };
+
+  // Оригінальний скролл та блокування при ручному гортанні (3 секунди)
+  const handleLyricsScroll = () => {
+    isUserScrolling.current = true;
+    if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+    scrollTimeout.current = setTimeout(() => {
+      isUserScrolling.current = false;
+    }, 3000);
   };
 
   useEffect(() => {
@@ -75,13 +86,11 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
       if (currentLineIndex !== -1 && currentLineIndex !== activeLineIndex) {
         setActiveLineIndex(currentLineIndex);
         
-        if (lyricsContainerRef.current) {
-          const activeElement = lyricsContainerRef.current.children[currentLineIndex] as HTMLElement;
+        // Автоматичний плавний скролл до центру, якщо користувач не гортає сам
+        if (!isUserScrolling.current && lyricsContainerRef.current) {
+          const activeElement = lyricsContainerRef.current.children[0]?.children[currentLineIndex] as HTMLElement;
           if (activeElement) {
-            lyricsContainerRef.current.scrollTo({
-              top: activeElement.offsetTop - lyricsContainerRef.current.offsetHeight / 2 + activeElement.offsetHeight / 2,
-              behavior: 'smooth'
-            });
+            activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
         }
       }
@@ -97,7 +106,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
       audioRef.current.currentTime = 0;
       setIsPlaying(false);
       setActiveLineIndex(-1);
-      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-30deg)';
+      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
     }
   }, [isOpen]);
 
@@ -110,10 +119,16 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           exit={{ opacity: 0 }}
           className={styles.overlay}
         >
+          {/* Фон вмикається і переливається тільки коли трек грає */}
           <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
 
-          <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
-            <div className={styles.lyricsScroll} ref={lyricsContainerRef}>
+          {/* Текст зліва (Оригінальний контейнер з маскою) */}
+          <div 
+            className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}
+            onScroll={handleLyricsScroll}
+            ref={lyricsContainerRef}
+          >
+            <div className={styles.lyricsScroll}>
               {lyrics.map((line, index) => (
                 <p 
                   key={index} 
@@ -131,7 +146,8 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
             </div>
           </div>
 
-          <div className={styles.musicCard}>
+          {/* Картка плеєра (Рухається вправо за умови isPlaying) */}
+          <div className={`${styles.musicCard} ${isPlaying ? styles.musicCardShifted : ''}`}>
             <div className={styles.recordContainer}>
               <img src="/tonarm.png" alt="Tonearm" className={styles.tonearm} ref={tonearmRef} />
               <img 
