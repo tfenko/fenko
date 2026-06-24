@@ -51,7 +51,7 @@
   opacity: 0;
   z-index: 5;
   transition: opacity 1.5s ease;
-  pointer-events: auto !important;
+  pointer-events: auto !important; /* Повністю відкриваємо блок для миші */
 }
 
 .lyricsActive {
@@ -61,17 +61,17 @@
 .lyricsScroll {
   width: 100%;
   height: 100%;
-  overflow-y: scroll !important; 
+  overflow-y: scroll !important; /* Форсуємо вертикальний скрол */
   overflow-x: hidden;
   padding: 32vh 0; 
   /* ФІКС ОБРІЗАННЯ: Створюємо буферну зону зліва для безпечного скейлу літер та світіння */
   padding-left: 2rem; 
   scrollbar-width: none;
   -ms-overflow-style: none;
-  pointer-events: auto !important;
+  pointer-events: auto !important; /* Дозволяємо гортання та кліки по тексту */
   position: relative;
 
-  /* Надійне розмиття верхньої та нижньої межі без зачіпання лівого краю */
+  /* Ефектне розмиття меж зверху та знизу як в Apple Music */
   mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
 }
@@ -274,7 +274,7 @@
   min-width: 30px;
 }
 
-/* Кастомізація повзунка прогресу */
+/* Кастомізація повзунка прогресу та гучності */
 .audioSlider, .volumeSlider {
   -webkit-appearance: none;
   appearance: none;
