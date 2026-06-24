@@ -104,6 +104,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
 
   const currentTrack = TRACKS_DATA[trackKey];
 
+  // Блокування скролу сторінки під оверлеєм
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -161,33 +162,26 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     if (audioRef.current) audioRef.current.volume = newVolume;
   };
 
-  // ФІКС 1: НАДІЙНИЙ СЛУХАЧ ЧАСУ БЕЗ ОБМЕЖЕНЬ НА -1 (Працює ідеально під довгі інтро)
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+  // ФІКС: Функція спрацьовує прямо з тегу аудіо, виключаючи будь-які підвисання чи замикання React
+  const onTimeUpdateHandler = (e: React.SyntheticEvent<HTMLAudioElement>) => {
+    const currentTime = e.currentTarget.currentTime;
+    let currentLineIndex = -1;
+    const lyrics = TRACKS_DATA[trackKey].lyrics;
 
-    const handleTimeUpdate = () => {
-      const currentTime = audio.currentTime;
-      let currentLineIndex = -1;
-      const lyrics = TRACKS_DATA[trackKey].lyrics;
-
-      for (let i = 0; i < lyrics.length; i++) {
-        if (currentTime >= lyrics[i].time) {
-          currentLineIndex = i;
-        } else {
-          break;
-        }
+    for (let i = 0; i < lyrics.length; i++) {
+      if (currentTime >= lyrics[i].time) {
+        currentLineIndex = i;
+      } else {
+        break;
       }
+    }
 
-      // Оновлюємо стан завжди, навіть якщо індекс -1 на початку інтро треку
+    if (currentLineIndex !== activeLineIndex) {
       setActiveLineIndex(currentLineIndex);
-    };
+    }
+  };
 
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
-  }, [trackKey]);
-
-  // ФІКС 2: БЕЗПЕРЕБІЙНИЙ АВТОСКУРОЛЛ ДО ЦЕНТРУ
+  // ПЛАВНИЙ АВТОСКУРОЛЛ ДО ЦЕНТРУ
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
@@ -198,7 +192,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     }
   }, [activeLineIndex]);
 
-  // Скидання станів при перемиканні або закритті
+  // Повне скидання станів при зміні треку або відкритті/закритті
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.pause();
@@ -275,7 +269,13 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
               />
             </div>
 
-            <audio ref={audioRef} src={currentTrack.audioSrc} preload="auto" />
+            {/* ЗМІНА ТУТ: Подія прив'язана безпосередньо до HTML-тегу через onTimeUpdate */}
+            <audio 
+              ref={audioRef} 
+              src={currentTrack.audioSrc} 
+              preload="auto" 
+              onTimeUpdate={onTimeUpdateHandler} 
+            />
           </div>
         </motion.div>
       )}
