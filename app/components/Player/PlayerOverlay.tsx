@@ -90,7 +90,6 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     }
   };
 
-  // Перемотка треку через прогрес-бар
   const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = parseFloat(e.target.value);
     if (audioRef.current) {
@@ -101,7 +100,6 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     }
   };
 
-  // Мікшер звуку
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
@@ -121,19 +119,19 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     }
   };
 
-  // ФІКС 1: НАДІЙНИЙ СЛУХАЧ ЧАСУ БЕЗ ЗАМИКАНЬ (Масив залежностей тепер чистий [])
+  // НАЙНАДІЙНІШИЙ НА ТЕПЕРІШНІЙ ЧАС СИНХРОНІЗАТОР (Пряме підключення до об'єкта Audio без замикань React)
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const handleTimeUpdate = () => {
+    audio.ontimeupdate = () => {
       const currentTime = audio.currentTime;
 
-      // Оновлюємо прогрес-бар та таймер без ререндерів
+      // Рухаємо повзунок прогресу та лічильник секунд напрямую в DOM
       if (progressSliderRef.current) progressSliderRef.current.value = currentTime.toString();
       if (currentTimeLabelRef.current) currentTimeLabelRef.current.textContent = formatTime(currentTime);
 
-      // Вираховуємо активний рядок
+      // Вираховуємо поточний рядок тексту
       let currentLineIndex = -1;
       for (let i = 0; i < LYRICS_DATA.length; i++) {
         if (currentTime >= LYRICS_DATA[i].time) {
@@ -143,7 +141,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
         }
       }
 
-      // Оновлюємо стан через функціональний колбек, щоб уникнути зациклення ефекту
+      // Оновлюємо активний індекс через функціональний сеттер
       setActiveLineIndex((prevIndex) => {
         if (currentLineIndex !== prevIndex) {
           return currentLineIndex;
@@ -152,11 +150,12 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
       });
     };
 
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
-  }, []); // Чистий масив залежностей гарантує безперервну роботу події!
+    return () => {
+      audio.ontimeupdate = null;
+    };
+  }, []); 
 
-  // ФІКС 2: АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ (Реагує суворо на зміну індексу)
+  // ЕФЕКТ АВТОСКРОЛУ APPLE MUSIC (Спрацьовує чітко при зміні індексу)
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
@@ -170,7 +169,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     }
   }, [activeLineIndex]);
 
-  // Повне скидання при закритті
+  // Скидання стану плеєра при закритті
   useEffect(() => {
     if (!isOpen && audioRef.current) {
       audioRef.current.pause();
@@ -192,23 +191,26 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
           exit={{ opacity: 0 }}
           className={styles.overlay}
         >
+          {/* Рідкий фоновий градієнт */}
           <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
 
-          {/* Текст зліва */}
+          {/* Контейнер тексту: теги існують у DOM ЗАВЖДИ, видимість регулюється чисто через CSS клас */}
           <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
-            {isPlaying && (
-              <div className={styles.lyricsScroll} ref={lyricsScrollRef} onScroll={handleLyricsScroll}>
-                {LYRICS_DATA.map((line, index) => (
-                  <p 
-                    key={index} 
-                    className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
-                    onClick={() => handleLineClick(line.time)}
-                  >
-                    {line.text}
-                  </p>
-                ))}
-              </div>
-            )}
+            <div 
+              className={styles.lyricsScroll} 
+              ref={lyricsScrollRef}
+              onScroll={handleLyricsScroll}
+            >
+              {LYRICS_DATA.map((line, index) => (
+                <p 
+                  key={index} 
+                  className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
+                  onClick={() => handleLineClick(line.time)}
+                >
+                  {line.text}
+                </p>
+              ))}
+            </div>
           </div>
 
           {/* Картка плеєра справа */}
