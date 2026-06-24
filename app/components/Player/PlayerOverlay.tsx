@@ -41,8 +41,8 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const tonearmRef = useRef<HTMLImageElement>(null);
   const lyricsScrollRef = useRef<HTMLDivElement>(null);
-  const progressSliderRef = useRef<HTMLInputElement>(null); // Використовуємо реф для прогрес-бару, щоб не перевантажувати стани
-  const currentTimeLabelRef = useRef<HTMLDivElement>(null); // Реф для текстового лічильника секунд
+  const progressSliderRef = useRef<HTMLInputElement>(null); 
+  const currentTimeLabelRef = useRef<HTMLDivElement>(null); 
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
@@ -121,7 +121,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     }
   };
 
-  // МОНОЛІТНИЙ ІЗОЛЬОВАНИЙ ПОТІК ЧАСУ (Усе синхронізується тут без лагів)
+  // ФІКС 1: НАДІЙНИЙ СЛУХАЧ ЧАСУ БЕЗ ЗАМИКАНЬ (Масив залежностей тепер чистий [])
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -129,11 +129,11 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     const handleTimeUpdate = () => {
       const currentTime = audio.currentTime;
 
-      // 1. Оновлюємо прогрес-бар та таймер напряму через DOM (без виклику важкого ререндереру React)
+      // Оновлюємо прогрес-бар та таймер без ререндерів
       if (progressSliderRef.current) progressSliderRef.current.value = currentTime.toString();
       if (currentTimeLabelRef.current) currentTimeLabelRef.current.textContent = formatTime(currentTime);
 
-      // 2. Вираховуємо активний рядок лірики
+      // Вираховуємо активний рядок
       let currentLineIndex = -1;
       for (let i = 0; i < LYRICS_DATA.length; i++) {
         if (currentTime >= LYRICS_DATA[i].time) {
@@ -143,17 +143,20 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
         }
       }
 
-      // 3. Змінюємо індекс тільки тоді, коли реально настав час наступного рядка
-      if (currentLineIndex !== -1 && currentLineIndex !== activeLineIndex) {
-        setActiveLineIndex(currentLineIndex);
-      }
+      // Оновлюємо стан через функціональний колбек, щоб уникнути зациклення ефекту
+      setActiveLineIndex((prevIndex) => {
+        if (currentLineIndex !== prevIndex) {
+          return currentLineIndex;
+        }
+        return prevIndex;
+      });
     };
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
-  }, [activeLineIndex]);
+  }, []); // Чистий масив залежностей гарантує безперервну роботу події!
 
-  // АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ ЗА КАНОНАМИ APPLE MUSIC
+  // ФІКС 2: АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ (Реагує суворо на зміну індексу)
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
@@ -228,7 +231,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
               </a>
             </div>
 
-            {/* ПРОГРЕС-BAR ТА МІКШЕР */}
+            {/* КОНТРОЛЕР ПЛЕЄРА */}
             <div className={styles.controlsWrapper}>
               <div className={styles.sliderContainer}>
                 <div className={styles.timeLabel} ref={currentTimeLabelRef}>0:00</div>
