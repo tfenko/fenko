@@ -48,24 +48,10 @@
   left: 12%; 
   width: 50%;
   height: 75vh;
-  overflow-y: auto; 
-  overflow-x: hidden;
   opacity: 0;
   z-index: 2;
   transition: opacity 1.5s ease;
-  pointer-events: auto; 
-  
-  /* Оригінальний макіяж розмиття меж без використання before/after */
-  mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
-}
-
-.lyricsContainer::-webkit-scrollbar { 
-  display: none; 
-}
-.lyricsContainer { 
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
+  pointer-events: none; /* Пропускаємо кліки крізь контейнер рамки */
 }
 
 .lyricsActive {
@@ -73,10 +59,23 @@
 }
 
 .lyricsScroll {
-  display: flex;
-  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto; 
+  overflow-x: hidden;
   padding: 32vh 0; 
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  pointer-events: auto; /* Вмикаємо події миші суворо на блоці скролу */
   will-change: transform;
+
+  /* М'яка маска розмиття меж зверху та знизу */
+  mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+}
+
+.lyricsScroll::-webkit-scrollbar { 
+  display: none; 
 }
 
 /* Рядок тексту */
@@ -126,11 +125,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  transform: translateX(0%); /* Спочатку по центру екрана */
+  transform: translateX(0%); /* Спочатку чітко по центру */
   transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Коли трек грає — жостко зміщуємо картку праворуч */
+/* Коли трек грає — зміщуємо картку праворуч */
 .musicCardShifted {
   transform: translateX(110%);
 }
