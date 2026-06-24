@@ -140,7 +140,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
             <div className={styles.recordContainer}>
               <img src="/tonarm.png" alt="Tonearm" className={styles.tonearm} ref={tonearmRef} />
               <img 
-                src="/deepend-cover.png" 
+                src="/deepend.webp" 
                 alt="Record" 
                 className={`${styles.record} ${isPlaying ? styles.isRotating : ''}`} 
               />
