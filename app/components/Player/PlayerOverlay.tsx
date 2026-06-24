@@ -41,16 +41,18 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const tonearmRef = useRef<HTMLImageElement>(null);
   const lyricsScrollRef = useRef<HTMLDivElement>(null);
+  const progressSliderRef = useRef<HTMLInputElement>(null); // Використовуємо реф для прогрес-бару, щоб не перевантажувати стани
+  const currentTimeLabelRef = useRef<HTMLDivElement>(null); // Реф для текстового лічильника секунд
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
-  const [trackProgress, setTrackProgress] = useState(0);
   const [trackDuration, setTrackDuration] = useState(0);
-  const [volume, setVolume] = useState(1); // Гучність від 0 до 1
+  const [volume, setVolume] = useState(1);
 
   const isUserScrolling = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
+  // Заморожуємо фоновий скрол сторінки сайту
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -84,30 +86,28 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
   const handleLineClick = (time: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = time;
-      setTrackProgress(time);
       if (audioRef.current.paused) togglePlay();
     }
   };
 
-  // Керування прогресом (перемотка мишкою)
+  // Перемотка треку через прогрес-бар
   const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = parseFloat(e.target.value);
     if (audioRef.current) {
       audioRef.current.currentTime = newTime;
-      setTrackProgress(newTime);
+      if (currentTimeLabelRef.current) {
+        currentTimeLabelRef.current.textContent = formatTime(newTime);
+      }
     }
   };
 
-  // Керування мікшером звуку
+  // Мікшер звуку
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
+    if (audioRef.current) audioRef.current.volume = newVolume;
   };
 
-  // Форматування часу (напр. 03:45)
   const formatTime = (time: number) => {
     if (isNaN(time)) return "0:00";
     const minutes = Math.floor(time / 60);
@@ -115,21 +115,25 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
-  // Метадані аудіо (дізнаємось довжину треку)
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
       setTrackDuration(audioRef.current.duration);
     }
   };
 
+  // МОНОЛІТНИЙ ІЗОЛЬОВАНИЙ ПОТІК ЧАСУ (Усе синхронізується тут без лагів)
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const handleTimeUpdate = () => {
       const currentTime = audio.currentTime;
-      setTrackProgress(currentTime);
 
+      // 1. Оновлюємо прогрес-бар та таймер напряму через DOM (без виклику важкого ререндереру React)
+      if (progressSliderRef.current) progressSliderRef.current.value = currentTime.toString();
+      if (currentTimeLabelRef.current) currentTimeLabelRef.current.textContent = formatTime(currentTime);
+
+      // 2. Вираховуємо активний рядок лірики
       let currentLineIndex = -1;
       for (let i = 0; i < LYRICS_DATA.length; i++) {
         if (currentTime >= LYRICS_DATA[i].time) {
@@ -139,6 +143,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
         }
       }
 
+      // 3. Змінюємо індекс тільки тоді, коли реально настав час наступного рядка
       if (currentLineIndex !== -1 && currentLineIndex !== activeLineIndex) {
         setActiveLineIndex(currentLineIndex);
       }
@@ -148,25 +153,29 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
   }, [activeLineIndex]);
 
-  // Автоскролл
+  // АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ ЗА КАНОНАМИ APPLE MUSIC
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
       const activeElement = container.children[activeLineIndex] as HTMLElement;
       if (activeElement) {
-        activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        activeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
       }
     }
-  }, [activeLineIndex, isPlaying]);
+  }, [activeLineIndex]);
 
-  // Скидання при закритті
+  // Повне скидання при закритті
   useEffect(() => {
     if (!isOpen && audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       setIsPlaying(false);
       setActiveLineIndex(-1);
-      setTrackProgress(0);
+      if (progressSliderRef.current) progressSliderRef.current.value = "0";
+      if (currentTimeLabelRef.current) currentTimeLabelRef.current.textContent = "0:00";
       if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
     }
   }, [isOpen]);
@@ -182,6 +191,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
         >
           <div className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} />
 
+          {/* Текст зліва */}
           <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
             {isPlaying && (
               <div className={styles.lyricsScroll} ref={lyricsScrollRef} onScroll={handleLyricsScroll}>
@@ -198,6 +208,7 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
             )}
           </div>
 
+          {/* Картка плеєра справа */}
           <div className={`${styles.musicCard} ${isPlaying ? styles.musicCardShifted : ''}`}>
             <div className={styles.recordContainer}>
               <img src="/tonarm.png" alt="Tonearm" className={styles.tonearm} ref={tonearmRef} />
@@ -217,25 +228,22 @@ export default function PlayerOverlay({ isOpen, onClose }: PlayerOverlayProps) {
               </a>
             </div>
 
-            {/* ==========================================
-               ПРОГРЕС-БАР ТА МІКШЕР ЗВУКУ
-            ========================================== */}
+            {/* ПРОГРЕС-BAR ТА МІКШЕР */}
             <div className={styles.controlsWrapper}>
-              {/* Прогрес-бар */}
               <div className={styles.sliderContainer}>
-                <div className={styles.timeLabel}>{formatTime(trackProgress)}</div>
+                <div className={styles.timeLabel} ref={currentTimeLabelRef}>0:00</div>
                 <input 
                   type="range" 
                   min="0" 
                   max={trackDuration || 100} 
-                  value={trackProgress} 
+                  defaultValue="0"
                   onChange={handleProgressChange} 
                   className={styles.audioSlider}
+                  ref={progressSliderRef}
                 />
                 <div className={styles.timeLabel}>{formatTime(trackDuration)}</div>
               </div>
 
-              {/* Мікшер звуку */}
               <div className={styles.volumeContainer}>
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" className={styles.volumeIcon}>
                   <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
