@@ -13,7 +13,6 @@
   overflow: hidden;
 }
 
-/* Живий рідкий градієнт обгортки Deep End */
 .bgVideo {
   position: absolute;
   top: 0;
@@ -49,9 +48,9 @@
   width: 50%;
   height: 75vh;
   opacity: 0;
-  z-index: 5;
+  z-index: 2;
   transition: opacity 1.5s ease;
-  pointer-events: auto !important; /* Дозволяємо взаємодію з контейнером */
+  pointer-events: none; /* Пропускаємо кліки крізь зовнішню рамку */
 }
 
 .lyricsActive {
@@ -66,11 +65,8 @@
   padding: 32vh 0; 
   scrollbar-width: none;
   -ms-overflow-style: none;
-  pointer-events: auto !important; /* Повністю розблоковуємо мишу на самому тексті */
-  position: relative;
-  z-index: 6;
+  pointer-events: auto !important; /* Розблоковуємо мишу на самому тексті */
 
-  /* М'яка маска розмиття меж зверху та знизу */
   mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
 }
@@ -104,7 +100,7 @@
   opacity: 0.5;
 }
 
-/* АКТИВНИЙ РЯДОК — Твій фірмовий неон та скейл */
+/* АКТИВНИЙ РЯДОК — Ефект вильоту вперед */
 .lyricLineActive {
   opacity: 1 !important;
   transform: scale(1.18) !important; 
@@ -112,11 +108,11 @@
 }
 
 /* ==========================================
-   КАРТКА ПЛЕЄРА
+   КАРТКА ПЛЕЄРА (Справа)
 ========================================== */
 .musicCard {
   position: relative;
-  z-index: 10;
+  z-index: 3;
   background: rgba(0, 0, 0, 0.45); 
   padding: 45px; 
   border-radius: 40px;
@@ -130,7 +126,6 @@
   transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Зсув картки вбік при відтворенні пісні */
 .musicCardShifted {
   transform: translateX(110%);
 }
