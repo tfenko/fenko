@@ -49,25 +49,26 @@
   width: 50%;
   height: 75vh;
   opacity: 0;
-  z-index: 2;
+  z-index: 5;
   transition: opacity 1.5s ease;
-  pointer-events: none; /* Пропускаємо кліки крізь контейнер рамки */
+  pointer-events: auto !important; /* Дозволяємо взаємодію з контейнером */
 }
 
 .lyricsActive {
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 .lyricsScroll {
   width: 100%;
   height: 100%;
-  overflow-y: auto; 
+  overflow-y: auto !important; 
   overflow-x: hidden;
   padding: 32vh 0; 
   scrollbar-width: none;
   -ms-overflow-style: none;
-  pointer-events: auto; /* Вмикаємо події миші суворо на блоці скролу */
-  will-change: transform;
+  pointer-events: auto !important; /* Повністю розблоковуємо мишу на самому тексті */
+  position: relative;
+  z-index: 6;
 
   /* М'яка маска розмиття меж зверху та знизу */
   mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
@@ -103,7 +104,7 @@
   opacity: 0.5;
 }
 
-/* АКТИВНИЙ РЯДОК */
+/* АКТИВНИЙ РЯДОК — Твій фірмовий неон та скейл */
 .lyricLineActive {
   opacity: 1 !important;
   transform: scale(1.18) !important; 
@@ -115,7 +116,7 @@
 ========================================== */
 .musicCard {
   position: relative;
-  z-index: 3;
+  z-index: 10;
   background: rgba(0, 0, 0, 0.45); 
   padding: 45px; 
   border-radius: 40px;
@@ -125,11 +126,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  transform: translateX(0%); /* Спочатку чітко по центру */
+  transform: translateX(0%); 
   transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Коли трек грає — зміщуємо картку праворуч */
+/* Зсув картки вбік при відтворенні пісні */
 .musicCardShifted {
   transform: translateX(110%);
 }
