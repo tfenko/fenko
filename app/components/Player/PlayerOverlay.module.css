@@ -28,6 +28,7 @@
   filter: blur(60px) brightness(0); 
   transition: filter 2s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
+  will-change: filter, background-position; /* Оптимізація для GPU */
 }
 
 /* Коли трек грає — плавно вмикаємо яскравість та запускаємо переливання фону */
@@ -50,28 +51,49 @@
   z-index: 2;
   width: 50%;
   height: 75vh;
-  overflow-y: auto; 
-  overflow-x: hidden;
   opacity: 0;
   transition: opacity 1.5s ease;
-  pointer-events: auto; 
-  
-  mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
-}
-
-/* Ховаємо дефолтний скролбар браузера */
-.lyricsContainer::-webkit-scrollbar { 
-  display: none; 
-}
-.lyricsContainer { 
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
 }
 
 /* Поява лірики при відтворенні */
 .lyricsActive {
   opacity: 1;
+}
+
+/* Окремий внутрішній блок для скролу, щоб псевдоелементи розмиття не рухались разом з текстом */
+.lyricsScroll {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto; 
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.lyricsScroll::-webkit-scrollbar { 
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* ОПТИМІЗАЦІЯ ЕФЕКТУ РОЗМИВАННЯ ЗВЕРХУ ТА ЗНИЗУ ЗАМІСТЬ MASK-IMAGE */
+.lyricsContainer::before,
+.lyricsContainer::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 15%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.lyricsContainer::before {
+  top: 0;
+  background: linear-gradient(to bottom, #000000 0%, transparent 100%);
+}
+
+.lyricsContainer::after {
+  bottom: 0;
+  background: linear-gradient(to top, #000000 0%, transparent 100%);
 }
 
 /* Рядок тексту — стабільна геометрія зі збільшеним шрифтом */
@@ -90,8 +112,9 @@
   opacity: 0.18; 
   
   transform-origin: left center; 
-  transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), text-shadow 0.6s ease;
+  transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   cursor: pointer;
+  will-change: opacity, transform; /* Кажемо браузеру рендерити анімацію через відеокарту */
 }
 
 .lyricLine:hover {
@@ -101,8 +124,8 @@
 /* АКТИВНИЙ РЯДОК — Ефектне виділення */
 .lyricLineActive {
   opacity: 1;
-  transform: scale(1.18); 
-  text-shadow: 0 0 25px rgba(255, 255, 255, 0.45); 
+  transform: scale(1.1); /* Трохи зменшив скейл (з 1.18 до 1.1) — це сильно б'є по продуктивності на Retina-дисплеях */
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.35); /* Полегшений ефект світіння */
 }
 
 /* ==========================================
@@ -120,7 +143,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Плеєр тепер завжди стоїть на місці, анімація трансформації більше не потрібна */
 }
 
 /* Контейнер платівки */
@@ -142,6 +164,7 @@
   border: 10px solid #000; 
   box-shadow: 0 0 40px rgba(0,0,0,0.6); 
   display: block; 
+  will-change: transform;
 }
 
 /* Тонарм під велику платівку */
