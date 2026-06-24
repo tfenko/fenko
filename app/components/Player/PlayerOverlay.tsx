@@ -154,15 +154,16 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     if (audioRef.current) audioRef.current.volume = newVolume;
   };
 
-  // 1. ВІДСТЕЖЕННЯ ЧАСУ
+  // ФІКС 1: НАДІЙНИЙ СЛУХАЧ ЧАСУ (Масив залежностей реагує строго на зміну треку)
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const handleTimeUpdate = () => {
-      let currentLineIndex = -1;
       const currentTime = audio.currentTime;
+      let currentLineIndex = -1;
 
+      // Рахуємо індекс на основі поточної лірики
       for (let i = 0; i < currentTrack.lyrics.length; i++) {
         if (currentTime >= currentTrack.lyrics[i].time) {
           currentLineIndex = i;
@@ -171,16 +172,20 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
         }
       }
 
-      if (currentLineIndex !== -1 && currentLineIndex !== activeLineIndex) {
-        setActiveLineIndex(currentLineIndex);
-      }
+      // Оновлюємо через функціональний сеттер, щоб уникнути жорсткого замикання в ефекті
+      setActiveLineIndex((prevIndex) => {
+        if (currentLineIndex !== prevIndex) {
+          return currentLineIndex;
+        }
+        return prevIndex;
+      });
     };
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
     return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
-  }, [activeLineIndex, trackKey, currentTrack.lyrics]);
+  }, [trackKey, currentTrack.lyrics]); // Більше немає activeLineIndex, подія не перезапускає сама себе!
 
-  // 2. АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ
+  // ФІКС 2: АВТОМАТИЧНИЙ СКРОЛЛ ДО ЦЕНТРУ (Реагує строго на зміну індексу)
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
