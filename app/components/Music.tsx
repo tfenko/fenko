@@ -82,11 +82,9 @@ export default function Music({ onOpenPlayer }: MusicProps) {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
   const [playingId, setPlayingId] = useState<number | null>(null);
   
-  // ТВОЄ РІШЕННЯ З ПЕРЕНОСОМ НА USE-REF
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const togglePlay = (id: number, url: string) => {
-    // Якщо клікнули на повноформатні караоке-треки — відкриваємо оверлей
     if (id === 1 || id === 2) {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -96,7 +94,6 @@ export default function Music({ onOpenPlayer }: MusicProps) {
       return;
     }
 
-    // Для інших треків (якщо знадобляться локальні прев'ю в майбутньому)
     if (!audioRef.current) {
       audioRef.current = new Audio();
     }
@@ -114,7 +111,6 @@ export default function Music({ onOpenPlayer }: MusicProps) {
     }
   };
 
-  // Очищення аудіо об'єкта при анмаунті компонента
   useEffect(() => {
     return () => {
       if (audioRef.current) {
@@ -140,7 +136,12 @@ export default function Music({ onOpenPlayer }: MusicProps) {
             <div key={track.id} className={`flex flex-col lg:flex-row gap-8 lg:gap-20 items-center ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`} onMouseEnter={() => setHoveredTrackId(track.id)} onMouseLeave={() => setHoveredTrackId(null)}>
               
               <motion.div className="relative w-full lg:w-3/5 aspect-[16/10] overflow-hidden bg-foreground/5 group">
-                <img src={track.image} alt={track.title} className="w-full h-full object-cover grayscale contrast-125 transition-all duration-1000 group-hover:scale-105 group-hover:grayscale-0 group-hover:opacity-90" />
+                {/* ФІКС: додано валідні, інформативні alt-теги для покращення SEO та доступності */}
+                <img 
+                  src={track.image} 
+                  alt={`${track.title} by FENKO - ${track.type} cover art`} 
+                  className="w-full h-full object-cover grayscale contrast-125 transition-all duration-1000 group-hover:scale-105 group-hover:grayscale-0 group-hover:opacity-90" 
+                />
                 {track.id === 3 && (
                    <div className="absolute top-4 right-4 z-20 bg-foreground text-background px-3 py-1 text-[8px] font-mono tracking-widest uppercase">
                      July 3rd

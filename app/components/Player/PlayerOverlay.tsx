@@ -94,7 +94,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
   const audioRef = useRef<HTMLAudioElement>(null);
   const tonearmRef = useRef<HTMLImageElement>(null);
   const lyricsScrollRef = useRef<HTMLDivElement>(null);
-  const lastUpdateRef = useRef(0); // Твій реф для throttling
+  const lastUpdateRef = useRef(0);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
@@ -138,7 +138,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
   const handleLineClick = (time: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = time;
-      lastUpdateRef.current = time; // Синхронізуємо throttling реф при кліку
+      lastUpdateRef.current = time;
       
       let clickedIndex = -1;
       const lyrics = TRACKS_DATA[trackKey].lyrics;
@@ -163,11 +163,9 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     if (audioRef.current) audioRef.current.volume = newVolume;
   };
 
-  // ТВОЄ РІШЕННЯ З THROTTLING + ФІКС СТEЙТУ
   const onTimeUpdateHandler = (e: React.SyntheticEvent<HTMLAudioElement>) => {
     const currentTime = e.currentTarget.currentTime;
     
-    // Оновлюємо стан не частіше ніж раз на 100ms
     if (currentTime - lastUpdateRef.current < 0.1) return;
     lastUpdateRef.current = currentTime;
 
@@ -182,7 +180,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
       }
     }
 
-    // Рендеримо тільки якщо рядок дійсно змінився (захист від StrictMode)
     setActiveLineIndex((prev) => (prev !== currentLineIndex ? currentLineIndex : prev));
   };
 
@@ -203,7 +200,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     }
     setIsPlaying(false);
     setActiveLineIndex(-1);
-    lastUpdateRef.current = 0; // Скидаємо тротлінг при зміні треку
+    lastUpdateRef.current = 0;
     if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
   }, [isOpen, trackKey]);
 
@@ -241,8 +238,18 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
 
           <div className={`${styles.musicCard} ${isPlaying ? styles.musicCardShifted : ''}`}>
             <div className={styles.recordContainer}>
-              <img src="/tonarm.png" alt="Tonearm" className={styles.tonearm} ref={tonearmRef} />
-              <img src={currentTrack.coverSrc} alt="Record" className={`${styles.record} ${isPlaying ? styles.isRotating : ''}`} />
+              {/* SEO ФІКС: Валідні alt-теги */}
+              <img 
+                src="/tonarm.png" 
+                alt="Vinyl record tonearm" 
+                className={styles.tonearm} 
+                ref={tonearmRef} 
+              />
+              <img 
+                src={currentTrack.coverSrc} 
+                alt={`${currentTrack.title} vinyl record spinning`} 
+                className={`${styles.record} ${isPlaying ? styles.isRotating : ''}`} 
+              />
               
               <button onClick={togglePlay} className={styles.playBtn}>
                 <svg viewBox="0 0 24 24" width="32" height="32" fill="white">
@@ -284,4 +291,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
       )}
     </AnimatePresence>
   );
-}
+}git add .
+git commit -m "seo: finalized page metadata, added strict robot index rules, synchronized build layout"
+git push origin main

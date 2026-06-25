@@ -1,46 +1,16 @@
-'use client';
-
 import './globals.css';
 import { ThemeContext } from './components/ThemeContext';
-import { useTheme } from 'next-themes';
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+
+// ФІКС ІМПОРТУ: правильний шлях до твого файлу без червоних підкреслень
+import ThemeToggle from './components/ThemeToggle'; 
 
 const SmoothScroll = dynamic(() => import('./components/SmoothScroll'), { ssr: false });
 const CustomCursor = dynamic(() => import('./components/CustomCursor'), { ssr: false });
 const FloatingNotes = dynamic(() => import('./components/FloatingNotes'), { ssr: false });
-
-const ThemeToggle = () => {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    setMounted(true);
-    const handleScroll = () => setIsVisible(window.scrollY < 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-  
-  if (!mounted) return null;
-
-  return (
-    <motion.button 
-      initial={{ opacity: 1 }}
-      animate={{ opacity: isVisible ? 1 : 0 }}
-      transition={{ duration: 0.4 }}
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-      className="font-mono text-[9px] uppercase tracking-[0.3em] hover:opacity-50 text-foreground cursor-none pointer-events-auto"
-      aria-label="Toggle theme"
-    >
-      {theme === 'dark' ? '[ LIGHT MODE ]' : '[ DARK MODE ]'}
-    </motion.button>
-  );
-};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -50,6 +20,89 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background cursor-none">
         
+        {/* ==========================================
+           SEO СТРУКТУРОВАНІ ДАНІ (JSON-LD)
+        ========================================== */}
+        {/* Каркас для артиста / бренду FENKO */}
+        <Script
+          id="schema-music-group"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "MusicGroup",
+              "name": "FENKO",
+              "alternateName": "fenkomus",
+              "url": "https://fenko.space",
+              "genre": ["Alternative R&B", "Dark Pop", "Soul Trap", "Cinematic Soul Trap"],
+              "description": "Alternative R&B artist // Dark Soundscapes // Cinematic Soul Trap production.",
+              "sameAs": [
+                "https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS",
+                "https://music.apple.com/ua/artist/fenko/1895075050",
+                "https://www.instagram.com/fenkomus",
+                "https://www.tiktok.com/@fenkomus",
+                "https://soundcloud.com/fenkomus"
+              ],
+              "foundingDate": "2024",
+              "image": "https://fenko.space/deepend.webp"
+            })
+          }}
+        />
+
+        {/* Схема для музичних релізів (архів треків) */}
+        <Script
+          id="schema-music-releases"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "MusicRelease",
+                  "name": "Half Real",
+                  "byArtist": {
+                    "@type": "MusicGroup",
+                    "name": "FENKO"
+                  },
+                  "datePublished": "2026-05-08",
+                  "genre": "Alternative R&B",
+                  "musicReleaseFormat": "https://schema.org/DigitalFormat",
+                  "url": "https://fenko.space/#music"
+                },
+                {
+                  "@type": "MusicRelease",
+                  "name": "Deep End",
+                  "byArtist": {
+                    "@type": "MusicGroup",
+                    "name": "FENKO"
+                  },
+                  "datePublished": "2024",
+                  "genre": "Alternative R&B",
+                  "musicReleaseFormat": "https://schema.org/DigitalFormat",
+                  "url": "https://fenko.space/#music"
+                },
+                {
+                  "@type": "MusicRelease",
+                  "name": "Still Get Close",
+                  "byArtist": {
+                    "@type": "MusicGroup",
+                    "name": "FENKO"
+                  },
+                  "datePublished": "2026-07-03",
+                  "genre": "Alternative R&B",
+                  "musicReleaseFormat": "https://schema.org/DigitalFormat",
+                  "url": "https://fenko.space/#music"
+                }
+              ]
+            })
+          }}
+        />
+
+        {/* ==========================================
+           АНАЛІТИКА ТА ТРЕКЕРИ (Google Analytics)
+        ========================================== */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-3T3TFTGZX0" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`

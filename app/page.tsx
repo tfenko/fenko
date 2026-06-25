@@ -1,19 +1,26 @@
+import type { Metadata } from 'next';
 import Hero from './components/Hero';
 import About from './components/About';
 import Footer from './components/Footer';
 import HomeContent from './components/HomeContent';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'FENKO // Official Website',
   description: 'Official archive of FENKO (fenkomus). Alternative R&B, Dark Soundscapes, and Cinematic Soul Trap production. Author of the novel "Exit from Full Screen Mode".',
   keywords: [
     'fenko', 'fenkomus', 'fenko space', 'dark r&b', 
     'alternative r&b', 'cinematic soul trap', 'deep end fenko', 
-    'half real', 'music producer lviv'
+    'half real', 'music producer lviv', 'exit from full screen mode'
   ],
+  authors: [{ name: 'FENKO', url: 'https://fenko.space' }],
+  creator: 'FENKO',
+  publisher: 'FENKO',
+  alternates: {
+    canonical: 'https://fenko.space',
+  },
   openGraph: {
     title: 'FENKO // Official Website',
-    description: 'Alternative R&B // Dark Soundscapes // Exit from Full Screen Mode',
+    description: 'Alternative R&B // Dark Soundscapes // Official archive and novel "Exit from Full Screen Mode"',
     url: 'https://fenko.space',
     siteName: 'FENKO SPACE',
     images: [
@@ -30,8 +37,19 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'FENKO // Official Website',
-    description: 'Alternative R&B // Dark Soundscapes // Exit from Full Screen Mode',
-    images: ['/og-image.png'],
+    description: 'Alternative R&B // Dark Soundscapes // Official archive and novel "Exit from Full Screen Mode"',
+    images: ['/og-image.webp'], // Уніфіковано під один формат og-зображення
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 
@@ -40,7 +58,7 @@ export default function Home() {
     <>
       <Hero />
       <About />
-      {/* Клієнтський міст для роботи плеєра */}
+      {/* Клієнтський міст для роботи плеєра та караоке */}
       <HomeContent />
       <Footer />
     </>
