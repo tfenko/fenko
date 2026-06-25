@@ -80,3 +80,22 @@ a, button, [role="button"], input, select, textarea, label {
     pointer-events: none !important;
   }
 }
+
+/* ==========================================================================
+   ACCESSIBILITY: Клавіатурна навігація (WCAG AA)
+   ========================================================================== */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 4px;
+}
+
+/* Вимикаємо стандартний дефолтний аутлайн для чистих переходів */
+a:focus,
+button:focus,
+input:focus,
+[role="button"]:focus {
+  outline: none;
+}
