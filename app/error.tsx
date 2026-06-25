@@ -10,8 +10,8 @@ export default function GlobalErrorBoundary({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Логуємо помилку в консоль продакшну або аналітику
-    console.error('Captured by Fenko Architecture Error Boundary:', error);
+    // Логуємо помилку (корисно для дебагу на продакшні)
+    console.error('Captured by FENKO Architecture Error Boundary:', error);
   }, [error]);
 
   return (
@@ -29,13 +29,13 @@ export default function GlobalErrorBoundary({
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <button
             onClick={() => reset()}
-            className="text-[9px] tracking-[0.3em] uppercase border border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-all"
+            className="text-[9px] tracking-[0.3em] uppercase border border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
           >
             [ REBOOT SYSTEM ]
           </button>
           <a
             href="/"
-            className="text-[9px] tracking-[0.3em] uppercase border border-foreground/20 px-6 py-3 hover:border-foreground transition-all flex items-center justify-center"
+            className="text-[9px] tracking-[0.3em] uppercase border border-foreground/20 px-6 py-3 hover:border-foreground transition-all flex items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
           >
             [ RETURN HOME ]
           </a>

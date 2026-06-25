@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Cormorant_Garamond } from 'next/font/google';
-import Image from 'next/image'; // ФІКС: Імпорт компонента оптимізації зображень
+import Image from 'next/image'; // ✅ ДОДАНО: Правильний імпорт для оптимізації зображень
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -86,21 +86,30 @@ export default function Music({ onOpenPlayer }: MusicProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const togglePlay = (id: number, url: string) => {
-    if (id === 1 || id === 2) {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        setPlayingId(null);
-      }
-      onOpenPlayer(id === 1 ? 'deepend' : 'halfreal');
+    // ✅ ФІКС ЛОГІКИ: Завжди ставимо на паузу локальне аудіо перед будь-якою дією
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setPlayingId(null);
+    }
+
+    // ✅ ФІКС ЛОГІКИ: Чітке розмежування відкриття оверлею
+    if (id === 1) {
+      onOpenPlayer('deepend');
+      return;
+    }
+    if (id === 2) {
+      onOpenPlayer('halfreal');
       return;
     }
 
+    // Якщо це інші треки (без оверлею)
     if (!audioRef.current) {
       audioRef.current = new Audio();
     }
 
     const audio = audioRef.current;
-
+    
+    // Перевірка: якщо клікнули на той самий трек, що вже грав
     if (playingId === id && !audio.paused) {
       audio.pause();
       setPlayingId(null);
@@ -137,7 +146,7 @@ export default function Music({ onOpenPlayer }: MusicProps) {
             <div key={track.id} className={`flex flex-col lg:flex-row gap-8 lg:gap-20 items-center ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`} onMouseEnter={() => setHoveredTrackId(track.id)} onMouseLeave={() => setHoveredTrackId(null)}>
               
               <motion.div className="relative w-full lg:w-3/5 aspect-[16/10] overflow-hidden bg-foreground/5 group">
-                {/* ФІКС: Заміна <img> на оптимізований <Image /> */}
+                {/* ✅ ФІКС: Замінено <img> на оптимізований <Image /> */}
                 <Image 
                   src={track.image} 
                   alt={`${track.title} by FENKO - ${track.type} cover art`} 
@@ -176,13 +185,13 @@ export default function Music({ onOpenPlayer }: MusicProps) {
 
                 <div className="w-full flex flex-col items-center lg:items-start gap-6">
                   {track.id === 3 ? (
-                    <a href={track.preSaveUrl} target="_blank" rel="noopener noreferrer" className="group flex items-center font-mono text-[9px] uppercase tracking-[0.3em] border border-foreground/30 px-6 py-2 hover:bg-foreground hover:text-background transition-all">
+                    <a href={track.preSaveUrl} target="_blank" rel="noopener noreferrer" className="group flex items-center font-mono text-[9px] uppercase tracking-[0.3em] border border-foreground/30 px-6 py-2 hover:bg-foreground hover:text-background transition-all focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground">
                       [ PRE-SAVE ]
                     </a>
                   ) : (
                     <button 
                       onClick={() => togglePlay(track.id, track.previewUrl)}
-                      className="group flex items-center font-mono text-[9px] uppercase tracking-[0.3em] border border-foreground/30 px-6 py-2 hover:bg-foreground hover:text-background transition-all"
+                      className="group flex items-center font-mono text-[9px] uppercase tracking-[0.3em] border border-foreground/30 px-6 py-2 hover:bg-foreground hover:text-background transition-all focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
                     >
                       {playingId === track.id && <Visualizer isPlaying={true} />}
                       {playingId === track.id ? '[ PAUSE ]' : '[ PLAY FULL TRACK ]'}
@@ -191,7 +200,7 @@ export default function Music({ onOpenPlayer }: MusicProps) {
 
                   <div className="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-4 pt-6 border-t border-foreground/10 items-center">
                     {track.links.map((link) => (
-                      <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" aria-label={`Listen to ${track.title} on ${link.name}`} className="text-foreground/50 hover:text-foreground transition-colors duration-300 relative group flex items-center justify-center w-12 h-12 md:w-auto md:h-auto">
+                      <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" aria-label={`Listen to ${track.title} on ${link.name}`} className="text-foreground/50 hover:text-foreground transition-colors duration-300 relative group flex items-center justify-center w-12 h-12 md:w-auto md:h-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground">
                         <span className="flex md:hidden items-center justify-center w-8 h-8">
                           <Image src={platformIcons[link.name]} alt="" width={24} height={24} className={`${iconSizes[link.name]} object-contain opacity-70`} />
                         </span>
