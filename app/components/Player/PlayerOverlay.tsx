@@ -291,6 +291,4 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
       )}
     </AnimatePresence>
   );
-}git add .
-git commit -m "seo: finalized page metadata, added strict robot index rules, synchronized build layout"
-git push origin main
+}
