@@ -46,6 +46,2289 @@ app/
       PlayerOverlay.module.css
       PlayerOverlay.tsx
     About.tsx
+    ClientProviders.tsx
+    CustomCursor.tsx
+    FloatingNotes.tsx
+    Footer.tsx
+    Hero.tsx
+    HomeContent.tsx
+    Music.tsx
+    SmoothScroll.tsx
+    SoundControl.tsx
+    StatsCounter.tsx
+    ThemeContext.tsx
+    ThemeToggle.tsx
+    ThreeScene.tsx
+  globals.css
+  icon.png
+  layout.tsx
+  page.tsx
+  robots.txt
+  sitemap.ts
+public/
+  ambient.mp3
+  apple-music.png
+  cover3.webp
+  Deep-End.mp3
+  deepend-2.webp
+  deepend.png
+  deepend.webp
+  file.svg
+  globe.svg
+  Half-Real.mp3
+  halfreal-2.webp
+  halfreal.png
+  halfreal.webp
+  next.svg
+  og-image.png
+  og-image.webp
+  soundcloud.png
+  spotify.png
+  tiser1.mp3
+  tiser2.mp3
+  tonarm.png
+  vercel.svg
+  vibe.png
+  vibe.webp
+  window.svg
+  youtube-music.png
+.gitignore
+AGENTS.md
+CLAUDE.md
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+package.json
+postcss.config.mjs
+README.md
+repomix-output.txt
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="app/components/Player/PlayerOverlay.module.css">
+/* ==========================================
+   ГОЛОВНИЙ ОВЕРЛЕЙ
+========================================== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5vw;
+  padding: 2rem 5vw;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.closeBtnOverlay {
+  position: absolute;
+  top: 2.5rem;
+  right: 3.5rem;
+  z-index: 100;
+  font-size: 11px;
+  font-family: monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  cursor: none !important;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.closeBtnOverlay:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.bgVideo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  filter: blur(60px) brightness(0); 
+  transition: filter 2s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  will-change: filter, background-position;
+}
+
+.bgVideoActive {
+  filter: blur(60px) brightness(0.65);
+  animation: fluidGradient 18s ease infinite;
+}
+
+@keyframes fluidGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ==========================================
+   КОНТЕЙНЕР ЛІРИКИ
+========================================== */
+.lyricsContainer {
+  position: relative;
+  flex: 1;
+  max-width: 600px;
+  height: 75vh;
+  opacity: 0;
+  z-index: 5;
+  transition: opacity 1.5s ease;
+  pointer-events: auto !important;
+}
+
+.lyricsActive {
+  opacity: 1 !important;
+}
+
+.lyricsScroll {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll !important; 
+  overflow-x: hidden;
+  padding: 35vh 0; 
+  padding-left: 2rem; 
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  pointer-events: auto !important; 
+  position: relative;
+  mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+}
+
+.lyricsScroll::-webkit-scrollbar { 
+  display: none !important; 
+}
+
+.lyricLine {
+  margin: 0;
+  padding: 0;
+  height: 85px; 
+  display: flex;
+  align-items: center; 
+  white-space: nowrap; 
+  overflow: visible; 
+  color: #ffffff;
+  font-size: 28px; 
+  font-weight: 700; 
+  opacity: 0.18; 
+  transform-origin: left center; 
+  transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), text-shadow 0.6s ease;
+  cursor: none !important; 
+  will-change: opacity, transform;
+}
+
+.lyricLine:hover {
+  opacity: 0.5;
+}
+
+.lyricLineActive {
+  opacity: 1 !important;
+  transform: scale(1.12) !important; 
+  text-shadow: 0 0 25px rgba(255, 255, 255, 0.45); 
+  cursor: none !important;
+}
+
+/* ==========================================
+   КАРТКА ПЛЕЄРА
+========================================== */
+.musicCard {
+  position: relative;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.45); 
+  padding: 40px; 
+  border-radius: 40px;
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0; 
+  width: 420px; 
+  max-width: 90vw;
+  box-sizing: border-box;
+  transform: translateX(0%); 
+  transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.musicCardShifted {
+  transform: translateX(0%); 
+}
+
+.recordContainer { 
+  position: relative; 
+  width: 100%;
+  max-width: 320px; 
+  aspect-ratio: 1/1;
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+}
+
+.record { 
+  width: 100%; 
+  height: 100%; 
+  border-radius: 50%; 
+  object-fit: cover; 
+  border: 10px solid #000; 
+  box-shadow: 0 0 40px rgba(0,0,0,0.6); 
+  display: block; 
+  will-change: transform;
+}
+
+.tonearm { 
+  position: absolute; 
+  top: -25px; 
+  right: 15%; 
+  width: 70%; 
+  transform-origin: 20px 20px; 
+  transform: rotate(-25deg); 
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); 
+  z-index: 10; 
+  pointer-events: none; 
+}
+
+.playBtn { 
+  position: absolute; 
+  width: 80px; 
+  height: 80px; 
+  border-radius: 50%; 
+  border: 1px solid rgba(255, 255, 255, 0.2); 
+  background: rgba(255, 255, 255, 0.15); 
+  backdrop-filter: blur(10px); 
+  color: white; 
+  z-index: 20; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  transition: all 0.3s ease; 
+  padding: 0; 
+  cursor: none !important;
+}
+
+.playBtn:hover { 
+  background: rgba(255, 255, 255, 0.3); 
+  transform: scale(1.1); 
+}
+
+.isRotating { 
+  animation: rotate 3s linear infinite; 
+}
+
+@keyframes rotate { 
+  from { transform: rotate(0deg); } 
+  to { transform: rotate(360deg); } 
+}
+
+.trackInfo { 
+  margin-top: 30px; 
+  text-align: center; 
+}
+
+.trackTitle { 
+  font-size: 24px; 
+  color: white; 
+  margin: 0; 
+  letter-spacing: 1px; 
+  font-weight: 600; 
+}
+
+.artistLink {
+  text-decoration: none;
+  display: inline-block;
+  cursor: none !important;
+}
+
+.artistName { 
+  font-size: 15px; 
+  color: rgba(255, 255, 255, 0.5); 
+  margin: 6px 0 0 0; 
+  text-transform: uppercase; 
+  letter-spacing: 2px; 
+  transition: color 0.3s ease;
+}
+
+.artistLink:hover .artistName {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ==========================================
+   МІКШЕР ЗВУКУ
+========================================== */
+.controlsWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+.volumeContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0 1rem; 
+  color: rgba(255, 255, 255, 0.4);
+  box-sizing: border-box;
+}
+
+.volumeIcon {
+  flex-shrink: 0;
+  transition: color 0.3s ease;
+}
+
+.volumeContainer:hover .volumeIcon {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.volumeSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  outline: none;
+  cursor: none !important;
+  transition: background 0.3s ease;
+}
+
+.volumeSlider:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.volumeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  transition: transform 0.1s ease;
+}
+
+.volumeSlider::-webkit-slider-thumb:hover {
+  transform: scale(1.3);
+}
+
+/* ==========================================
+   MОБІЛЬНА ОПТИМІЗАЦІЯ
+========================================== */
+@media (max-width: 1024px) {
+  .overlay {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    padding-top: 5.5rem; 
+  }
+
+  .closeBtnOverlay {
+    top: 1.5rem;
+    right: 50%;
+    transform: translateX(50%); 
+    font-size: 10px;
+    padding: 0.5rem 1rem;
+  }
+
+  .closeBtnOverlay:hover {
+    transform: translateX(50%) translateY(0);
+  }
+
+  .musicCard {
+    width: 100%;
+    max-width: 340px;
+    padding: 20px;
+    border-radius: 24px;
+    margin-bottom: 0;
+    transform: none !important; 
+    transition: none !important;
+  }
+
+  .musicCardShifted {
+    transform: none !important; 
+  }
+
+  .recordContainer {
+    max-width: 160px; 
+  }
+
+  .record {
+    border: 5px solid #000;
+  }
+
+  .tonearm {
+    width: 110px;
+    top: -10px;
+    right: 25px;
+  }
+
+  .playBtn {
+    width: 50px;
+    height: 50px;
+  }
+
+  .trackInfo {
+    margin-top: 15px;
+  }
+
+  .trackTitle {
+    font-size: 18px;
+  }
+
+  .artistName {
+    font-size: 12px;
+  }
+
+  .lyricsContainer {
+    position: relative;
+    left: auto;
+    width: 100%;
+    height: 35vh; 
+    max-width: 100%;
+  }
+
+  .lyricsScroll {
+    padding: 12vh 0; 
+    padding-left: 0;
+    text-align: center; 
+  }
+
+  .lyricLine {
+    height: 50px; 
+    font-size: 18px; 
+    justify-content: center;
+    transform-origin: center center;
+    white-space: normal; 
+    text-align: center;
+  }
+
+  .lyricLineActive {
+    transform: scale(1.08) !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .recordContainer {
+    max-width: 130px;
+  }
+  .lyricLine {
+    font-size: 15px;
+    height: 45px;
+  }
+}
+
+@media (pointer: coarse) {
+  .closeBtnOverlay,
+  .lyricLine,
+  .lyricLineActive,
+  .playBtn,
+  .artistLink,
+  .volumeSlider {
+    cursor: auto !important;
+  }
+
+  .volumeContainer {
+    display: none !important;
+  }
+}
+</file>
+
+<file path="app/components/Player/PlayerOverlay.tsx">
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import styles from './PlayerOverlay.module.css';
+
+interface PlayerOverlayProps {
+  isOpen: boolean;
+  onClose: () => void;
+  trackKey: 'deepend' | 'halfreal';
+}
+
+const TRACKS_DATA = {
+  deepend: {
+    title: "Deep End",
+    audioSrc: "/Deep-End.mp3",
+    coverSrc: "/deepend.webp",
+    bgGradient: "linear-gradient(135deg, #050b14, #0a1118, #0e2530, #131a22, #050b14)",
+    lyrics: [
+      { time: 21.66, text: "Blue light, crawling up the wall" },
+      { time: 25.64, text: "Wait for the tide, wait for the fall" },
+      { time: 30.10, text: "Your ghost is dancing in the smoke" },
+      { time: 34.70, text: "A heavy chain, a velvet choke" },
+      { time: 39.23, text: "You say you're mine, but you're like the sea" },
+      { time: 44.08, text: "Always drifting away from me" },
+      { time: 50.45, text: "Away from me" },
+      { time: 57.12, text: "I'm diving in the deep end for you" },
+      { time: 65.92, text: "There's nothing else that I can do" },
+      { time: 73.03, text: "I'm losing air, 'm losing time" },
+      { time: 77.79, text: "But I'd die to make you mine" },
+      { time: 91.17, text: "Salt on my skin, dust in my lungs" },
+      { time: 95.46, text: "We're speaking in those silent tongues" },
+      { time: 99.74, text: "The water's cold, the moon is high" },
+      { time: 104.31, text: "A beautiful way for us to die" },
+      { time: 108.65, text: "Don't reach for me, just let me sink" },
+      { time: 112.91, text: "I'm closer to you than you think" },
+      { time: 119.18, text: "Yeah, closer than you think" },
+      { time: 128.87, text: "I'm diving in the deep end for you" },
+      { time: 137.68, text: "There's nothing else that I can do" },
+      { time: 144.44, text: "I'm losing air, I'm losing time" },
+      { time: 149.38, text: "But I'd die to make you mine" },
+      { time: 158.32, text: "Yeah, I'd die to make you mine" },
+      { time: 186.05, text: "Drifting" },
+      { time: 189.56, text: "Losing light" }
+    ]
+  },
+  halfreal: {
+    title: "Half Real",
+    audioSrc: "/Half-Real.mp3",
+    coverSrc: "/halfreal-2.webp",
+    bgGradient: "linear-gradient(135deg, #000000, #150505, #2d0b0b, #100303, #000000)",
+    lyrics: [
+      { time: 3.05, text: "I see your shadow in the light again" },
+      { time: 10.07, text: "But I don't know if you were ever here" },
+      { time: 16.55, text: "You come back in the night time" },
+      { time: 19.99, text: "Fading through the red lights" },
+      { time: 23.79, text: "Cold hands on my throat now" },
+      { time: 27.53, text: "Say you love me, don't lie" },
+      { time: 31.36, text: "We don't talk in the daytime" },
+      { time: 35.00, text: "We just live in the low light" },
+      { time: 38.97, text: "Hearts numb but it feels right" },
+      { time: 42.49, text: "You come back every night" },
+      { time: 45.41, text: "You move like static in my room" },
+      { time: 47.48, text: "Like you're half real, half a dream" },
+      { time: 49.41, text: "Say my name like it don't mean" },
+      { time: 51.15, text: "Anything you promised me" },
+      { time: 53.14, text: "No past, no reason why" },
+      { time: 54.95, text: "We just meet before sunrise" },
+      { time: 56.97, text: "Then you vanish from my sight" },
+      { time: 58.77, text: "Like you never were alive" },
+      { time: 60.64, text: "And I try to let it go" },
+      { time: 62.48, text: "But it pulls me back again" },
+      { time: 64.38, text: "Every time I fall asleep" },
+      { time: 66.39, text: "You return inside my head" },
+      { time: 72.24, text: "You come back in the night time" },
+      { time: 75.53, text: "Fading through the red lights" },
+      { time: 79.58, text: "Cold hands on my throat now" },
+      { time: 83.06, text: "Say you love me, don't lie" },
+      { time: 87.32, text: "We don't talk in the daytime" },
+      { time: 90.47, text: "We just live in the low light" },
+      { time: 94.12, text: "Hearts numb but it feels right" },
+      { time: 97.86, text: "You come back every night" },
+      { time: 115.41, text: "I can't tell if you are real" },
+      { time: 118.88, text: "Or just something I repeat" },
+      { time: 122.93, text: "In the silence you appear" },
+      { time: 126.67, text: "Then you disappear from me" },
+      { time: 144.16, text: "You come back" },
+      { time: 153.51, text: "And I don't ask why" }
+    ]
+  }
+};
+
+export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverlayProps) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const tonearmRef = useRef<HTMLImageElement>(null);
+  const lyricsScrollRef = useRef<HTMLDivElement>(null);
+  const lastUpdateRef = useRef(0);
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [activeLineIndex, setActiveLineIndex] = useState(-1);
+  const [volume, setVolume] = useState(1);
+
+  const isUserScrolling = useRef(false);
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const currentTrack = TRACKS_DATA[trackKey];
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
+  const togglePlay = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (audio.paused) {
+      audio.play().catch(() => {});
+      setIsPlaying(true);
+      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-5deg)';
+    } else {
+      audio.pause();
+      setIsPlaying(false);
+      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
+    }
+  };
+
+  const handleLyricsScroll = () => {
+    isUserScrolling.current = true;
+    if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+    scrollTimeout.current = setTimeout(() => { isUserScrolling.current = false; }, 4000);
+  };
+
+  const handleLineClick = (time: number) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      lastUpdateRef.current = time;
+      
+      let clickedIndex = -1;
+      const lyrics = TRACKS_DATA[trackKey].lyrics;
+      for (let i = 0; i < lyrics.length; i++) {
+        if (time >= lyrics[i].time) {
+          clickedIndex = i;
+        }
+      }
+      setActiveLineIndex(clickedIndex);
+      
+      if (audioRef.current.paused) {
+        audioRef.current.play().catch(() => {});
+        setIsPlaying(true);
+        if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-5deg)';
+      }
+    }
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    if (audioRef.current) audioRef.current.volume = newVolume;
+  };
+
+  const onTimeUpdateHandler = (e: React.SyntheticEvent<HTMLAudioElement>) => {
+    const currentTime = e.currentTarget.currentTime;
+    
+    if (currentTime - lastUpdateRef.current < 0.1) return;
+    lastUpdateRef.current = currentTime;
+
+    let currentLineIndex = -1;
+    const lyrics = TRACKS_DATA[trackKey].lyrics;
+
+    for (let i = 0; i < lyrics.length; i++) {
+      if (currentTime >= lyrics[i].time) {
+        currentLineIndex = i;
+      } else {
+        break;
+      }
+    }
+
+    setActiveLineIndex((prev) => (prev !== currentLineIndex ? currentLineIndex : prev));
+  };
+
+  useEffect(() => {
+    if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
+      const container = lyricsScrollRef.current;
+      const activeElement = container.children[activeLineIndex] as HTMLElement;
+      if (activeElement) {
+        activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [activeLineIndex]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsPlaying(false);
+    setActiveLineIndex(-1);
+    lastUpdateRef.current = 0;
+    if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
+  }, [isOpen, trackKey]);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          exit={{ opacity: 0 }}
+          className={styles.overlay}
+        >
+          <button onClick={onClose} className={styles.closeBtnOverlay}>
+            [ CLOSE PLAYER ]
+          </button>
+
+          <div 
+            className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} 
+            style={{ background: currentTrack.bgGradient }}
+          />
+
+          <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
+            <div className={styles.lyricsScroll} ref={lyricsScrollRef} onScroll={handleLyricsScroll}>
+              {currentTrack.lyrics.map((line, index) => (
+                <p 
+                  key={index} 
+                  className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
+                  onClick={() => handleLineClick(line.time)}
+                >
+                  {line.text}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          <div className={`${styles.musicCard} ${isPlaying ? styles.musicCardShifted : ''}`}>
+            <div className={styles.recordContainer}>
+              {/* SEO ФІКС: Валідні alt-теги */}
+              <img 
+                src="/tonarm.png" 
+                alt="Vinyl record tonearm" 
+                className={styles.tonearm} 
+                ref={tonearmRef} 
+              />
+              <img 
+                src={currentTrack.coverSrc} 
+                alt={`${currentTrack.title} vinyl record spinning`} 
+                className={`${styles.record} ${isPlaying ? styles.isRotating : ''}`} 
+              />
+              
+              <button onClick={togglePlay} className={styles.playBtn}>
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="white">
+                  {isPlaying ? <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/> : <path d="M8 5v14l11-7z"/>}
+                </svg>
+              </button>
+            </div>
+
+            <div className={styles.trackInfo}>
+              <h2 className={styles.trackTitle}>{currentTrack.title}</h2>
+              <a href="https://fenko.space" target="_blank" rel="noopener noreferrer" className={styles.artistLink}>
+                <p className={styles.artistName}>FENKO</p>
+              </a>
+            </div>
+
+            <div className={styles.volumeContainer}>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" className={styles.volumeIcon}>
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+              </svg>
+              <input 
+                type="range" 
+                min="0" 
+                max="1" 
+                step="0.01" 
+                value={volume} 
+                onChange={handleVolumeChange} 
+                className={styles.volumeSlider}
+              />
+            </div>
+
+            <audio 
+              ref={audioRef} 
+              src={currentTrack.audioSrc} 
+              preload="auto" 
+              onTimeUpdate={onTimeUpdateHandler} 
+            />
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+</file>
+
+<file path="app/components/About.tsx">
+'use client';
+
+import { motion } from 'framer-motion';
+import { Cormorant_Garamond } from 'next/font/google';
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['300', '400'],
+  style: ['normal', 'italic'],
+});
+
+export default function About() {
+  return (
+    <section className="relative w-full min-h-screen flex items-center justify-center px-6 md:px-12 py-32 overflow-hidden transition-colors duration-600">
+      
+      {/* Фоновий текст VIBE */}
+      <div className={`${cormorant.className} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[25vw] font-bold text-foreground/[0.03] uppercase select-none pointer-events-none`}>
+        VIBE
+      </div>
+
+      <div className="max-w-4xl mx-auto text-center relative z-10">
+        <motion.p 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 0.5 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1 }}
+          className="text-[9px] font-mono tracking-[0.6em] uppercase mb-16 text-foreground/50"
+        >
+          // MANIFESTO
+        </motion.p>
+
+        <motion.h2 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.4, ease: "easeOut" }}
+          className={`${cormorant.className} text-[22px] sm:text-3xl md:text-5xl font-light tracking-[0.05em] uppercase leading-[1.6] text-foreground`}
+        >
+          <span className="block mb-1">FENKO IS NOT JUST MUSIC.</span>
+          <span className="italic opacity-80 block">IT IS A WORLD YOU ENTER.</span>
+          
+          <span className="font-sans text-[9px] md:text-xs block mt-12 tracking-[0.3em] font-light lowercase text-foreground/60">
+            — a memory, a dream, a late-night drive.
+          </span>
+        </motion.h2>
+      </div>
+    </section>
+  );
+}
+</file>
+
+<file path="app/components/ClientProviders.tsx">
+'use client';
+
+import dynamic from 'next/dynamic';
+
+const SmoothScroll = dynamic(() => import('./SmoothScroll'), { ssr: false });
+const CustomCursor = dynamic(() => import('./CustomCursor'), { ssr: false });
+const FloatingNotes = dynamic(() => import('./FloatingNotes'), { ssr: false });
+
+export default function ClientProviders({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <FloatingNotes />
+      <div className="hidden md:block">
+        <CustomCursor />
+      </div>
+      <SmoothScroll>
+        {children}
+      </SmoothScroll>
+    </>
+  );
+}
+</file>
+
+<file path="app/components/CustomCursor.tsx">
+'use client';
+
+import { useEffect, useState } from 'react';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
+
+export default function CustomCursor() {
+  const [isHovered, setIsHovered] = useState(false);
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+  
+  const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
+  const cursorXSpring = useSpring(cursorX, springConfig);
+  const cursorYSpring = useSpring(cursorY, springConfig);
+
+  const ringSpringConfig = { damping: 30, stiffness: 100, mass: 0.8 };
+  const ringXSpring = useSpring(cursorX, ringSpringConfig);
+  const ringYSpring = useSpring(cursorY, ringSpringConfig);
+
+  useEffect(() => {
+    const moveCursor = (e: MouseEvent) => {
+      cursorX.set(e.clientX - 8);
+      cursorY.set(e.clientY - 8);
+    };
+
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a') || target.closest('button')) {
+        setIsHovered(true);
+      }
+    };
+    
+    const handleMouseOut = () => setIsHovered(false);
+
+    window.addEventListener('mousemove', moveCursor);
+    window.addEventListener('mouseover', handleMouseOver);
+    window.addEventListener('mouseout', handleMouseOut);
+
+    return () => {
+      window.removeEventListener('mousemove', moveCursor);
+      window.removeEventListener('mouseover', handleMouseOver);
+      window.removeEventListener('mouseout', handleMouseOut);
+    };
+  }, [cursorX, cursorY]);
+
+  return (
+    <>
+      {/* Ядро: Додано mix-blend-mode: difference для інверсії кольорів */}
+      <motion.div
+        className="fixed top-0 left-0 w-4 h-4 bg-foreground rounded-full z-[9999] pointer-events-none mix-blend-difference"
+        style={{ x: cursorXSpring, y: cursorYSpring }}
+        animate={{ scale: isHovered ? 0.5 : 1 }}
+      />
+      
+      {/* Кільце: Також додаємо difference для гармонії */}
+      <motion.div
+        className="fixed top-0 left-0 w-8 h-8 border border-foreground rounded-full z-[9998] pointer-events-none mix-blend-difference"
+        style={{ x: ringXSpring, y: ringYSpring }} 
+        animate={{ 
+          scale: isHovered ? 1.5 : 1,
+          opacity: isHovered ? 0.8 : 0.5
+        }}
+      />
+    </>
+  );
+}
+</file>
+
+<file path="app/components/FloatingNotes.tsx">
+'use client';
+
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+
+const Note = ({ top, left, right, delay }: { top: string; left?: string; right?: string; delay: number }) => {
+  return (
+    <motion.div
+      animate={{ 
+        y: [0, -60, 0],
+        rotate: [0, 20, -20, 0],
+        x: [0, 20, -20, 0]
+      }}
+      transition={{ 
+        duration: 10 + Math.random() * 5, 
+        repeat: Infinity, 
+        delay,
+        ease: "easeInOut" 
+      }}
+      style={{ top, left, right }}
+      className="fixed pointer-events-none text-foreground/40 text-6xl z-[500] hidden md:block"
+    >
+      ♪
+    </motion.div>
+  );
+};
+
+export default function FloatingNotes() {
+  const { scrollY } = useScroll();
+  const opacity = useSpring(useTransform(scrollY, [0, 100], [0, 1]), { stiffness: 50 });
+
+  const positions = [
+    { top: '10%', left: '5%' }, { top: '20%', right: '10%' },
+    { top: '40%', left: '15%' }, { top: '50%', right: '5%' },
+    { top: '65%', left: '10%' }, { top: '75%', right: '15%' },
+    { top: '85%', left: '25%' }, { top: '30%', right: '25%' }
+  ];
+
+  return (
+    <motion.div style={{ opacity }} className="fixed inset-0 pointer-events-none z-[500]">
+      {positions.map((p, i) => (
+        <Note key={i} {...p} delay={i * 0.7} />
+      ))}
+    </motion.div>
+  );
+}
+</file>
+
+<file path="app/components/Footer.tsx">
+'use client';
+
+import { motion, useMotionValue, useTransform, animate, useInView } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+
+export default function Footer() {
+  // --- РЕДАГУЙ ДАНІ ТУТ ---
+  const TOTAL_STREAMS = 10857;
+  const CURRENT_DATE = "June 24, 2026";
+  // -----------------------
+
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => Math.round(latest).toLocaleString());
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    if (isInView) {
+      animate(count, TOTAL_STREAMS, { duration: 2.5, ease: "easeOut" });
+    }
+  }, [isInView, count, TOTAL_STREAMS]);
+
+  const socials = [
+    { name: 'Spotify', url: 'https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS' },
+    { name: 'Apple Music', url: 'https://music.apple.com/ua/artist/fenko/1895075050' },
+    { name: 'YouTube', url: 'https://music.youtube.com/@Fenkomus' },
+    { name: 'SoundCloud', url: 'https://www.soundcloud.com/fenkomus' },
+    { name: 'Instagram', url: 'https://www.instagram.com/fenkomus' },
+    { name: 'TikTok', url: 'https://www.tiktok.com/@fenkomus' },
+  ];
+
+  return (
+    <footer ref={ref} className="relative z-10 w-full bg-background text-foreground py-16 px-6 md:px-16 border-t border-foreground/10">
+      <div className="max-w-6xl mx-auto">
+        
+        {/* Верхній блок: Бренд та посилання */}
+        <div className="flex flex-col md:flex-row justify-between items-start mb-16 gap-8">
+          <div>
+            <h3 className="text-xl font-bold tracking-[0.2em] uppercase mb-2">FENKO</h3>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-foreground/50">Some people only exist after midnight.</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-2">
+            {socials.map((link) => (
+              <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" className="text-[11px] tracking-widest text-foreground/50 hover:text-foreground transition-colors uppercase">
+                {link.name}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Компактний блок статистики */}
+        <div className="border border-foreground/10 p-8 mb-16 text-center">
+          <span className="text-[8px] uppercase tracking-[0.4em] text-foreground/30 block mb-2">Global reach // Total streams</span>
+          <motion.span className="font-cormorant text-4xl block mb-2">{rounded}</motion.span>
+          <span className="text-[10px] uppercase tracking-widest text-foreground/30">Streams // As of {CURRENT_DATE}</span>
+        </div>
+
+        {/* Футер лінія */}
+        <div className="flex justify-between text-[9px] tracking-[0.3em] uppercase text-foreground/30 font-mono">
+          <p>© {new Date().getFullYear()} FENKO</p>
+          <p>Designed for the shadows.</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+</file>
+
+<file path="app/components/Hero.tsx">
+'use client';
+
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useTheme } from 'next-themes';
+import ThreeScene from './ThreeScene';
+
+export default function Hero() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  const handleSceneReady = () => {
+    document.dispatchEvent(new Event('heroMediaLoaded'));
+  };
+
+  const scrollToMusic = () => {
+    const musicSection = document.getElementById('music');
+    if (musicSection) {
+      musicSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const musicLinks = [
+    { name: 'Spotify', url: 'https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS?si=jpGzjHaHSsWz7knbsVIPDQ' },
+    { name: 'Apple Music', url: 'https://music.apple.com/ua/artist/fenko/1895075050' },
+    { name: 'YouTube', url: 'https://music.youtube.com/@Fenkomus' },
+  ];
+
+  return (
+    <motion.div
+      ref={containerRef}
+      style={{ opacity: bgOpacity }}
+      className="relative w-full h-screen bg-background flex items-center justify-center overflow-hidden z-30"
+    >
+      <div className={`absolute inset-0 z-10 transition-all duration-1000 ${theme === 'dark' ? 'invert-0' : 'invert grayscale'}`}>
+        <ThreeScene onReady={handleSceneReady} />
+      </div>
+
+      {/* Плавний перехід у темряву внизу екрана для гармонійного скролу */}
+      <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent z-20 pointer-events-none" />
+
+      <div className="absolute inset-0 z-20 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,var(--background)_100%)]" />
+
+      <motion.div 
+        style={{ y, opacity }}
+        className="relative z-50 text-center px-4"
+      >
+        <h1 className="font-cormorant text-7xl sm:text-8xl md:text-[140px] font-bold tracking-[0.2em] uppercase mb-4 text-foreground transition-colors duration-500">
+          FENKO
+        </h1>
+        <p className="font-sans text-[10px] md:text-[11px] text-foreground/60 font-light tracking-[0.5em] uppercase max-w-xl mx-auto leading-relaxed">
+          Some people only exist after midnight
+        </p>
+
+        {/* Акцентні кнопки платформ */}
+        <div className="mt-10 flex flex-wrap justify-center gap-4">
+          {musicLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-2 border border-foreground/20 hover:border-foreground bg-foreground/5 hover:bg-foreground hover:text-background transition-all duration-300"
+            >
+              <span className="font-mono text-[9px] uppercase tracking-[0.3em]">
+                {link.name}
+              </span>
+            </a>
+          ))}
+        </div>
+
+        {/* Фінальна стильна кнопка */}
+        <button 
+          onClick={scrollToMusic}
+          aria-label="Scroll to music section"
+          className="mt-12 px-12 py-4 border border-foreground/30 hover:border-foreground transition-all duration-500 cursor-none backdrop-blur-sm hover:bg-foreground/5"
+        >
+          <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.3em] text-foreground transition-colors duration-500">
+            [ Discography ]
+          </span>
+        </button>
+      </motion.div>
+
+      {/* Скролл маркер */}
+      <motion.div 
+        style={{ opacity }}
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-3"
+      >
+        <span className="text-[8px] font-mono tracking-[0.3em] uppercase text-foreground">scroll</span>
+        <div className="w-[1px] h-10 bg-foreground/30 relative overflow-hidden">
+          <motion.div 
+            animate={{ y: [0, 40] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+            className="absolute top-0 w-full h-1/2 bg-foreground"
+          />
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+</file>
+
+<file path="app/components/HomeContent.tsx">
+'use client';
+
+import { useState } from 'react';
+import Music from './Music';
+import PlayerOverlay from './Player/PlayerOverlay';
+
+export default function HomeContent() {
+  // Стан обов'язково має приймати null або рядок з ключем треку!
+  const [activeTrack, setActiveTrack] = useState<'deepend' | 'halfreal' | null>(null);
+
+  return (
+    <>
+      {/* Кліки по треках змінюють стан на 'deepend' або 'halfreal' */}
+      <Music onOpenPlayer={(trackKey) => setActiveTrack(trackKey)} />
+      
+      {/* КРИТИЧНЕ МІСЦЕ: trackKey має братися СУВОРO зі стану activeTrack */}
+      <PlayerOverlay 
+        isOpen={activeTrack !== null} 
+        onClose={() => setActiveTrack(null)} 
+        trackKey={activeTrack || 'deepend'} // Якщо activeTrack змінить значення на 'halfreal', плеєр перемикнеться!
+      />
+    </>
+  );
+}
+</file>
+
+<file path="app/components/Music.tsx">
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Cormorant_Garamond } from 'next/font/google';
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['300', '400'],
+});
+
+const Visualizer = ({ isPlaying }: { isPlaying: boolean }) => (
+  <div className="flex items-center gap-[2px] h-3 mr-3">
+    {[1, 2, 3].map((i) => (
+      <motion.div
+        key={i}
+        className="w-[2px] bg-foreground"
+        animate={{ height: isPlaying ? ['20%', '100%', '40%', '80%', '30%'] : '20%' }}
+        transition={{ 
+          repeat: Infinity, 
+          duration: 0.8, 
+          delay: i * 0.1,
+          ease: "linear" 
+        }}
+      />
+    ))}
+  </div>
+);
+
+const platformIcons: { [key: string]: string } = {
+  'Apple Music': '/apple-music.png',
+  'Spotify': '/spotify.png',
+  'YouTube': '/youtube-music.png',
+  'SoundCloud': '/soundcloud.png',
+};
+
+const iconSizes: { [key: string]: string } = {
+  'Apple Music': 'w-[18px] h-[22px]',
+  'Spotify': 'w-6 h-6',
+  'YouTube': 'w-6.5 h-6.5 scale-[1]',
+  'SoundCloud': 'w-6 h-6',
+};
+
+function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: boolean; enabled: boolean }) {
+  const [displayText, setDisplayText] = useState(text);
+  const chars = 'XØR█▓░🤖01_//';
+
+  useEffect(() => {
+    if (!enabled || !isHovered) {
+      setDisplayText(text);
+      return;
+    }
+    let iterations = 0;
+    const interval = setInterval(() => {
+      setDisplayText(() =>
+        text.split('').map((char, index) => {
+          if (char === ' ') return ' ';
+          if (index < iterations) return text[index];
+          return chars[Math.floor(Math.random() * chars.length)];
+        }).join('')
+      );
+      if (iterations >= text.length) clearInterval(interval);
+      iterations += 1 / 3;
+    }, 30);
+    return () => clearInterval(interval);
+  }, [isHovered, text, enabled]);
+
+  return <>{displayText}</>;
+}
+
+const releases = [
+  { id: 3, title: 'Still Get Close', type: 'Upcoming // July 3', description: 'The new sound is coming. A journey into the depths of the shadows. Stay tuned for the release.', meta: { bpm: '---', key: '---', mood: 'PRE-SAVE // SOON' }, image: '/cover3.webp', canScramble: false, previewUrl: '', links: [], preSaveUrl: 'https://distrokid.com/hyperfollow/fenko1/still-get-close' },
+  { id: 2, title: 'Half Real', type: 'Single // Release', description: 'The lyrics explore a haunting relationship characterized by fleeting encounters and emotional turmoil. Navigating the complexities of love that feels both real and illusory, the narrator grapples with the duality of presence.', meta: { bpm: '129', key: 'D minor', mood: 'INTROSPECTIVE // MYSTERIOUS' }, image: '/halfreal-2.webp', canScramble: true, previewUrl: '/Half-Real.mp3', links: [{ name: 'Apple Music', url: 'https://music.apple.com/ua/album/half-real/6769801424?i=6769801425' }, { name: 'Spotify', url: 'https://open.spotify.com/track/6UOYiUahxxA4wWBawrfmzY' }, { name: 'YouTube', url: 'https://music.youtube.com/watch?v=Fs0ZWHbaxBg&si=HG0NwzzWarDTfzLj' }, { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/half-real' }] },
+  { id: 1, title: 'Deep End', type: 'Single // Release', description: 'The lyrics convey a sense of longing and emotional struggle in a relationship marked by distance and uncertainty. The imagery of water and sinking suggests a deep dive into love, while metaphors like \"heavy chain\" illustrate the weight of attachment.', meta: { bpm: '80', key: 'A# minor', mood: 'MELANCHOLIC // YEARNING' }, image: '/deepend.webp', canScramble: false, previewUrl: '/Deep-End.mp3', links: [{ name: 'Apple Music', url: 'https://music.apple.com/ua/album/deep-end/1895507327?i=6763819432' }, { name: 'Spotify', url: 'https://open.spotify.com/track/1EG19rhMAOtv57SfzxfG6V' }, { name: 'YouTube', url: 'https://music.youtube.com/playlist?list=OLAK5uy_myDt0WSvtAR2rKNX-p6_k2S4GVc7DAfkQ&si=GA2iGhEq4exWtb-8' }, { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/deep-end' }] },
+];
+
+interface MusicProps {
+  onOpenPlayer: (trackKey: 'deepend' | 'halfreal') => void;
+}
+
+export default function Music({ onOpenPlayer }: MusicProps) {
+  const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
+  const [playingId, setPlayingId] = useState<number | null>(null);
+  
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const togglePlay = (id: number, url: string) => {
+    if (id === 1 || id === 2) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        setPlayingId(null);
+      }
+      onOpenPlayer(id === 1 ? 'deepend' : 'halfreal');
+      return;
+    }
+
+    if (!audioRef.current) {
+      audioRef.current = new Audio();
+    }
+
+    const audio = audioRef.current;
+
+    if (playingId === id && !audio.paused) {
+      audio.pause();
+      setPlayingId(null);
+    } else {
+      audio.src = url;
+      audio.play().catch(() => {});
+      setPlayingId(id);
+      audio.onended = () => setPlayingId(null);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  return (
+    <section id="music" className="relative z-10 w-full min-h-screen bg-background text-foreground py-24 md:py-40 px-4 md:px-16 flex flex-col justify-center border-t border-foreground/10 transition-colors duration-600">
+      <div className="max-w-6xl mx-auto w-full relative z-10">
+        <div className="mb-16 md:mb-24 border-b border-foreground/10 pb-6 flex flex-col sm:flex-row justify-between items-center sm:items-end text-center sm:text-left gap-4">
+          <div>
+            <p className="font-sans text-[9px] tracking-[0.6em] text-foreground/50 uppercase mb-2">Selected Works</p>
+            <h2 className={`${cormorant.className} text-2xl md:text-3xl font-light tracking-[0.2em] uppercase text-foreground/80`}>Soundscapes</h2>
+          </div>
+          <span className="text-[9px] font-mono text-foreground/30 tracking-widest hidden sm:block">FENKO // MUSIC</span>
+        </div>
+
+        <div className="flex flex-col gap-24 md:gap-40">
+          {releases.map((track, index) => (
+            <div key={track.id} className={`flex flex-col lg:flex-row gap-8 lg:gap-20 items-center ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`} onMouseEnter={() => setHoveredTrackId(track.id)} onMouseLeave={() => setHoveredTrackId(null)}>
+              
+              <motion.div className="relative w-full lg:w-3/5 aspect-[16/10] overflow-hidden bg-foreground/5 group">
+                {/* ФІКС: додано валідні, інформативні alt-теги для покращення SEO та доступності */}
+                <img 
+                  src={track.image} 
+                  alt={`${track.title} by FENKO - ${track.type} cover art`} 
+                  className="w-full h-full object-cover grayscale contrast-125 transition-all duration-1000 group-hover:scale-105 group-hover:grayscale-0 group-hover:opacity-90" 
+                />
+                {track.id === 3 && (
+                   <div className="absolute top-4 right-4 z-20 bg-foreground text-background px-3 py-1 text-[8px] font-mono tracking-widest uppercase">
+                     July 3rd
+                   </div>
+                )}
+                <div className="absolute inset-0 bg-foreground/10 opacity-20 group-hover:opacity-0 transition-opacity duration-700" />
+              </motion.div>
+
+              <motion.div className="w-full lg:w-2/5 flex flex-col items-center lg:items-start text-center lg:text-left">
+                <span className="text-[9px] font-mono tracking-[0.4em] text-foreground/50 uppercase mb-2 block">{track.type}</span>
+                <h3 className={`${cormorant.className} text-2xl md:text-5xl font-light tracking-[0.1em] uppercase mb-4 text-foreground`}>
+                  <ScrambleText text={track.title} isHovered={hoveredTrackId === track.id} enabled={track.canScramble} />
+                </h3>
+                
+                <p className={`font-sans font-light text-xs md:text-sm leading-relaxed mb-6 max-w-sm md:max-w-md mx-auto lg:mx-0 ${track.id === 3 ? 'text-foreground/40' : 'text-foreground/70'}`}>
+                  {track.description}
+                </p>
+
+                <div className="flex gap-4 font-mono text-[8px] tracking-[0.2em] opacity-50 uppercase mb-8">
+                  <span>BPM: {track.meta.bpm}</span>
+                  <span>//</span>
+                  <span>KEY: {track.meta.key}</span>
+                  <span>//</span>
+                  <span>MOOD: {track.meta.mood}</span>
+                </div>
+
+                <div className="w-full flex flex-col items-center lg:items-start gap-6">
+                  {track.id === 3 ? (
+                    <a href={track.preSaveUrl} target="_blank" rel="noopener noreferrer" className="group flex items-center font-mono text-[9px] uppercase tracking-[0.3em] border border-foreground/30 px-6 py-2 hover:bg-foreground hover:text-background transition-all">
+                      [ PRE-SAVE ]
+                    </a>
+                  ) : (
+                    <button 
+                      onClick={() => togglePlay(track.id, track.previewUrl)}
+                      className="group flex items-center font-mono text-[9px] uppercase tracking-[0.3em] border border-foreground/30 px-6 py-2 hover:bg-foreground hover:text-background transition-all"
+                    >
+                      {playingId === track.id && <Visualizer isPlaying={true} />}
+                      {playingId === track.id ? '[ PAUSE ]' : '[ PLAY FULL TRACK ]'}
+                    </button>
+                  )}
+
+                  <div className="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-4 pt-6 border-t border-foreground/10 items-center">
+                    {track.links.map((link) => (
+                      <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" aria-label={`Listen to ${track.title} on ${link.name}`} className="text-foreground/50 hover:text-foreground transition-colors duration-300 relative group flex items-center justify-center w-12 h-12 md:w-auto md:h-auto">
+                        <span className="flex md:hidden items-center justify-center w-8 h-8"><img src={platformIcons[link.name]} alt="" className={`${iconSizes[link.name]} object-contain opacity-70`} /></span>
+                        <span className="hidden md:block text-[11px] tracking-[0.25em] uppercase">{link.name}</span>
+                        <span className="absolute left-0 bottom-[-4px] w-0 h-[1px] bg-foreground transition-all duration-300 group-hover:w-full hidden md:block" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+</file>
+
+<file path="app/components/SmoothScroll.tsx">
+'use client';
+
+import { ReactNode, useEffect, useRef } from 'react';
+import Lenis from 'lenis';
+
+export default function SmoothScroll({ children }: { children: ReactNode }) {
+  const lenisRef = useRef<Lenis | null>(null);
+
+  useEffect(() => {
+    // Наказуємо браузеру ЗАВЖДИ скидати скрол в нуль при перезавантаженні сторінки
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
+    // Примусово скролимо вікно браузера в самий верх прямо на старті
+    window.scrollTo(0, 0);
+
+    // Ініціалізуємо плавний скрол Lenis
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+    });
+
+    lenisRef.current = lenis;
+
+    // Примусово кажемо Lenis миттєво стати в позицію 0 (top) без анімації
+    lenis.scrollTo(0, { immediate: true });
+
+    // Запускаємо чистий цикл анімації через єдиний актуальний метод .raf()
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    // Чистимо за собою при демонтажі компонента
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
+  return <>{children}</>;
+}
+</file>
+
+<file path="app/components/SoundControl.tsx">
+'use client';
+
+import { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
+
+export default function SoundControl() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    audioRef.current = new Audio('/ambient.mp3');
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.4;
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  const toggleSound = () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch((err) => console.log("Браузер заблокував автоплей:", err));
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  return (
+    <button 
+      onClick={toggleSound}
+      // aria-label обов'язково для Accessibility
+      aria-label={isPlaying ? "Вимкнути звук" : "Увімкнути звук"}
+      className="flex items-center gap-3 cursor-none select-none group transition-opacity duration-300 hover:opacity-50"
+    >
+      {/* Анімовані лінії */}
+      <div className="flex items-end justify-center gap-[2px] h-3 w-4">
+        {[1, 2, 3, 4].map((bar) => (
+          <motion.div
+            key={bar}
+            className="w-[1px] bg-foreground"
+            initial={{ height: 2 }}
+            animate={isPlaying ? { height: [2, 12, 4, 10, 2] } : { height: 2 }}
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              delay: bar * 0.15,
+              ease: "easeInOut"
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Текстовий маркер */}
+      <span className="font-mono text-[9px] tracking-[0.3em] text-foreground uppercase">
+        [ sound : {isPlaying ? 'on' : 'off'} ]
+      </span>
+    </button>
+  );
+}
+</file>
+
+<file path="app/components/StatsCounter.tsx">
+'use client';
+
+import { motion, useMotionValue, useTransform, animate, useInView } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+
+export default function StatsCounter() {
+  // ---------------------------
+  const CURRENT_STREAMS = 9412;
+  const CURRENT_DATE = "JUNE 21, 2026";
+  // ---------------------------
+
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => Math.round(latest).toLocaleString());
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    if (isInView) {
+      animate(count, CURRENT_STREAMS, { duration: 2.5, ease: "easeOut" });
+    }
+  }, [isInView, count]);
+
+  return (
+    <motion.div 
+      ref={ref}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      className="flex flex-col items-center justify-center py-20 border-y border-foreground/10 my-12 bg-foreground/[0.02]"
+    >
+      <span className="text-[9px] uppercase tracking-[0.4em] text-foreground/40 mb-6">
+        Global reach // Total streams
+      </span>
+      
+      <div className="flex items-baseline gap-3">
+        <motion.span className="font-cormorant text-5xl md:text-7xl font-light text-foreground">
+          {rounded}
+        </motion.span>
+        <span className="text-sm font-mono text-foreground/30 uppercase tracking-widest">
+          Streams
+        </span>
+      </div>
+
+      <div className="mt-6 flex flex-col items-center gap-2">
+        <span className="text-[8px] font-mono uppercase tracking-[0.3em] text-foreground/20">
+          AS OF {CURRENT_DATE}
+        </span>
+        <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-foreground/30 to-transparent mt-2" />
+      </div>
+    </motion.div>
+  );
+}
+</file>
+
+<file path="app/components/ThemeContext.tsx">
+'use client';
+
+import { ThemeProvider } from 'next-themes';
+
+export function ThemeContext({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider 
+      attribute="class" 
+      defaultTheme="dark" 
+      enableSystem={false} // Вимкнено forcedTheme
+    >
+      {children}
+    </ThemeProvider>
+  );
+}
+</file>
+
+<file path="app/components/ThemeToggle.tsx">
+'use client';
+
+import { useTheme } from 'next-themes';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+
+export default function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    setMounted(true);
+    
+    const handleScroll = () => {
+      // Скриваємо кнопку, якщо прокрутили більше ніж на 50px
+      setIsVisible(window.scrollY < 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Запобігаємо помилкам гідратації, поки компонент не змонтований
+  if (!mounted) return null;
+
+  return (
+    <motion.button 
+      initial={{ opacity: 1 }}
+      animate={{ 
+        opacity: isVisible ? 1 : 0,
+        pointerEvents: isVisible ? 'auto' : 'none' 
+      }}
+      transition={{ duration: 0.4 }}
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      // aria-label додано для покращення Accessibility (Lighthouse)
+      aria-label={theme === 'dark' ? 'Переключити на світлу тему' : 'Переключити на темну тему'}
+      className="font-mono text-[9px] uppercase tracking-[0.3em] 
+                 hover:opacity-50 text-foreground cursor-none transition-opacity duration-300"
+    >
+      {theme === 'dark' ? '[ LIGHT MODE ]' : '[ DARK MODE ]'}
+    </motion.button>
+  );
+}
+</file>
+
+<file path="app/components/ThreeScene.tsx">
+'use client';
+
+import { useRef, useEffect } from 'react';
+import * as THREE from 'three';
+
+interface ThreeSceneProps {
+  onReady?: () => void;
+}
+
+export default function ThreeScene({ onReady }: ThreeSceneProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    containerRef.current.appendChild(renderer.domElement);
+
+    camera.position.z = 1.5;
+
+    let mesh: THREE.Mesh | null = null;
+    const textureLoader = new THREE.TextureLoader();
+
+    // Безпечне завантаження текстури з тригером готовності
+    textureLoader.load(
+      '/vibe.webp',
+      (texture) => {
+        const geometry = new THREE.PlaneGeometry(5.5, 3.2, 1, 1);
+        const material = new THREE.MeshBasicMaterial({
+          map: texture,
+          transparent: true,
+          opacity: 0.45,
+        });
+        mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        // Повідомляємо Hero та Preloader, що 3D-сцена успішно завантажена
+        if (onReady) {
+          setTimeout(() => {
+            onReady();
+          }, 100);
+        }
+      },
+      undefined,
+      (err) => {
+        console.error("Помилка завантаження картинки vibe.webp. Перевірте папку public.", err);
+        // Якщо сталася помилка, все одно пускаємо користувача на сайт, щоб не було вічного завантаження
+        if (onReady) onReady();
+      }
+    );
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetX = 0;
+    let targetY = 0;
+
+    const handleMouseMove = (event: MouseEvent) => {
+      mouseX = ((event.clientX / window.innerWidth) - 0.5) * 0.1;
+      mouseY = ((event.clientY / window.innerHeight) - 0.5) * 0.1;
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    const clock = new THREE.Clock();
+
+    let animationFrameId: number;
+
+    const animate = () => {
+      animationFrameId = requestAnimationFrame(animate);
+      const elapsedTime = clock.getElapsedTime();
+
+      if (mesh) {
+        targetX += (mouseX - targetX) * 0.02;
+        targetY += (mouseY - targetY) * 0.02;
+
+        mesh.position.x = targetX + Math.sin(elapsedTime * 0.3) * 0.005;
+        mesh.position.y = -targetY + Math.cos(elapsedTime * 0.2) * 0.003;
+      }
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationFrameId);
+      if (containerRef.current && renderer.domElement) {
+        containerRef.current.removeChild(renderer.domElement);
+      }
+    };
+  }, [onReady]);
+
+  return <div ref={containerRef} className="absolute inset-0 -z-10 bg-black" />;
+}
+</file>
+
+<file path="app/globals.css">
+@import "tailwindcss";
+
+/* Запобігаємо спалаху світлого фону під час першого рендеру */
+html {
+  background-color: #000000;
+}
+
+@layer base {
+  :root {
+    --background: #f4f4f4; 
+    --foreground: #2d2d2d;
+  }
+  .dark {
+    --background: #000000;
+    --foreground: #ffffff;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+              color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Примусово вимикаємо системний курсор усюди на ПК */
+  cursor: none !important;
+}
+
+/* ФІКС ДЛЯ КУРСОРА:
+   Примусово вимикаємо стандартний курсор для всіх елементів, 
+   на які можна натиснути (на ПК) */
+a, button, [role="button"], input, select, textarea, label {
+  cursor: none !important;
+}
+
+/* Контури тексту */
+:not(.dark) .text-outline-light {
+  text-shadow: -1px -1px 0 #ffffff, 1px -1px 0 #ffffff, -1px 1px 0 #ffffff, 1px 1px 0 #ffffff;
+}
+.dark .text-outline-dark {
+  text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
+}
+
+/* Кінематографічне зерно */
+.film-grain {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 9998;
+  will-change: transform;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.08; 
+}
+.dark .film-grain {
+  filter: invert(1);
+  opacity: 0.03;
+}
+
+/* ==========================================
+   ФІКС ДЛЯ ПЛАНШЕТІВ ТА ТЕЛЕФОНІВ (TOUCH)
+========================================== */
+@media (pointer: coarse) {
+  /* Повертаємо нативний курсор/палець для всього сайту та інтерактивних елементів */
+  body, 
+  a, button, [role="button"], input, select, textarea, label {
+    cursor: auto !important;
+  }
+
+  /* Якщо у тебе є окремий div для кастомної крапки, ховаємо його, щоб не висів на екрані */
+  .custom-cursor,
+  [class*="customCursor"],
+  [class*="cursor-dot"] {
+    display: none !important;
+    pointer-events: none !important;
+  }
+}
+</file>
+
+<file path="app/layout.tsx">
+import './globals.css';
+import { ThemeContext } from './components/ThemeContext';
+import Script from 'next/script';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import ThemeToggle from './components/ThemeToggle'; 
+import ClientProviders from './components/ClientProviders'; // Імпортуємо наш новий клієнтський міст
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <title>FENKO</title>
+      </head>
+      <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background cursor-none">
+        
+        {/* ==========================================
+           SEO СТРУКТУРОВАНІ ДАНІ (JSON-LD)
+        ========================================== */}
+        {/* Схема для артиста / бренду FENKO */}
+        <Script
+          id="schema-music-group"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "MusicGroup",
+              "name": "FENKO",
+              "alternateName": "fenkomus",
+              "url": "https://fenko.space",
+              "genre": ["Alternative R&B", "Dark Pop", "Soul Trap", "Cinematic Soul Trap"],
+              "description": "Alternative R&B artist // Dark Soundscapes // Cinematic Soul Trap production.",
+              "sameAs": [
+                "https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS",
+                "https://music.apple.com/ua/artist/fenko/1895075050",
+                "https://www.instagram.com/fenkomus",
+                "https://www.tiktok.com/@fenkomus",
+                "https://soundcloud.com/fenkomus"
+              ],
+              "foundingDate": "2024",
+              "image": "https://fenko.space/deepend.webp"
+            })
+          }}
+        />
+
+        {/* Схема для музичних релізів (архів треків) */}
+        <Script
+          id="schema-music-releases"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "MusicRelease",
+                  "name": "Half Real",
+                  "byArtist": {
+                    "@type": "MusicGroup",
+                    "name": "FENKO"
+                  },
+                  "datePublished": "2026-05-08",
+                  "genre": "Alternative R&B",
+                  "musicReleaseFormat": "https://schema.org/DigitalFormat",
+                  "url": "https://fenko.space/#music"
+                },
+                {
+                  "@type": "MusicRelease",
+                  "name": "Deep End",
+                  "byArtist": {
+                    "@type": "MusicGroup",
+                    "name": "FENKO"
+                  },
+                  "datePublished": "2024",
+                  "genre": "Alternative R&B",
+                  "musicReleaseFormat": "https://schema.org/DigitalFormat",
+                  "url": "https://fenko.space/#music"
+                },
+                {
+                  "@type": "MusicRelease",
+                  "name": "Still Get Close",
+                  "byArtist": {
+                    "@type": "MusicGroup",
+                    "name": "FENKO"
+                  },
+                  "datePublished": "2026-07-03",
+                  "genre": "Alternative R&B",
+                  "musicReleaseFormat": "https://schema.org/DigitalFormat",
+                  "url": "https://fenko.space/#music"
+                }
+              ]
+            })
+          }}
+        />
+
+        {/* ==========================================
+           АНАЛІТИКА ТА ТРЕКЕРИ (Google Analytics)
+        ========================================== */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-3T3TFTGZX0" strategy="afterInteractive" />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-3T3TFTGZX0');
+            gtag('config', 'AW-18240888787');
+          `}
+        </Script>
+        
+        <ThemeContext>
+          <div className="film-grain" />
+          
+          <div className="fixed bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 z-[900] flex justify-between pointer-events-none">
+            <div className="pointer-events-auto">
+              <ThemeToggle />
+            </div>
+          </div>
+            
+          <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[900] mix-blend-difference">
+            <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] uppercase text-foreground">F //</span>
+          </div>
+
+          {/* Виклик нашого нового ізольованого клієнтського провайдера ефектів */}
+          <ClientProviders>
+            <main className="w-full relative z-10 min-h-screen">{children}</main>
+          </ClientProviders>
+          
+          <Analytics />
+          <SpeedInsights />
+        </ThemeContext>
+      </body>
+    </html>
+  );
+}
+</file>
+
+<file path="app/page.tsx">
+import type { Metadata } from 'next';
+import Hero from './components/Hero';
+import About from './components/About';
+import Footer from './components/Footer';
+import HomeContent from './components/HomeContent';
+
+export const metadata: Metadata = {
+  title: 'FENKO // Official Website',
+  description: 'Official archive of FENKO (fenkomus). Alternative R&B, Dark Soundscapes, and Cinematic Soul Trap production. Author of the novel "Exit from Full Screen Mode".',
+  keywords: [
+    'fenko', 'fenkomus', 'fenko space', 'dark r&b', 
+    'alternative r&b', 'cinematic soul trap', 'deep end fenko', 
+    'half real', 'music producer lviv', 'exit from full screen mode'
+  ],
+  authors: [{ name: 'FENKO', url: 'https://fenko.space' }],
+  creator: 'FENKO',
+  publisher: 'FENKO',
+  alternates: {
+    canonical: 'https://fenko.space',
+  },
+  openGraph: {
+    title: 'FENKO // Official Website',
+    description: 'Alternative R&B // Dark Soundscapes // Official archive and novel "Exit from Full Screen Mode"',
+    url: 'https://fenko.space',
+    siteName: 'FENKO SPACE',
+    images: [
+      {
+        url: '/og-image.webp', 
+        width: 1200,
+        height: 631,
+        alt: 'FENKO - Official Art Cover',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FENKO // Official Website',
+    description: 'Alternative R&B // Dark Soundscapes // Official archive and novel "Exit from Full Screen Mode"',
+    images: ['/og-image.webp'], // Уніфіковано під один формат og-зображення
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+};
+
+export default function Home() {
+  return (
+    <>
+      <Hero />
+      <About />
+      {/* Клієнтський міст для роботи плеєра та караоке */}
+      <HomeContent />
+      <Footer />
+    </>
+  );
+}
+</file>
+
+<file path="app/robots.txt">
+User-agent: *
+Allow: /
+
+Sitemap: https://fenko.space/sitemap.xml
+</file>
+
+<file path="app/sitemap.ts">
+import { MetadataRoute } from 'next';
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    {
+      url: 'https://fenko.space',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 1,
+    },
+  ];
+}
+</file>
+
+<file path="public/file.svg">
+<svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 13.5V5.41a1 1 0 0 0-.3-.7L9.8.29A1 1 0 0 0 9.08 0H1.5v13.5A2.5 2.5 0 0 0 4 16h8a2.5 2.5 0 0 0 2.5-2.5m-1.5 0v-7H8v-5H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1M9.5 5V2.12L12.38 5zM5.13 5h-.62v1.25h2.12V5zm-.62 3h7.12v1.25H4.5zm.62 3h-.62v1.25h7.12V11z" clip-rule="evenodd" fill="#666" fill-rule="evenodd"/></svg>
+</file>
+
+<file path="public/globe.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.27 14.1a6.5 6.5 0 0 0 3.67-3.45q-1.24.21-2.7.34-.31 1.83-.97 3.1M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.48-1.52a7 7 0 0 1-.96 0H7.5a4 4 0 0 1-.84-1.32q-.38-.89-.63-2.08a40 40 0 0 0 3.92 0q-.25 1.2-.63 2.08a4 4 0 0 1-.84 1.31zm2.94-4.76q1.66-.15 2.95-.43a7 7 0 0 0 0-2.58q-1.3-.27-2.95-.43a18 18 0 0 1 0 3.44m-1.27-3.54a17 17 0 0 1 0 3.64 39 39 0 0 1-4.3 0 17 17 0 0 1 0-3.64 39 39 0 0 1 4.3 0m1.1-1.17q1.45.13 2.69.34a6.5 6.5 0 0 0-3.67-3.44q.65 1.26.98 3.1M8.48 1.5l.01.02q.41.37.84 1.31.38.89.63 2.08a40 40 0 0 0-3.92 0q.25-1.2.63-2.08a4 4 0 0 1 .85-1.32 7 7 0 0 1 .96 0m-2.75.4a6.5 6.5 0 0 0-3.67 3.44 29 29 0 0 1 2.7-.34q.31-1.83.97-3.1M4.58 6.28q-1.66.16-2.95.43a7 7 0 0 0 0 2.58q1.3.27 2.95.43a18 18 0 0 1 0-3.44m.17 4.71q-1.45-.12-2.69-.34a6.5 6.5 0 0 0 3.67 3.44q-.65-1.27-.98-3.1" fill="#666"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
+</file>
+
+<file path="public/next.svg">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80"><path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 0h-17.8l63.8 79.4h17.9l-32-39.7 32-39.6h-17.9l-23 28.6-23-28.6zm18.3 56.7-9-11-27.1 33.7h17.8l18.3-22.7z"/><path fill="#000" d="M81 79.3 17 0H0v79.3h13.6V17l50.2 62.3H81Zm252.6-.4c-1 0-1.8-.4-2.5-1s-1.1-1.6-1.1-2.6.3-1.8 1-2.5 1.6-1 2.6-1 1.8.3 2.5 1a3.4 3.4 0 0 1 .6 4.3 3.7 3.7 0 0 1-3 1.8zm23.2-33.5h6v23.3c0 2.1-.4 4-1.3 5.5a9.1 9.1 0 0 1-3.8 3.5c-1.6.8-3.5 1.3-5.7 1.3-2 0-3.7-.4-5.3-1s-2.8-1.8-3.7-3.2c-.9-1.3-1.4-3-1.4-5h6c.1.8.3 1.6.7 2.2s1 1.2 1.6 1.5c.7.4 1.5.5 2.4.5 1 0 1.8-.2 2.4-.6a4 4 0 0 0 1.6-1.8c.3-.8.5-1.8.5-3V45.5zm30.9 9.1a4.4 4.4 0 0 0-2-3.3 7.5 7.5 0 0 0-4.3-1.1c-1.3 0-2.4.2-3.3.5-.9.4-1.6 1-2 1.6a3.5 3.5 0 0 0-.3 4c.3.5.7.9 1.3 1.2l1.8 1 2 .5 3.2.8c1.3.3 2.5.7 3.7 1.2a13 13 0 0 1 3.2 1.8 8.1 8.1 0 0 1 3 6.5c0 2-.5 3.7-1.5 5.1a10 10 0 0 1-4.4 3.5c-1.8.8-4.1 1.2-6.8 1.2-2.6 0-4.9-.4-6.8-1.2-2-.8-3.4-2-4.5-3.5a10 10 0 0 1-1.7-5.6h6a5 5 0 0 0 3.5 4.6c1 .4 2.2.6 3.4.6 1.3 0 2.5-.2 3.5-.6 1-.4 1.8-1 2.4-1.7a4 4 0 0 0 .8-2.4c0-.9-.2-1.6-.7-2.2a11 11 0 0 0-2.1-1.4l-3.2-1-3.8-1c-2.8-.7-5-1.7-6.6-3.2a7.2 7.2 0 0 1-2.4-5.7 8 8 0 0 1 1.7-5 10 10 0 0 1 4.3-3.5c2-.8 4-1.2 6.4-1.2 2.3 0 4.4.4 6.2 1.2 1.8.8 3.2 2 4.3 3.4 1 1.4 1.5 3 1.5 5h-5.8z"/></svg>
+</file>
+
+<file path="public/vercel.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+</file>
+
+<file path="public/window.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.5h13v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1zM0 1h16v11.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5zm3.75 4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5M7 4.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m1.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5" fill="#666"/></svg>
+</file>
+
+<file path=".gitignore">
+node_modules/
+.next/
+</file>
+
+<file path="AGENTS.md">
+<!-- BEGIN:nextjs-agent-rules -->
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+<!-- END:nextjs-agent-rules -->
+</file>
+
+<file path="CLAUDE.md">
+@AGENTS.md
+</file>
+
+<file path="eslint.config.mjs">
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);
+
+export default eslintConfig;
+</file>
+
+<file path="next-env.d.ts">
+/// <reference types="next" />
+/// <reference types="next/image-types/global" />
+import "./.next/types/routes.d.ts";
+
+// NOTE: This file should not be edited
+// see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
+</file>
+
+<file path="next.config.ts">
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;
+</file>
+
+<file path="package.json">
+{
+  "name": "fenko",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
+    "framer-motion": "^11.15.0",
+    "lenis": "^1.1.18",
+    "next": "16.2.9",
+    "next-themes": "^0.4.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "three": "^0.174.0",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "^0.174.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.9",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+</file>
+
+<file path="postcss.config.mjs">
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+</file>
+
+<file path="README.md">
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# fenko
+</file>
+
+<file path="repomix-output.txt">
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+app/
+  components/
+    Player/
+      PlayerOverlay.module.css
+      PlayerOverlay.tsx
+    About.tsx
     CustomCursor.tsx
     FloatingNotes.tsx
     Footer.tsx
@@ -2171,6 +4454,46 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 # fenko
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+</file>
+
+</files>
 </file>
 
 <file path="tsconfig.json">
