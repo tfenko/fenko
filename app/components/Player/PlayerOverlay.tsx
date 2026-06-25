@@ -26,7 +26,7 @@ const TRACKS_DATA = {
       { time: 50.45, text: "Away from me" },
       { time: 57.12, text: "I'm diving in the deep end for you" },
       { time: 65.92, text: "There's nothing else that I can do" },
-      { time: 73.03, text: "I'm losing air, I'm losing time" },
+      { time: 73.03, text: "I'm losing air, 'm losing time" },
       { time: 77.79, text: "But I'd die to make you mine" },
       { time: 91.17, text: "Salt on my skin, dust in my lungs" },
       { time: 95.46, text: "We're speaking in those silent tongues" },
@@ -94,6 +94,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
   const audioRef = useRef<HTMLAudioElement>(null);
   const tonearmRef = useRef<HTMLImageElement>(null);
   const lyricsScrollRef = useRef<HTMLDivElement>(null);
+  const lastUpdateRef = useRef(0); // Твій реф для throttling
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
@@ -104,7 +105,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
 
   const currentTrack = TRACKS_DATA[trackKey];
 
-  // Блокування скролу сторінки під оверлеєм
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -138,6 +138,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
   const handleLineClick = (time: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = time;
+      lastUpdateRef.current = time; // Синхронізуємо throttling реф при кліку
       
       let clickedIndex = -1;
       const lyrics = TRACKS_DATA[trackKey].lyrics;
@@ -162,9 +163,14 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     if (audioRef.current) audioRef.current.volume = newVolume;
   };
 
-  // ФІКС: Функція спрацьовує прямо з тегу аудіо, виключаючи будь-які підвисання чи замикання React
+  // ТВОЄ РІШЕННЯ З THROTTLING + ФІКС СТEЙТУ
   const onTimeUpdateHandler = (e: React.SyntheticEvent<HTMLAudioElement>) => {
     const currentTime = e.currentTarget.currentTime;
+    
+    // Оновлюємо стан не частіше ніж раз на 100ms
+    if (currentTime - lastUpdateRef.current < 0.1) return;
+    lastUpdateRef.current = currentTime;
+
     let currentLineIndex = -1;
     const lyrics = TRACKS_DATA[trackKey].lyrics;
 
@@ -176,12 +182,10 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
       }
     }
 
-    if (currentLineIndex !== activeLineIndex) {
-      setActiveLineIndex(currentLineIndex);
-    }
+    // Рендеримо тільки якщо рядок дійсно змінився (захист від StrictMode)
+    setActiveLineIndex((prev) => (prev !== currentLineIndex ? currentLineIndex : prev));
   };
 
-  // ПЛАВНИЙ АВТОСКУРОЛЛ ДО ЦЕНТРУ
   useEffect(() => {
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
@@ -192,7 +196,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     }
   }, [activeLineIndex]);
 
-  // Повне скидання станів при зміні треку або відкритті/закритті
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.pause();
@@ -200,6 +203,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     }
     setIsPlaying(false);
     setActiveLineIndex(-1);
+    lastUpdateRef.current = 0; // Скидаємо тротлінг при зміні треку
     if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
   }, [isOpen, trackKey]);
 
@@ -269,7 +273,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
               />
             </div>
 
-            {/* ЗМІНА ТУТ: Подія прив'язана безпосередньо до HTML-тегу через onTimeUpdate */}
             <audio 
               ref={audioRef} 
               src={currentTrack.audioSrc} 

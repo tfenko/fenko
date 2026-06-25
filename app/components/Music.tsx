@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Cormorant_Garamond } from 'next/font/google';
 
@@ -71,7 +71,7 @@ function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: b
 const releases = [
   { id: 3, title: 'Still Get Close', type: 'Upcoming // July 3', description: 'The new sound is coming. A journey into the depths of the shadows. Stay tuned for the release.', meta: { bpm: '---', key: '---', mood: 'PRE-SAVE // SOON' }, image: '/cover3.webp', canScramble: false, previewUrl: '', links: [], preSaveUrl: 'https://distrokid.com/hyperfollow/fenko1/still-get-close' },
   { id: 2, title: 'Half Real', type: 'Single // Release', description: 'The lyrics explore a haunting relationship characterized by fleeting encounters and emotional turmoil. Navigating the complexities of love that feels both real and illusory, the narrator grapples with the duality of presence.', meta: { bpm: '129', key: 'D minor', mood: 'INTROSPECTIVE // MYSTERIOUS' }, image: '/halfreal-2.webp', canScramble: true, previewUrl: '/Half-Real.mp3', links: [{ name: 'Apple Music', url: 'https://music.apple.com/ua/album/half-real/6769801424?i=6769801425' }, { name: 'Spotify', url: 'https://open.spotify.com/track/6UOYiUahxxA4wWBawrfmzY' }, { name: 'YouTube', url: 'https://music.youtube.com/watch?v=Fs0ZWHbaxBg&si=HG0NwzzWarDTfzLj' }, { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/half-real' }] },
-  { id: 1, title: 'Deep End', type: 'Single // Release', description: 'The lyrics convey a sense of longing and emotional struggle in a relationship marked by distance and uncertainty. The imagery of water and sinking suggests a deep dive into love, while metaphors like "heavy chain" illustrate the weight of attachment.', meta: { bpm: '80', key: 'A# minor', mood: 'MELANCHOLIC // YEARNING' }, image: '/deepend.webp', canScramble: false, previewUrl: '/Deep-End.mp3', links: [{ name: 'Apple Music', url: 'https://music.apple.com/ua/album/deep-end/1895507327?i=6763819432' }, { name: 'Spotify', url: 'https://open.spotify.com/track/1EG19rhMAOtv57SfzxfG6V' }, { name: 'YouTube', url: 'https://music.youtube.com/playlist?list=OLAK5uy_myDt0WSvtAR2rKNX-p6_k2S4GVc7DAfkQ&si=GA2iGhEq4exWtb-8' }, { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/deep-end' }] },
+  { id: 1, title: 'Deep End', type: 'Single // Release', description: 'The lyrics convey a sense of longing and emotional struggle in a relationship marked by distance and uncertainty. The imagery of water and sinking suggests a deep dive into love, while metaphors like \"heavy chain\" illustrate the weight of attachment.', meta: { bpm: '80', key: 'A# minor', mood: 'MELANCHOLIC // YEARNING' }, image: '/deepend.webp', canScramble: false, previewUrl: '/Deep-End.mp3', links: [{ name: 'Apple Music', url: 'https://music.apple.com/ua/album/deep-end/1895507327?i=6763819432' }, { name: 'Spotify', url: 'https://open.spotify.com/track/1EG19rhMAOtv57SfzxfG6V' }, { name: 'YouTube', url: 'https://music.youtube.com/playlist?list=OLAK5uy_myDt0WSvtAR2rKNX-p6_k2S4GVc7DAfkQ&si=GA2iGhEq4exWtb-8' }, { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/deep-end' }] },
 ];
 
 interface MusicProps {
@@ -81,38 +81,48 @@ interface MusicProps {
 export default function Music({ onOpenPlayer }: MusicProps) {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
   const [playingId, setPlayingId] = useState<number | null>(null);
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  
+  // ТВОЄ РІШЕННЯ З ПЕРЕНОСОМ НА USE-REF
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const togglePlay = (id: number, url: string) => {
-    // Чистимо локальні аудіо-прев'ю перед відкриттям великого плеєра
-    if (audio) {
+    // Якщо клікнули на повноформатні караоке-треки — відкриваємо оверлей
+    if (id === 1 || id === 2) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        setPlayingId(null);
+      }
+      onOpenPlayer(id === 1 ? 'deepend' : 'halfreal');
+      return;
+    }
+
+    // Для інших треків (якщо знадобляться локальні прев'ю в майбутньому)
+    if (!audioRef.current) {
+      audioRef.current = new Audio();
+    }
+
+    const audio = audioRef.current;
+
+    if (playingId === id && !audio.paused) {
       audio.pause();
       setPlayingId(null);
-    }
-
-    // ТУТ БУВ БАГ: Тепер кожен ID викликає СВІЙ унікальний ключ треку в оверлеї
-    if (id === 1) {
-      onOpenPlayer('deepend');
-      return;
-    }
-
-    if (id === 2) {
-      onOpenPlayer('halfreal');
-      return;
-    }
-
-    // Логіка для інших треків (якщо з'являться звичайні прев'ю без оверлею)
-    if (playingId === id) {
-      audio?.pause();
-      setPlayingId(null);
     } else {
-      const newAudio = new Audio(url);
-      newAudio.play();
-      setAudio(newAudio);
+      audio.src = url;
+      audio.play().catch(() => {});
       setPlayingId(id);
-      newAudio.onended = () => setPlayingId(null);
+      audio.onended = () => setPlayingId(null);
     }
   };
+
+  // Очищення аудіо об'єкта при анмаунті компонента
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <section id="music" className="relative z-10 w-full min-h-screen bg-background text-foreground py-24 md:py-40 px-4 md:px-16 flex flex-col justify-center border-t border-foreground/10 transition-colors duration-600">
