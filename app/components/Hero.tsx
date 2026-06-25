@@ -1,9 +1,43 @@
 'use client';
 
 import { useRef } from 'react';
+import * as THREE from 'three';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useTheme } from 'next-themes';
-import ThreeScene from './ThreeScene';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Points, PointMaterial } from '@react-three/drei';
+// @ts-ignore
+import * as random from 'maath/random/dist/maath-random.esm';
+
+/**
+ * 3D Particle System: Візуалізатор частинок, що реагує на курсор
+ */
+function ParticleSystem() {
+  const ref = useRef<THREE.Points>(null!);
+  const sphere = random.inSphere(new Float32Array(5000), { radius: 1.5 });
+
+  useFrame((state) => {
+    if (ref.current) {
+      ref.current.rotation.x -= 0.0005;
+      ref.current.rotation.y -= 0.0002;
+      // Плавна реакція на положення миші
+      ref.current.position.x = state.mouse.x * 0.2;
+      ref.current.position.y = state.mouse.y * 0.2;
+    }
+  });
+
+  return (
+    <Points ref={ref} positions={sphere} stride={3} frustumCulled={false}>
+      <PointMaterial 
+        transparent 
+        color="#888" 
+        size={0.003} 
+        sizeAttenuation={true} 
+        depthWrite={false} 
+      />
+    </Points>
+  );
+}
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -14,19 +48,13 @@ export default function Hero() {
     offset: ["start start", "end start"]
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  // Параметри анімації при скролі
+  const y = useTransform(scrollYProgress, [0, 1], [0, 300]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const bgOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
-  const handleSceneReady = () => {
-    document.dispatchEvent(new Event('heroMediaLoaded'));
-  };
-
   const scrollToMusic = () => {
-    const musicSection = document.getElementById('music');
-    if (musicSection) {
-      musicSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    document.getElementById('music')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const musicLinks = [
@@ -41,15 +69,17 @@ export default function Hero() {
       style={{ opacity: bgOpacity }}
       className="relative w-full h-screen bg-background flex items-center justify-center overflow-hidden z-30"
     >
-      <div className={`absolute inset-0 z-10 transition-all duration-1000 ${theme === 'dark' ? 'invert-0' : 'invert grayscale'}`}>
-        <ThreeScene onReady={handleSceneReady} />
+      {/* 3D Контейнер */}
+      <div className={`absolute inset-0 z-10 opacity-60 ${theme === 'light' ? 'invert' : ''}`}>
+        <Canvas camera={{ position: [0, 0, 1] }}>
+          <ParticleSystem />
+        </Canvas>
       </div>
 
-      {/* Плавний перехід у темряву внизу екрана для гармонійного скролу */}
+      {/* Градієнтна підкладка для читабельності контенту */}
       <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent z-20 pointer-events-none" />
 
-      <div className="absolute inset-0 z-20 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,var(--background)_100%)]" />
-
+      {/* Головний контент */}
       <motion.div 
         style={{ y, opacity }}
         className="relative z-50 text-center px-4"
@@ -61,7 +91,7 @@ export default function Hero() {
           Some people only exist after midnight
         </p>
 
-        {/* Акцентні кнопки платформ */}
+        {/* Платформи */}
         <div className="mt-10 flex flex-wrap justify-center gap-4">
           {musicLinks.map((link) => (
             <a
@@ -69,31 +99,28 @@ export default function Hero() {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-2 border border-foreground/20 hover:border-foreground bg-foreground/5 hover:bg-foreground hover:text-background transition-all duration-300"
+              className="px-6 py-2 border border-foreground/20 hover:border-foreground bg-foreground/5 hover:bg-foreground hover:text-background transition-all duration-300 focus-visible:outline-2 focus-visible:outline-foreground"
             >
-              <span className="font-mono text-[9px] uppercase tracking-[0.3em]">
-                {link.name}
-              </span>
+              <span className="font-mono text-[9px] uppercase tracking-[0.3em]">{link.name}</span>
             </a>
           ))}
         </div>
 
-        {/* Фінальна стильна кнопка */}
+        {/* Кнопка переходу */}
         <button 
           onClick={scrollToMusic}
-          aria-label="Scroll to music section"
-          className="mt-12 px-12 py-4 border border-foreground/30 hover:border-foreground transition-all duration-500 cursor-none backdrop-blur-sm hover:bg-foreground/5"
+          className="mt-12 px-12 py-4 border border-foreground/30 hover:border-foreground transition-all duration-500 backdrop-blur-sm hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-foreground"
         >
-          <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.3em] text-foreground transition-colors duration-500">
+          <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.3em] text-foreground">
             [ Discography ]
           </span>
         </button>
       </motion.div>
 
-      {/* Скролл маркер */}
+      {/* Анімований скрол-маркер */}
       <motion.div 
         style={{ opacity }}
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-3"
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-3 pointer-events-none"
       >
         <span className="text-[8px] font-mono tracking-[0.3em] uppercase text-foreground">scroll</span>
         <div className="w-[1px] h-10 bg-foreground/30 relative overflow-hidden">
