@@ -1,16 +1,10 @@
 import './globals.css';
 import { ThemeContext } from './components/ThemeContext';
-import dynamic from 'next/dynamic';
 import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-
-// ФІКС ІМПОРТУ: правильний шлях до твого файлу без червоних підкреслень
 import ThemeToggle from './components/ThemeToggle'; 
-
-const SmoothScroll = dynamic(() => import('./components/SmoothScroll'), { ssr: false });
-const CustomCursor = dynamic(() => import('./components/CustomCursor'), { ssr: false });
-const FloatingNotes = dynamic(() => import('./components/FloatingNotes'), { ssr: false });
+import ClientProviders from './components/ClientProviders'; // Імпортуємо наш новий клієнтський міст
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -23,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* ==========================================
            SEO СТРУКТУРОВАНІ ДАНІ (JSON-LD)
         ========================================== */}
-        {/* Каркас для артиста / бренду FENKO */}
+        {/* Схема для артиста / бренду FENKO */}
         <Script
           id="schema-music-group"
           type="application/ld+json"
@@ -114,13 +108,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
         </Script>
         
-        <FloatingNotes />
-        
         <ThemeContext>
-          <div className="hidden md:block">
-            <CustomCursor />
-          </div>
-
           <div className="film-grain" />
           
           <div className="fixed bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 z-[900] flex justify-between pointer-events-none">
@@ -133,9 +121,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] uppercase text-foreground">F //</span>
           </div>
 
-          <SmoothScroll>
+          {/* Виклик нашого нового ізольованого клієнтського провайдера ефектів */}
+          <ClientProviders>
             <main className="w-full relative z-10 min-h-screen">{children}</main>
-          </SmoothScroll>
+          </ClientProviders>
           
           <Analytics />
           <SpeedInsights />
