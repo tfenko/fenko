@@ -10,30 +10,32 @@ import { Points, PointMaterial } from '@react-three/drei';
 import * as random from 'maath/random/dist/maath-random.esm';
 
 /**
- * 3D Particle System: Візуалізатор частинок, що реагує на курсор
+ * 3D Particle System: Оптимізований візуалізатор з інерцією руху
  */
 function ParticleSystem() {
   const ref = useRef<THREE.Points>(null!);
-  const sphere = random.inSphere(new Float32Array(5000), { radius: 1.5 });
+  // Зменшуємо до 2500 частинок для гарантованих 60fps на всіх пристроях
+  const sphere = random.inSphere(new Float32Array(2500), { radius: 1.5 });
 
   useFrame((state) => {
     if (ref.current) {
-      ref.current.rotation.x -= 0.0005;
-      ref.current.rotation.y -= 0.0002;
-      // Плавна реакція на положення миші
-      ref.current.position.x = state.mouse.x * 0.2;
-      ref.current.position.y = state.mouse.y * 0.2;
+      ref.current.rotation.x += 0.0001;
+      ref.current.rotation.y += 0.0001;
+      // Плавна лінійна інтерполяція (Lerp) для інерційного руху за мишею
+      ref.current.position.x = THREE.MathUtils.lerp(ref.current.position.x, state.mouse.x * 0.2, 0.05);
+      ref.current.position.y = THREE.MathUtils.lerp(ref.current.position.y, state.mouse.y * 0.2, 0.05);
     }
   });
 
   return (
-    <Points ref={ref} positions={sphere} stride={3} frustumCulled={false}>
+    <Points ref={ref} positions={sphere} stride={3} frustumCulled={true}>
       <PointMaterial 
         transparent 
         color="#888" 
-        size={0.003} 
+        size={0.004} 
         sizeAttenuation={true} 
         depthWrite={false} 
+        toneMapped={false}
       />
     </Points>
   );
@@ -48,7 +50,6 @@ export default function Hero() {
     offset: ["start start", "end start"]
   });
 
-  // Параметри анімації при скролі
   const y = useTransform(scrollYProgress, [0, 1], [0, 300]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const bgOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
@@ -69,17 +70,19 @@ export default function Hero() {
       style={{ opacity: bgOpacity }}
       className="relative w-full h-screen bg-background flex items-center justify-center overflow-hidden z-30"
     >
-      {/* 3D Контейнер */}
+      {/* 3D Контейнер з оптимізованими налаштуваннями рендеру */}
       <div className={`absolute inset-0 z-10 opacity-60 ${theme === 'light' ? 'invert' : ''}`}>
-        <Canvas camera={{ position: [0, 0, 1] }}>
+        <Canvas 
+          camera={{ position: [0, 0, 1] }}
+          dpr={[1, 2]}
+          gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
+        >
           <ParticleSystem />
         </Canvas>
       </div>
 
-      {/* Градієнтна підкладка для читабельності контенту */}
       <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background to-transparent z-20 pointer-events-none" />
 
-      {/* Головний контент */}
       <motion.div 
         style={{ y, opacity }}
         className="relative z-50 text-center px-4"
@@ -91,7 +94,6 @@ export default function Hero() {
           Some people only exist after midnight
         </p>
 
-        {/* Платформи */}
         <div className="mt-10 flex flex-wrap justify-center gap-4">
           {musicLinks.map((link) => (
             <a
@@ -106,7 +108,6 @@ export default function Hero() {
           ))}
         </div>
 
-        {/* Кнопка переходу */}
         <button 
           onClick={scrollToMusic}
           className="mt-12 px-12 py-4 border border-foreground/30 hover:border-foreground transition-all duration-500 backdrop-blur-sm hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-foreground"
@@ -117,7 +118,6 @@ export default function Hero() {
         </button>
       </motion.div>
 
-      {/* Анімований скрол-маркер */}
       <motion.div 
         style={{ opacity }}
         className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-3 pointer-events-none"
