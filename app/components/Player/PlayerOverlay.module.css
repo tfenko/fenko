@@ -438,3 +438,11 @@
     display: none !important;
   }
 }
+
+/* Мобільна оптимізація тексту караоке */
+@media (max-width: 768px) {
+  .lyricLine {
+    font-size: 16px;
+    height: 60px;
+  }
+}

@@ -114,6 +114,17 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
+  // ✅ ФІКС: ГАРАНТОВАНЕ ВБИВСТВО АУДІО ПРИ ЗАКРИТТІ
+  useEffect(() => {
+    const currentAudio = audioRef.current;
+    return () => {
+      if (currentAudio && !currentAudio.paused) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+    };
+  }, [isOpen]);
+
   const togglePlay = () => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -223,7 +234,16 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
           />
 
           <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
-            <div className={styles.lyricsScroll} ref={lyricsScrollRef} onScroll={handleLyricsScroll}>
+            {/* ✅ ФІКС: ARIA-теги для доступності лірик */}
+            <div 
+              className={styles.lyricsScroll} 
+              ref={lyricsScrollRef} 
+              onScroll={handleLyricsScroll}
+              role="region"
+              aria-live="polite"
+              aria-atomic="false"
+              aria-label="Current lyrics"
+            >
               {currentTrack.lyrics.map((line, index) => (
                 <p 
                   key={index} 
@@ -238,7 +258,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
 
           <div className={`${styles.musicCard} ${isPlaying ? styles.musicCardShifted : ''}`}>
             <div className={styles.recordContainer}>
-              {/* SEO ФІКС: Валідні alt-теги */}
               <img 
                 src="/tonarm.png" 
                 alt="Vinyl record tonearm" 
