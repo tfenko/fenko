@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
@@ -19,7 +20,28 @@ const TRACKS_DATA = {
     lyrics: [
       { time: 21.66, text: "Blue light, crawling up the wall" },
       { time: 25.64, text: "Wait for the tide, wait for the fall" },
-      // ... (щоб не роздувати код, уяви, що тут твої лірики. ЗАЛИШ ЇХ ТУТ З ПОПЕРЕДНЬОГО ФАЙЛУ!)
+      { time: 30.10, text: "Your ghost is dancing in the smoke" },
+      { time: 34.70, text: "A heavy chain, a velvet choke" },
+      { time: 39.23, text: "You say you're mine, but you're like the sea" },
+      { time: 44.08, text: "Always drifting away from me" },
+      { time: 50.45, text: "Away from me" },
+      { time: 57.12, text: "I'm diving in the deep end for you" },
+      { time: 65.92, text: "There's nothing else that I can do" },
+      { time: 73.03, text: "I'm losing air, 'm losing time" },
+      { time: 77.79, text: "But I'd die to make you mine" },
+      { time: 91.17, text: "Salt on my skin, dust in my lungs" },
+      { time: 95.46, text: "We're speaking in those silent tongues" },
+      { time: 99.74, text: "The water's cold, the moon is high" },
+      { time: 104.31, text: "A beautiful way for us to die" },
+      { time: 108.65, text: "Don't reach for me, just let me sink" },
+      { time: 112.91, text: "I'm closer to you than you think" },
+      { time: 119.18, text: "Yeah, closer than you think" },
+      { time: 128.87, text: "I'm diving in the deep end for you" },
+      { time: 137.68, text: "There's nothing else that I can do" },
+      { time: 144.44, text: "I'm losing air, I'm losing time" },
+      { time: 149.38, text: "But I'd die to make you mine" },
+      { time: 158.32, text: "Yeah, I'd die to make you mine" },
+      { time: 186.05, text: "Drifting" },
       { time: 189.56, text: "Losing light" }
     ]
   },
@@ -30,11 +52,45 @@ const TRACKS_DATA = {
     bgGradient: "linear-gradient(135deg, #000000, #150505, #2d0b0b, #100303, #000000)",
     lyrics: [
       { time: 3.05, text: "I see your shadow in the light again" },
-      // ... (ЗАЛИШ СВОЇ ЛІРИКИ ТУТ)
+      { time: 10.07, text: "But I don't know if you were ever here" },
+      { time: 16.55, text: "You come back in the night time" },
+      { time: 19.99, text: "Fading through the red lights" },
+      { time: 23.79, text: "Cold hands on my throat now" },
+      { time: 27.53, text: "Say you love me, don't lie" },
+      { time: 31.36, text: "We don't talk in the daytime" },
+      { time: 35.00, text: "We just live in the low light" },
+      { time: 38.97, text: "Hearts numb but it feels right" },
+      { time: 42.49, text: "You come back every night" },
+      { time: 45.41, text: "You move like static in my room" },
+      { time: 47.48, text: "Like you're half real, half a dream" },
+      { time: 49.41, text: "Say my name like it don't mean" },
+      { time: 51.15, text: "Anything you promised me" },
+      { time: 53.14, text: "No past, no reason why" },
+      { time: 54.95, text: "We just meet before sunrise" },
+      { time: 56.97, text: "Then you vanish from my sight" },
+      { time: 58.77, text: "Like you never were alive" },
+      { time: 60.64, text: "And I try to let it go" },
+      { time: 62.48, text: "But it pulls me back again" },
+      { time: 64.38, text: "Every time I fall asleep" },
+      { time: 66.39, text: "You return inside my head" },
+      { time: 72.24, text: "You come back in the night time" },
+      { time: 75.53, text: "Fading through the red lights" },
+      { time: 79.58, text: "Cold hands on my throat now" },
+      { time: 83.06, text: "Say you love me, don't lie" },
+      { time: 87.32, text: "We don't talk in the daytime" },
+      { time: 90.47, text: "We just live in the low light" },
+      { time: 94.12, text: "Hearts numb but it feels right" },
+      { time: 97.86, text: "You come back every night" },
+      { time: 115.41, text: "I can't tell if you are real" },
+      { time: 118.88, text: "Or just something I repeat" },
+      { time: 122.93, text: "In the silence you appear" },
+      { time: 126.67, text: "Then you disappear from me" },
+      { time: 144.16, text: "You come back" },
       { time: 153.51, text: "And I don't ask why" }
     ]
   }
 };
+
 
 // ✅ ДОДАНА ФІЧА 3: Динамічний візуалізатор для оверлею
 const OverlayVisualizer = ({ isPlaying }: { isPlaying: boolean }) => (
