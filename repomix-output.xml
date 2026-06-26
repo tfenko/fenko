@@ -47,7 +47,6 @@ app/
       PlayerOverlay.tsx
     About.tsx
     ClientProviders.tsx
-    CustomCursor.tsx
     FloatingNotes.tsx
     Footer.tsx
     Hero.tsx
@@ -971,88 +970,24 @@ export default function About() {
 
 import dynamic from 'next/dynamic';
 
+// Імпортуємо тільки ті компоненти, які мають залишатися
 const SmoothScroll = dynamic(() => import('./SmoothScroll'), { ssr: false });
-const CustomCursor = dynamic(() => import('./CustomCursor'), { ssr: false });
 const FloatingNotes = dynamic(() => import('./FloatingNotes'), { ssr: false });
 
 export default function ClientProviders({ children }: { children: React.ReactNode }) {
   return (
     <>
+      {/* Фонові елементи, які не заважають взаємодії 
+        та не блокують стандартний курсор 
+      */}
       <FloatingNotes />
-      <div className="hidden md:block">
-        <CustomCursor />
-      </div>
+      
+      {/* SmoothScroll залишається для плавного ефекту, 
+        але тепер він не конфліктує з кастомним курсором
+      */}
       <SmoothScroll>
         {children}
       </SmoothScroll>
-    </>
-  );
-}
-</file>
-
-<file path="app/components/CustomCursor.tsx">
-'use client';
-
-import { useEffect, useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
-
-export default function CustomCursor() {
-  const [isHovered, setIsHovered] = useState(false);
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
-  
-  const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
-  const cursorXSpring = useSpring(cursorX, springConfig);
-  const cursorYSpring = useSpring(cursorY, springConfig);
-
-  const ringSpringConfig = { damping: 30, stiffness: 100, mass: 0.8 };
-  const ringXSpring = useSpring(cursorX, ringSpringConfig);
-  const ringYSpring = useSpring(cursorY, ringSpringConfig);
-
-  useEffect(() => {
-    const moveCursor = (e: MouseEvent) => {
-      cursorX.set(e.clientX - 8);
-      cursorY.set(e.clientY - 8);
-    };
-
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a') || target.closest('button')) {
-        setIsHovered(true);
-      }
-    };
-    
-    const handleMouseOut = () => setIsHovered(false);
-
-    window.addEventListener('mousemove', moveCursor);
-    window.addEventListener('mouseover', handleMouseOver);
-    window.addEventListener('mouseout', handleMouseOut);
-
-    return () => {
-      window.removeEventListener('mousemove', moveCursor);
-      window.removeEventListener('mouseover', handleMouseOver);
-      window.removeEventListener('mouseout', handleMouseOut);
-    };
-  }, [cursorX, cursorY]);
-
-  return (
-    <>
-      {/* Ядро: Додано mix-blend-mode: difference для інверсії кольорів */}
-      <motion.div
-        className="fixed top-0 left-0 w-4 h-4 bg-foreground rounded-full z-[9999] pointer-events-none mix-blend-difference"
-        style={{ x: cursorXSpring, y: cursorYSpring }}
-        animate={{ scale: isHovered ? 0.5 : 1 }}
-      />
-      
-      {/* Кільце: Також додаємо difference для гармонії */}
-      <motion.div
-        className="fixed top-0 left-0 w-8 h-8 border border-foreground rounded-full z-[9998] pointer-events-none mix-blend-difference"
-        style={{ x: ringXSpring, y: ringYSpring }} 
-        animate={{ 
-          scale: isHovered ? 1.5 : 1,
-          opacity: isHovered ? 0.8 : 0.5
-        }}
-      />
     </>
   );
 }
@@ -2014,12 +1949,7 @@ body {
   font-family: var(--font-sans);
   transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
               color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: none !important;
-}
-
-/* Примусово вимикаємо стандартний курсор для всіх інтерактивних елементів (на ПК) */
-a, button, [role="button"], input, select, textarea, label {
-  cursor: none !important;
+  /* cursor: none прибрано */
 }
 
 /* Контури тексту */
@@ -2044,23 +1974,6 @@ a, button, [role="button"], input, select, textarea, label {
   opacity: 0.03;
 }
 
-/* ==========================================
-   ФІКС ДЛЯ ПЛАНШЕТІВ ТА ТЕЛЕФОНІВ (TOUCH)
-========================================== */
-@media (pointer: coarse) {
-  body, 
-  a, button, [role="button"], input, select, textarea, label {
-    cursor: auto !important;
-  }
-
-  .custom-cursor,
-  [class*="customCursor"],
-  [class*="cursor-dot"] {
-    display: none !important;
-    pointer-events: none !important;
-  }
-}
-
 /* ==========================================================================
    ACCESSIBILITY: Клавіатурна навігація (WCAG AA)
    ========================================================================== */
@@ -2072,12 +1985,7 @@ input:focus-visible,
   outline-offset: 4px;
 }
 
-a:focus,
-button:focus,
-input:focus,
-[role="button"]:focus {
-  outline: none;
-}
+/* Очищення від непотрібних селекторів курсорів */
 </file>
 
 <file path="app/layout.tsx">
@@ -2087,7 +1995,7 @@ import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import ThemeToggle from './components/ThemeToggle'; 
-import ClientProviders from './components/ClientProviders'; // Імпортуємо наш новий клієнтський міст
+import ClientProviders from './components/ClientProviders';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -2095,12 +2003,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <title>FENKO</title>
       </head>
-      <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background cursor-none">
+      {/* cursor-none видалено */}
+      <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background">
         
-        {/* ==========================================
-           SEO СТРУКТУРОВАНІ ДАНІ (JSON-LD)
-        ========================================== */}
-        {/* Схема для артиста / бренду FENKO */}
+        {/* SEO */}
         <Script
           id="schema-music-group"
           type="application/ld+json"
@@ -2127,7 +2033,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {/* Схема для музичних релізів (архів треків) */}
         <Script
           id="schema-music-releases"
           type="application/ld+json"
@@ -2139,10 +2044,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {
                   "@type": "MusicRelease",
                   "name": "Half Real",
-                  "byArtist": {
-                    "@type": "MusicGroup",
-                    "name": "FENKO"
-                  },
+                  "byArtist": { "@type": "MusicGroup", "name": "FENKO" },
                   "datePublished": "2026-05-08",
                   "genre": "Alternative R&B",
                   "musicReleaseFormat": "https://schema.org/DigitalFormat",
@@ -2151,10 +2053,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {
                   "@type": "MusicRelease",
                   "name": "Deep End",
-                  "byArtist": {
-                    "@type": "MusicGroup",
-                    "name": "FENKO"
-                  },
+                  "byArtist": { "@type": "MusicGroup", "name": "FENKO" },
                   "datePublished": "2024",
                   "genre": "Alternative R&B",
                   "musicReleaseFormat": "https://schema.org/DigitalFormat",
@@ -2163,10 +2062,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {
                   "@type": "MusicRelease",
                   "name": "Still Get Close",
-                  "byArtist": {
-                    "@type": "MusicGroup",
-                    "name": "FENKO"
-                  },
+                  "byArtist": { "@type": "MusicGroup", "name": "FENKO" },
                   "datePublished": "2026-07-03",
                   "genre": "Alternative R&B",
                   "musicReleaseFormat": "https://schema.org/DigitalFormat",
@@ -2177,9 +2073,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {/* ==========================================
-           АНАЛІТИКА ТА ТРЕКЕРИ (Google Analytics)
-        ========================================== */}
+        {/* Аналітика */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-3T3TFTGZX0" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
@@ -2204,7 +2098,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] uppercase text-foreground">F //</span>
           </div>
 
-          {/* Виклик нашого нового ізольованого клієнтського провайдера ефектів */}
           <ClientProviders>
             <main className="w-full relative z-10 min-h-screen">{children}</main>
           </ClientProviders>

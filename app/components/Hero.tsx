@@ -91,7 +91,7 @@ export default function Hero() {
           FENKO
         </h1>
         <p className="font-sans text-[10px] md:text-[11px] text-foreground/60 font-light tracking-[0.5em] uppercase max-w-xl mx-auto leading-relaxed">
-          Some people only exist after midnight
+          Music for the aftermath
         </p>
 
         <div className="mt-10 flex flex-wrap justify-center gap-4">
@@ -113,7 +113,7 @@ export default function Hero() {
           className="mt-12 px-12 py-4 border border-foreground/30 hover:border-foreground transition-all duration-500 backdrop-blur-sm hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-foreground"
         >
           <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.3em] text-foreground">
-            [ Discography ]
+            [ Listen ]
           </span>
         </button>
       </motion.div>
