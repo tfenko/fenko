@@ -4,7 +4,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  z-index: 99999; /* Гарантований пріоритет над навбаром */
+  z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,7 +19,7 @@
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
-  z-index: 999999; /* Найвищий пріоритет для кнопки */
+  z-index: 999999;
   font-family: monospace;
   font-size: 11px;
   letter-spacing: 0.2em;
@@ -174,7 +174,6 @@
   text-transform: uppercase;
 }
 
-/* СТРИМІНГИ */
 .platformsGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -203,7 +202,6 @@
   background: rgba(255, 255, 255, 0.02);
 }
 
-/* СЛАЙДЕР */
 .volumeBlock {
   margin-top: 1.2rem;
   width: 100%;
@@ -235,10 +233,22 @@
   .overlay {
     flex-direction: column;
     padding: 1.5rem;
-    padding-top: 5rem;
+    padding-top: 2rem;
+    padding-bottom: 5rem; /* Запас для кнопки знизу */
     justify-content: flex-start;
     gap: 1rem;
     overflow-y: auto;
+  }
+  
+  /* Переміщуємо кнопку вниз */
+  .closeBtnOverlay {
+    position: fixed;
+    top: auto;
+    bottom: 20px;
+    right: 50%;
+    transform: translateX(50%);
+    width: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
   }
   
   .musicCard {
