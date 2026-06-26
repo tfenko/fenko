@@ -3,9 +3,8 @@ import { ThemeContext } from './components/ThemeContext';
 import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import ThemeToggle from './components/ThemeToggle'; 
 import ClientProviders from './components/ClientProviders';
-import Navbar from './components/navbar'; // ✅ ДОДАНО: Твій новий концептуальний навбар
+import Navbar from './components/Navbar'; // ✅ ФІКС: Регістр виправлено на велику "N"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -97,14 +96,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeContext>
           <div className="film-grain" />
           
-          {/* ✅ НАВБАР ОФІЦІЙНО В МОНТОВАНО СЮДИ */}
+          {/* Навбар з вмонтованим перемикачем теми керує усім зверху */}
           <Navbar />
-          
-          <div className="fixed bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 z-[900] flex justify-between pointer-events-none">
-            <div className="pointer-events-auto">
-              <ThemeToggle />
-            </div>
-          </div>
 
           <ClientProviders>
             <main className="w-full relative z-10 min-h-screen">{children}</main>
