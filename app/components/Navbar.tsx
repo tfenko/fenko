@@ -15,13 +15,17 @@ export default function Navbar() {
     restDelta: 0.001
   });
 
-  // Чекаємо монтування клієнта, щоб уникнути помилок гідрації кольорів
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // ✅ НОВА ФУНКЦІЯ: скрол в самий верх
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navItems = [
@@ -41,18 +45,20 @@ export default function Navbar() {
         
         <div className="flex justify-between items-center px-6 py-3 w-full">
           
-          {/* Логотип */}
-          <div className="flex items-center gap-2">
-            <span className="font-cormorant text-sm font-light tracking-[0.3em] uppercase text-foreground select-none">
+          {/* ✅ Логотип тепер активний - скролить вгору */}
+          <button 
+            onClick={scrollToTop}
+            className="flex items-center gap-2 group cursor-pointer"
+          >
+            <span className="font-cormorant text-sm font-light tracking-[0.3em] uppercase text-foreground select-none transition-opacity group-hover:opacity-70">
               F //
             </span>
             <span className="w-1.5 h-1.5 bg-foreground rounded-full animate-pulse opacity-40 hidden sm:block" />
-          </div>
+          </button>
 
-          {/* Права частина: Меню + Перемикач теми */}
+          {/* Права частина */}
           <div className="flex items-center gap-6 md:gap-8">
             
-            {/* Елементи навігації */}
             <div className="flex gap-6 font-mono text-[9px] tracking-[0.3em] uppercase">
               {navItems.map((item) => (
                 <button
@@ -66,10 +72,8 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Вертикальний мікро-розділювач між меню і кнопкою теми */}
             <div className="w-[1px] h-3 bg-foreground/10 hidden sm:block" />
 
-            {/* МІНІМАЛІСТИЧНИЙ ЧБ ПЕРЕМИКАЧ ТЕМИ */}
             {mounted && (
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -77,23 +81,19 @@ export default function Navbar() {
                 aria-label="Toggle theme"
               >
                 {theme === 'dark' ? (
-                  // Іконка сонця для темної теми (фікс геометрії)
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.22 4.22l1.59 1.59m12.38 12.38l1.59 1.59M3 12h2.25m13.5 0H21M4.22 19.78l1.59-1.59m12.38-12.38l1.59-1.59M12 7.5a4.5 4.5 0 110 9 4.5 4.5 0 010-9z" />
                   </svg>
                 ) : (
-                  // Іконка місяця для світлої теми (фікс геометрії)
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 12.83A9.54 9.54 0 0112 21.75c-5.28 0-9.5-4.22-9.5-9.5a9.54 9.54 0 0112.58-9.04 8.25 8.25 0 008.67 8.67z" />
                   </svg>
                 )}
               </button>
             )}
-
           </div>
         </div>
 
-        {/* Прогрес-бар скролу */}
         <div className="w-full h-[1px] bg-foreground/10 relative">
           <motion.div 
             className="absolute top-0 bottom-0 left-0 right-0 bg-foreground/40 origin-left"

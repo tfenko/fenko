@@ -4,7 +4,7 @@ import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import ClientProviders from './components/ClientProviders';
-import Navbar from './components/Navbar'; 
+import Navbar from './components/navbar'; 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
