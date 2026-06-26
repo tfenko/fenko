@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import ThemeToggle from './components/ThemeToggle'; 
 import ClientProviders from './components/ClientProviders';
+import Navbar from './components/navbar'; // ✅ ДОДАНО: Твій новий концептуальний навбар
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -12,7 +13,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <title>FENKO</title>
       </head>
-      {/* cursor-none видалено */}
       <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background">
         
         {/* SEO */}
@@ -97,14 +97,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeContext>
           <div className="film-grain" />
           
+          {/* ✅ НАВБАР ОФІЦІЙНО В МОНТОВАНО СЮДИ */}
+          <Navbar />
+          
           <div className="fixed bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 z-[900] flex justify-between pointer-events-none">
             <div className="pointer-events-auto">
               <ThemeToggle />
             </div>
-          </div>
-            
-          <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[900] mix-blend-difference">
-            <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] uppercase text-foreground">F //</span>
           </div>
 
           <ClientProviders>
