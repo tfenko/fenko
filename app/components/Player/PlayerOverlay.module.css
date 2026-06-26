@@ -8,11 +8,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Зменшено прірву між блоками та додано внутрішні падінги від країв екрана */
   gap: 40px; 
   padding: 2rem 40px;
   box-sizing: border-box;
   overflow: hidden;
+  background-color: #000000;
 }
 
 .closeBtnOverlay {
@@ -26,7 +26,7 @@
   color: rgba(255, 255, 255, 0.4);
   background: transparent;
   border: none;
-  cursor: pointer !important;
+  cursor: pointer;
   transition: color 0.3s ease;
 }
 
@@ -35,47 +35,43 @@
 }
 
 /* ==========================================
-   КОНТЕЙНЕР ЛІРИКИ (ЗЛІВА — ЗБІЛЬШЕНО І ВИПРАВЛЕНО)
+   КОНТЕЙНЕР ЛІРИКИ
 ========================================== */
 .lyricsContainer {
-  flex: 1.4; /* Текст тепер забирає більше пропорційної ширини */
-  max-width: 750px; /* Контейнер став значно ширшим */
+  flex: 1.4;
+  max-width: 750px;
   height: 75vh;
   z-index: 5;
-  pointer-events: auto !important;
+  pointer-events: auto;
 }
 
 .lyricsScroll {
   width: 100%;
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 35vh 0;
-  padding-left: 10px; /* Безпечний відступ, щоб літери не терлися об лівий край */
+  padding-left: 10px;
   scrollbar-width: none;
-  -ms-overflow-style: none;
   position: relative;
   mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
 }
 
 .lyricsScroll::-webkit-scrollbar {
-  display: none !important;
+  display: none;
 }
 
 .lyricLine {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  font-size: 26px; /* Трохи адаптований розмір під великий екран */
+  font-size: 26px;
   font-weight: 700;
   line-height: 1.4;
   margin-bottom: 2.2rem;
   color: #ffffff;
   opacity: 0.15;
   transition: all 0.4s ease;
-  cursor: pointer !important;
-  
-  /* Фікс обрізання: дозволяємо перенос, якщо рядок занадто довгий на середніх екранах */
+  cursor: pointer;
   white-space: normal; 
   word-wrap: break-word;
   transform-origin: left center;
@@ -86,13 +82,13 @@
 }
 
 .lyricLineActive {
-  opacity: 1 !important;
-  transform: scale(1.03); /* Легкий скейл без виходу за межі контейнера */
+  opacity: 1;
+  transform: scale(1.03);
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
 /* ==========================================
-   СТУДІЙНА КАРТКА ПЛЕЄРА (СПРАВА)
+   СТУДІЙНА КАРТКА ПЛЕЄРА
 ========================================== */
 .musicCard {
   background: rgba(255, 255, 255, 0.02);
@@ -105,7 +101,7 @@
   flex-direction: column;
   box-sizing: border-box;
   z-index: 10;
-  flex-shrink: 0; /* Картка ніколи не стискається, тримає форму */
+  flex-shrink: 0;
 }
 
 .coverWrapper {
@@ -114,7 +110,7 @@
   aspect-ratio: 1/1;
   border-radius: 8px;
   overflow: hidden;
-  cursor: pointer !important;
+  cursor: pointer;
 }
 
 .squareCover {
@@ -193,7 +189,7 @@
   border-radius: 6px;
   text-align: center;
   text-decoration: none;
-  cursor: pointer !important;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
@@ -216,7 +212,7 @@
   height: 2px;
   background: rgba(255, 255, 255, 0.1);
   outline: none;
-  cursor: pointer !important;
+  cursor: pointer;
 }
 
 .volumeSlider::-webkit-slider-thumb {
@@ -234,45 +230,33 @@
 @media (max-width: 900px) {
   .overlay {
     flex-direction: column;
-    padding: 2rem 1.5rem;
+    padding: 1.5rem;
+    padding-top: 4rem;
     justify-content: flex-start;
-    gap: 2rem;
-  }
-  
-  .closeBtnOverlay {
-    top: 1.5rem;
-    right: 1.5rem;
+    gap: 1rem;
+    overflow-y: auto;
   }
   
   .musicCard {
     width: 100%;
-    margin-top: 1rem;
+    max-width: 340px;
+    margin: 0 auto;
+    padding: 16px;
+    order: -1;
   }
   
   .lyricsContainer {
     width: 100%;
-    height: 35vh;
+    height: auto;
+    min-height: 40vh;
   }
   
   .lyricsScroll {
-    padding: 12vh 0;
-    padding-left: 0;
-    text-align: center;
+    padding: 10vh 0;
   }
   
   .lyricLine {
-    font-size: 18px;
-    text-align: center;
-    margin-bottom: 1.8rem;
-  }
-}
-
-@media (pointer: coarse) {
-  .closeBtnOverlay,
-  .lyricLine,
-  .lyricLineActive,
-  .platformBadge,
-  .volumeSlider {
-    cursor: auto !important;
+    font-size: 20px;
+    margin-bottom: 2rem;
   }
 }

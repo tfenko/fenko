@@ -3,7 +3,7 @@
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
-import Image from 'next/image'; // ✅ Імпортуємо Image
+import Image from 'next/image'; 
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
@@ -107,3 +107,4 @@ export default function Navbar() {
     </div>
   );
 }
+
