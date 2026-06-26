@@ -124,14 +124,9 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
   const audioRef = useRef<HTMLAudioElement>(null);
   const lyricsScrollRef = useRef<HTMLDivElement>(null);
   const lastUpdateRef = useRef(0);
-
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeLineIndex, setActiveLineIndex] = useState(-1);
   const [volume, setVolume] = useState(1);
-
-  const isUserScrolling = useRef(false);
-  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
-
   const currentTrack = TRACKS_DATA[trackKey];
 
   useEffect(() => {
@@ -144,201 +139,70 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
       document.body.style.position = '';
       document.body.style.width = '';
     }
-    return () => { 
-      document.body.style.overflow = ''; 
+    return () => {
+      document.body.style.overflow = '';
       document.body.style.position = '';
       document.body.style.width = '';
     };
   }, [isOpen]);
 
   const togglePlay = useCallback(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (audio.paused) {
-      audio.play().catch(() => {});
-      setIsPlaying(true);
-    } else {
-      audio.pause();
-      setIsPlaying(false);
-    }
+    if (!audioRef.current) return;
+    if (audioRef.current.paused) { audioRef.current.play(); setIsPlaying(true); } 
+    else { audioRef.current.pause(); setIsPlaying(false); }
   }, []);
 
   useEffect(() => {
-    if (!isOpen) return;
-
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === 'Space') {
-        e.preventDefault();
-        togglePlay();
-      }
+      if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, togglePlay]);
-
-  const handleLyricsScroll = () => {
-    isUserScrolling.current = true;
-    if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-    scrollTimeout.current = setTimeout(() => { isUserScrolling.current = false; }, 4000);
-  };
-
-  const handleLineClick = (time: number) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = time;
-      lastUpdateRef.current = time;
-      
-      let clickedIndex = -1;
-      const lyrics = TRACKS_DATA[trackKey].lyrics;
-      for (let i = 0; i < lyrics.length; i++) {
-        if (time >= lyrics[i].time) {
-          clickedIndex = i;
-        }
-      }
-      setActiveLineIndex(clickedIndex);
-      if (audioRef.current.paused) togglePlay();
-    }
-  };
-
-  const onTimeUpdateHandler = (e: React.SyntheticEvent<HTMLAudioElement>) => {
-    const currentTime = e.currentTarget.currentTime;
-    if (currentTime - lastUpdateRef.current < 0.1) return;
-    lastUpdateRef.current = currentTime;
-
-    let currentLineIndex = -1;
-    const lyrics = TRACKS_DATA[trackKey].lyrics;
-
-    for (let i = 0; i < lyrics.length; i++) {
-      if (currentTime >= lyrics[i].time) {
-        currentLineIndex = i;
-      } else {
-        break;
-      }
-    }
-    setActiveLineIndex((prev) => (prev !== currentLineIndex ? currentLineIndex : prev));
-  };
-
-  useEffect(() => {
-    if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
-      const container = lyricsScrollRef.current;
-      const activeElement = container.children[activeLineIndex] as HTMLElement;
-      if (activeElement) {
-        activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-  }, [activeLineIndex]);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-    setIsPlaying(false);
-    setActiveLineIndex(-1);
-    lastUpdateRef.current = 0;
-  }, [isOpen, trackKey]);
+  }, [togglePlay]);
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: 1 }} 
-          exit={{ opacity: 0 }}
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           className={styles.overlay}
           style={{ background: currentTrack.bgGradient }}
+          onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
         >
-          {/* Хрестик закриття в інженерному стилі */}
-          <button onClick={onClose} className={styles.closeBtnOverlay}>
-            ✕ CLOSE
-          </button>
-
-          {/* ТЕКСТ КАРАОКЕ (ЗЛІВА) */}
+          <button onClick={onClose} className={styles.closeBtnOverlay}>✕ CLOSE</button>
+          
           <div className={styles.lyricsContainer}>
-            <div 
-              className={styles.lyricsScroll} 
-              ref={lyricsScrollRef} 
-              onScroll={handleLyricsScroll}
-            >
+            <div className={styles.lyricsScroll} ref={lyricsScrollRef}>
               {currentTrack.lyrics.map((line, index) => (
-                <p 
-                  key={index} 
-                  className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
-                  onClick={() => handleLineClick(line.time)}
-                >
+                <p key={index} className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}>
                   {line.text}
                 </p>
               ))}
             </div>
           </div>
 
-          {/* СТУДІЙНА КАРТКА ПЛЕЄРА (СПРАВА) */}
           <div className={styles.musicCard}>
-            
-            {/* Строга квадратна обкладинка з вбудованим Play/Pause ховером */}
             <div className={styles.coverWrapper} onClick={togglePlay}>
-              <img src={currentTrack.coverSrc} alt={currentTrack.title} className={styles.squareCover} />
+              <img src={currentTrack.coverSrc} className={styles.squareCover} />
               <div className={styles.coverOverlay}>
                 <div className={styles.playIconContainer}>
-                  {isPlaying ? (
-                    <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current text-white"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                  ) : (
-                    <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current text-white"><path d="M8 5v14l11-7z"/></svg>
-                  )}
+                  {isPlaying ? <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> 
+                             : <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current"><path d="M8 5v14l11-7z"/></svg>}
                 </div>
               </div>
             </div>
-
-            {/* Метадані */}
             <div className={styles.metaBlock}>
               <h2 className={styles.trackTitle}>{currentTrack.title}</h2>
               <p className={styles.artistName}>FENKO</p>
             </div>
-
-            {/* Компактний індикатор */}
-            <div className="h-6 flex items-center justify-center my-2">
-               <OverlayVisualizer isPlaying={isPlaying} />
-            </div>
-
-            {/* ЧІТКІ КНОПКИ СТРИМІНГІВ */}
+            <div className="h-6 flex items-center justify-center my-2"><OverlayVisualizer isPlaying={isPlaying} /></div>
             <div className={styles.platformsGrid}>
-              {currentTrack.links.map((link) => (
-                <a 
-                  key={link.name}
-                  href={link.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className={styles.platformBadge}
-                >
-                  {link.name}
-                </a>
-              ))}
+              {currentTrack.links.map((l) => <a key={l.name} href={l.url} target="_blank" className={styles.platformBadge}>{l.name}</a>)}
             </div>
-
-            {/* Мікшер гучності */}
-            <div className={styles.volumeBlock}>
-              <input 
-                type="range" 
-                min="0" 
-                max="1" 
-                step="0.01" 
-                value={volume} 
-                onChange={(e) => {
-                  const v = parseFloat(e.target.value);
-                  setVolume(v);
-                  if (audioRef.current) audioRef.current.volume = v;
-                }} 
-                className={styles.volumeSlider}
-              />
-            </div>
-
-            <audio 
-              ref={audioRef} 
-              src={currentTrack.audioSrc} 
-              preload="auto" 
-              onTimeUpdate={onTimeUpdateHandler} 
-            />
+            <input type="range" min="0" max="1" step="0.01" onChange={(e) => {
+              if (audioRef.current) audioRef.current.volume = parseFloat(e.target.value);
+            }} className={styles.volumeSlider} />
+            <audio ref={audioRef} src={currentTrack.audioSrc} />
           </div>
         </motion.div>
       )}
