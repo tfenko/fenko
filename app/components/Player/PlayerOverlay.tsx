@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
@@ -91,8 +90,6 @@ const TRACKS_DATA = {
   }
 };
 
-
-// ✅ ДОДАНА ФІЧА 3: Динамічний візуалізатор для оверлею
 const OverlayVisualizer = ({ isPlaying }: { isPlaying: boolean }) => (
   <div className="flex items-end gap-[4px] h-8 justify-center opacity-70">
     {[1, 2, 3, 4, 5, 6, 7].map((i) => (
@@ -145,7 +142,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     };
   }, [isOpen]);
 
-  // Обертаємо в useCallback для безпечного використання у слухачі клавіатури
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -161,13 +157,12 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     }
   }, []);
 
-  // ✅ ДОДАНА ФІЧА 1: Гарячі клавіші (Keyboard Shortcuts)
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
-        e.preventDefault(); // Запобігаємо скролу сторінки вниз
+        e.preventDefault();
         togglePlay();
       }
       if (e.code === 'ArrowRight' && audioRef.current) {
@@ -319,7 +314,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
               </a>
             </div>
 
-            {/* Вбудовуємо візуалізатор під назвою треку */}
             <div className="mb-4">
                <OverlayVisualizer isPlaying={isPlaying} />
             </div>
