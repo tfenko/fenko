@@ -29,12 +29,7 @@ body {
   font-family: var(--font-sans);
   transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
               color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: none !important;
-}
-
-/* Примусово вимикаємо стандартний курсор для всіх інтерактивних елементів (на ПК) */
-a, button, [role="button"], input, select, textarea, label {
-  cursor: none !important;
+  /* cursor: none прибрано */
 }
 
 /* Контури тексту */
@@ -59,23 +54,6 @@ a, button, [role="button"], input, select, textarea, label {
   opacity: 0.03;
 }
 
-/* ==========================================
-   ФІКС ДЛЯ ПЛАНШЕТІВ ТА ТЕЛЕФОНІВ (TOUCH)
-========================================== */
-@media (pointer: coarse) {
-  body, 
-  a, button, [role="button"], input, select, textarea, label {
-    cursor: auto !important;
-  }
-
-  .custom-cursor,
-  [class*="customCursor"],
-  [class*="cursor-dot"] {
-    display: none !important;
-    pointer-events: none !important;
-  }
-}
-
 /* ==========================================================================
    ACCESSIBILITY: Клавіатурна навігація (WCAG AA)
    ========================================================================== */
@@ -87,9 +65,4 @@ input:focus-visible,
   outline-offset: 4px;
 }
 
-a:focus,
-button:focus,
-input:focus,
-[role="button"]:focus {
-  outline: none;
-}
+/* Очищення від непотрібних селекторів курсорів */

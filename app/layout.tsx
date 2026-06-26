@@ -4,7 +4,7 @@ import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import ThemeToggle from './components/ThemeToggle'; 
-import ClientProviders from './components/ClientProviders'; // Імпортуємо наш новий клієнтський міст
+import ClientProviders from './components/ClientProviders';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -12,12 +12,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <title>FENKO</title>
       </head>
-      <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background cursor-none">
+      {/* cursor-none видалено */}
+      <body className="font-sans bg-background text-foreground antialiased overflow-x-hidden selection:bg-foreground selection:text-background">
         
-        {/* ==========================================
-           SEO СТРУКТУРОВАНІ ДАНІ (JSON-LD)
-        ========================================== */}
-        {/* Схема для артиста / бренду FENKO */}
+        {/* SEO */}
         <Script
           id="schema-music-group"
           type="application/ld+json"
@@ -44,7 +42,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {/* Схема для музичних релізів (архів треків) */}
         <Script
           id="schema-music-releases"
           type="application/ld+json"
@@ -56,10 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {
                   "@type": "MusicRelease",
                   "name": "Half Real",
-                  "byArtist": {
-                    "@type": "MusicGroup",
-                    "name": "FENKO"
-                  },
+                  "byArtist": { "@type": "MusicGroup", "name": "FENKO" },
                   "datePublished": "2026-05-08",
                   "genre": "Alternative R&B",
                   "musicReleaseFormat": "https://schema.org/DigitalFormat",
@@ -68,10 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {
                   "@type": "MusicRelease",
                   "name": "Deep End",
-                  "byArtist": {
-                    "@type": "MusicGroup",
-                    "name": "FENKO"
-                  },
+                  "byArtist": { "@type": "MusicGroup", "name": "FENKO" },
                   "datePublished": "2024",
                   "genre": "Alternative R&B",
                   "musicReleaseFormat": "https://schema.org/DigitalFormat",
@@ -80,10 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {
                   "@type": "MusicRelease",
                   "name": "Still Get Close",
-                  "byArtist": {
-                    "@type": "MusicGroup",
-                    "name": "FENKO"
-                  },
+                  "byArtist": { "@type": "MusicGroup", "name": "FENKO" },
                   "datePublished": "2026-07-03",
                   "genre": "Alternative R&B",
                   "musicReleaseFormat": "https://schema.org/DigitalFormat",
@@ -94,9 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {/* ==========================================
-           АНАЛІТИКА ТА ТРЕКЕРИ (Google Analytics)
-        ========================================== */}
+        {/* Аналітика */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-3T3TFTGZX0" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
@@ -121,7 +107,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <span className="font-cormorant text-base md:text-lg font-light tracking-[0.3em] uppercase text-foreground">F //</span>
           </div>
 
-          {/* Виклик нашого нового ізольованого клієнтського провайдера ефектів */}
           <ClientProviders>
             <main className="w-full relative z-10 min-h-screen">{children}</main>
           </ClientProviders>
