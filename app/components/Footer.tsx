@@ -31,31 +31,31 @@ export default function Footer() {
     <footer ref={ref} className="relative z-10 w-full bg-background text-foreground pt-32 pb-12 px-6 md:px-16 border-t border-foreground/10 transition-colors duration-600">
       <div className="max-w-5xl mx-auto w-full">
         
-        {/* Головний блок: Бренд, Стріми, Стрімінги */}
+        {/* Головний блок */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start pb-20">
           
-          {/* Бренд */}
+          {/* Бренд — ЗАМІНЕНО ТЕКСТ ТУТ */}
           <div className="md:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
             <h3 className="text-xl font-bold tracking-[0.25em] uppercase mb-3">FENKO</h3>
-            <p className="text-[9px] tracking-[0.3em] uppercase text-foreground/40 leading-relaxed max-w-[200px]">
-              Some people only exist after midnight.
+            <p className="text-[9px] tracking-[0.3em] uppercase text-foreground/40 block font-mono">
+              [ Independent Artist ]
             </p>
           </div>
 
-          {/* Центральний фокус: Масивний чистий лічильник (без рамки) */}
+          {/* Central Focus */}
           <div className="md:col-span-4 flex flex-col items-center text-center py-2 md:py-0">
-            <span className="text-[8px] uppercase tracking-[0.4em] text-foreground/30 block mb-3">
-              Global Reach // Total Streams
+            <span className="text-[10px] uppercase tracking-[0.3em] text-foreground/50 block mb-4 font-medium">
+              Total Streams
             </span>
-            <motion.span className="font-cormorant text-5xl md:text-6xl font-light block tracking-tight mb-2">
+            <motion.span className="font-cormorant text-5xl md:text-6xl font-light block tracking-tight mb-3 text-foreground">
               {rounded}
             </motion.span>
-            <span className="text-[8px] uppercase tracking-[0.25em] text-foreground/30 block font-mono">
-              As of {CURRENT_DATE}
+            <span className="text-[9px] uppercase tracking-[0.2em] text-foreground/40 block font-sans">
+              Verified statistics
             </span>
           </div>
 
-          {/* Соціалки */}
+          {/* Social Links */}
           <div className="md:col-span-4 grid grid-cols-2 gap-x-8 gap-y-3 justify-items-center md:justify-items-end text-center md:text-right font-mono">
             {socials.map((link) => (
               <a 
@@ -72,7 +72,7 @@ export default function Footer() {
 
         </div>
 
-        {/* Нижня канонічна лінія */}
+        {/* Нижня лінія — ЗАМІНЕНО ТЕКСТ ТУТ */}
         <div className="border-t border-foreground/10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[9px] tracking-[0.25em] uppercase text-foreground/30 font-mono">
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
             <span>© {new Date().getFullYear()} FENKO.SPACE</span>
@@ -84,7 +84,7 @@ export default function Footer() {
               fenkomus@gmail.com
             </a>
           </div>
-          <p className="text-center sm:text-right text-foreground/20">Designed for the shadows.</p>
+          <p className="text-center sm:text-right text-foreground/20">[ Archive Node ]</p>
         </div>
 
       </div>
