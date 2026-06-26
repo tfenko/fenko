@@ -10,12 +10,19 @@ interface PlayerOverlayProps {
   trackKey: 'deepend' | 'halfreal';
 }
 
+// ✅ ОНОВЛЕНО: Додано посилання на стримінги для кожного треку всередині плеєра
 const TRACKS_DATA = {
   deepend: {
     title: "Deep End",
     audioSrc: "/Deep-End.mp3",
     coverSrc: "/deepend.webp",
     bgGradient: "linear-gradient(135deg, #050b14, #0a1118, #0e2530, #131a22, #050b14)",
+    links: [
+      { name: 'Spotify', url: 'https://open.spotify.com/track/1EG19rhMAOtv57SfzxfG6V' },
+      { name: 'Apple Music', url: 'https://music.apple.com/ua/album/deep-end/1895073227?i=6763819432' },
+      { name: 'YouTube', url: 'https://music.youtube.com/playlist?list=OLAK5uy_myDt0WSvtAR2rKNX-p6_k2S4GVc7DAfkQ&si=GA2iGhEq4exWtb-8' },
+      { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/deep-end' }
+    ],
     lyrics: [
       { time: 21.66, text: "Blue light, crawling up the wall" },
       { time: 25.64, text: "Wait for the tide, wait for the fall" },
@@ -49,6 +56,12 @@ const TRACKS_DATA = {
     audioSrc: "/Half-Real.mp3",
     coverSrc: "/halfreal-2.webp",
     bgGradient: "linear-gradient(135deg, #000000, #150505, #2d0b0b, #100303, #000000)",
+    links: [
+      { name: 'Spotify', url: 'https://open.spotify.com/track/6UOYiUahxxA4wWBawrfmzY' },
+      { name: 'Apple Music', url: 'https://music.apple.com/ua/album/half-real/6769801424?i=6769801425' },
+      { name: 'YouTube', url: 'https://music.youtube.com/watch?v=Fs0ZWHbaxBg&si=HG0NwzzWarDTfzLj' },
+      { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/half-real' }
+    ],
     lyrics: [
       { time: 3.05, text: "I see your shadow in the light again" },
       { time: 10.07, text: "But I don't know if you were ever here" },
@@ -314,8 +327,25 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
               </a>
             </div>
 
-            <div className="mb-4">
+            <div className="mb-2">
                <OverlayVisualizer isPlaying={isPlaying} />
+            </div>
+
+            {/* ✅ ДОДАНА ФІЧА: Стримінгові посилання прямо всередині картки плеєра */}
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 max-w-[280px] font-mono text-[9px] uppercase tracking-[0.2em] mb-6 text-white/40 mt-1">
+              {currentTrack.links.map((link, idx) => (
+                <div key={link.name} className="flex items-center gap-3">
+                  <a 
+                    href={link.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="hover:text-white transition-colors duration-300"
+                  >
+                    {link.name}
+                  </a>
+                  {idx < currentTrack.links.length - 1 && <span className="opacity-30 text-[8px] select-none">//</span>}
+                </div>
+              ))}
             </div>
 
             <div className={styles.volumeContainer}>
