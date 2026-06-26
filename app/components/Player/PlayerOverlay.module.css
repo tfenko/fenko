@@ -15,27 +15,74 @@
   background-color: #000000;
 }
 
+/* ==========================================
+   КНОПКА ЗАКРИТТЯ (ФІКСОВАНА)
+========================================== */
 .closeBtnOverlay {
-  position: absolute;
+  position: fixed; /* Щоб кнопка "прилипла" до екрана */
   top: 1.5rem;
   right: 1.5rem;
-  z-index: 999999; /* Найвищий пріоритет для кнопки */
+  z-index: 9999999; /* Найвищий пріоритет у всій системі */
   font-family: monospace;
   font-size: 11px;
   letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.4);
-  background: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(10px);
-  padding: 8px 16px;
+  padding: 10px 20px;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: all 0.3s ease;
+  pointer-events: auto; /* Гарантує клікабельність */
 }
 
 .closeBtnOverlay:hover {
   color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* ==========================================
+   АДАПТИВНІСТЬ (МОБІЛЬНИЙ ФІКС)
+========================================== */
+@media (max-width: 900px) {
+  .closeBtnOverlay {
+    top: 5rem; /* Опускаємо кнопку нижче твого навбару */
+    right: 1rem;
+    padding: 8px 16px;
+  }
+
+  .overlay {
+    flex-direction: column;
+    padding: 1.5rem;
+    padding-top: 7rem; /* Додатковий відступ зверху */
+    justify-content: flex-start;
+    gap: 1rem;
+    overflow-y: auto;
+  }
+  
+  .musicCard {
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+    padding: 16px;
+    order: -1;
+  }
+  
+  .lyricsContainer {
+    width: 100%;
+    height: auto;
+    min-height: 40vh;
+  }
+  
+  .lyricsScroll {
+    padding: 5vh 0;
+  }
+  
+  .lyricLine {
+    font-size: 20px;
+    margin-bottom: 2rem;
+  }
 }
 
 /* ==========================================

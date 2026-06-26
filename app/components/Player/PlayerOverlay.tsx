@@ -102,31 +102,9 @@ const TRACKS_DATA = {
   }
 };
 
-const OverlayVisualizer = ({ isPlaying }: { isPlaying: boolean }) => (
-  <div className="flex items-end gap-[3px] h-5 justify-center opacity-80">
-    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-      <motion.div
-        key={i}
-        className="w-[2px] bg-foreground rounded-full"
-        animate={{ height: isPlaying ? ['20%', '100%', '40%', '90%', '30%'] : '15%' }}
-        transition={{
-          repeat: Infinity,
-          duration: 0.5 + i * 0.08,
-          ease: "easeInOut",
-          delay: i * 0.03
-        }}
-      />
-    ))}
-  </div>
-);
-
 export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverlayProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const lyricsScrollRef = useRef<HTMLDivElement>(null);
-  const lastUpdateRef = useRef(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [activeLineIndex, setActiveLineIndex] = useState(-1);
-  const [volume, setVolume] = useState(1);
   const currentTrack = TRACKS_DATA[trackKey];
 
   useEffect(() => {
@@ -139,11 +117,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
       document.body.style.position = '';
       document.body.style.width = '';
     }
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-    };
+    return () => { document.body.style.overflow = ''; document.body.style.position = ''; document.body.style.width = ''; };
   }, [isOpen]);
 
   const togglePlay = useCallback(() => {
@@ -152,59 +126,42 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     else { audioRef.current.pause(); setIsPlaying(false); }
   }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [togglePlay]);
-
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div 
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          className={styles.overlay}
-          style={{ background: currentTrack.bgGradient }}
-          onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-        >
+        <>
           <button onClick={onClose} className={styles.closeBtnOverlay}>✕ CLOSE</button>
-          
-          <div className={styles.lyricsContainer}>
-            <div className={styles.lyricsScroll} ref={lyricsScrollRef}>
-              {currentTrack.lyrics.map((line, index) => (
-                <p key={index} className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}>
-                  {line.text}
-                </p>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.musicCard}>
-            <div className={styles.coverWrapper} onClick={togglePlay}>
-              <img src={currentTrack.coverSrc} className={styles.squareCover} />
-              <div className={styles.coverOverlay}>
-                <div className={styles.playIconContainer}>
-                  {isPlaying ? <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> 
-                             : <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current"><path d="M8 5v14l11-7z"/></svg>}
-                </div>
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className={styles.overlay}
+            style={{ background: currentTrack.bgGradient }}
+            onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+          >
+            <div className={styles.lyricsContainer}>
+              <div className={styles.lyricsScroll}>
+                {currentTrack.lyrics.map((line, index) => (
+                  <p key={index} className={styles.lyricLine}>{line.text}</p>
+                ))}
               </div>
             </div>
-            <div className={styles.metaBlock}>
-              <h2 className={styles.trackTitle}>{currentTrack.title}</h2>
-              <p className={styles.artistName}>FENKO</p>
+            <div className={styles.musicCard}>
+              <div className={styles.coverWrapper} onClick={togglePlay}>
+                <img src={currentTrack.coverSrc} className={styles.squareCover} />
+              </div>
+              <div className={styles.metaBlock}>
+                <h2 className={styles.trackTitle}>{currentTrack.title}</h2>
+                <p className={styles.artistName}>FENKO</p>
+              </div>
+              <div className={styles.platformsGrid}>
+                {currentTrack.links.map((l) => <a key={l.name} href={l.url} target="_blank" className={styles.platformBadge}>{l.name}</a>)}
+              </div>
+              <input type="range" min="0" max="1" step="0.01" onChange={(e) => {
+                if (audioRef.current) audioRef.current.volume = parseFloat(e.target.value);
+              }} className={styles.volumeSlider} />
+              <audio ref={audioRef} src={currentTrack.audioSrc} />
             </div>
-            <div className="h-6 flex items-center justify-center my-2"><OverlayVisualizer isPlaying={isPlaying} /></div>
-            <div className={styles.platformsGrid}>
-              {currentTrack.links.map((l) => <a key={l.name} href={l.url} target="_blank" className={styles.platformBadge}>{l.name}</a>)}
-            </div>
-            <input type="range" min="0" max="1" step="0.01" onChange={(e) => {
-              if (audioRef.current) audioRef.current.volume = parseFloat(e.target.value);
-            }} className={styles.volumeSlider} />
-            <audio ref={audioRef} src={currentTrack.audioSrc} />
-          </div>
-        </motion.div>
+          </motion.div>
+        </>
       )}
     </AnimatePresence>
   );
