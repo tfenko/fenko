@@ -3,6 +3,7 @@
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
+import Image from 'next/image'; // ✅ Імпортуємо Image
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
@@ -23,7 +24,6 @@ export default function Navbar() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // ✅ НОВА ФУНКЦІЯ: скрол в самий верх
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -45,20 +45,23 @@ export default function Navbar() {
         
         <div className="flex justify-between items-center px-6 py-3 w-full">
           
-          {/* ✅ Логотип тепер активний - скролить вгору */}
+          {/* ✅ Логотип-іконка */}
           <button 
             onClick={scrollToTop}
             className="flex items-center gap-2 group cursor-pointer"
           >
-            <span className="font-cormorant text-sm font-light tracking-[0.3em] uppercase text-foreground select-none transition-opacity group-hover:opacity-70">
-              F //
-            </span>
-            <span className="w-1.5 h-1.5 bg-foreground rounded-full animate-pulse opacity-40 hidden sm:block" />
+            <div className="relative w-6 h-6 transition-opacity group-hover:opacity-70">
+              <Image 
+                src="/icon.png" 
+                alt="FENKO" 
+                fill 
+                className="object-contain" 
+                priority
+              />
+            </div>
           </button>
 
-          {/* Права частина */}
           <div className="flex items-center gap-6 md:gap-8">
-            
             <div className="flex gap-6 font-mono text-[9px] tracking-[0.3em] uppercase">
               {navItems.map((item) => (
                 <button
@@ -100,7 +103,6 @@ export default function Navbar() {
             style={{ scaleX }}
           />
         </div>
-
       </motion.nav>
     </div>
   );
