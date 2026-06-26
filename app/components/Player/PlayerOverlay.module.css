@@ -4,12 +4,13 @@
 .overlay {
   position: fixed;
   inset: 0;
-  z-index: 10000; /* Піднято для надійності над усім контентом */
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8vw;
-  padding: 4rem 8vw;
+  /* Зменшено прірву між блоками та додано внутрішні падінги від країв екрана */
+  gap: 40px; 
+  padding: 2rem 40px;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -34,12 +35,12 @@
 }
 
 /* ==========================================
-   КОНТЕЙНЕР ЛІРИКИ (ЗЛІВА)
+   КОНТЕЙНЕР ЛІРИКИ (ЗЛІВА — ЗБІЛЬШЕНО І ВИПРАВЛЕНО)
 ========================================== */
 .lyricsContainer {
-  flex: 1;
-  max-w: 550px;
-  height: 70vh;
+  flex: 1.4; /* Текст тепер забирає більше пропорційної ширини */
+  max-width: 750px; /* Контейнер став значно ширшим */
+  height: 75vh;
   z-index: 5;
   pointer-events: auto !important;
 }
@@ -49,6 +50,7 @@
   height: 100%;
   overflow-y: scroll;
   padding: 35vh 0;
+  padding-left: 10px; /* Безпечний відступ, щоб літери не терлися об лівий край */
   scrollbar-width: none;
   -ms-overflow-style: none;
   position: relative;
@@ -64,14 +66,19 @@
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  font-size: 24px;
+  font-size: 26px; /* Трохи адаптований розмір під великий екран */
   font-weight: 700;
-  line-height: 1.5;
-  margin-bottom: 2.5rem;
+  line-height: 1.4;
+  margin-bottom: 2.2rem;
   color: #ffffff;
   opacity: 0.15;
   transition: all 0.4s ease;
   cursor: pointer !important;
+  
+  /* Фікс обрізання: дозволяємо перенос, якщо рядок занадто довгий на середніх екранах */
+  white-space: normal; 
+  word-wrap: break-word;
+  transform-origin: left center;
 }
 
 .lyricLine:hover {
@@ -80,7 +87,7 @@
 
 .lyricLineActive {
   opacity: 1 !important;
-  transform: scale(1.04);
+  transform: scale(1.03); /* Легкий скейл без виходу за межі контейнера */
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
@@ -98,9 +105,9 @@
   flex-direction: column;
   box-sizing: border-box;
   z-index: 10;
+  flex-shrink: 0; /* Картка ніколи не стискається, тримає форму */
 }
 
-/* Квадратна обкладинка та інтегрований Play/Pause */
 .coverWrapper {
   position: relative;
   width: 100%;
@@ -145,11 +152,6 @@
   transition: transform 0.2s ease;
 }
 
-.playIconContainer:hover {
-  transform: scale(1.05);
-}
-
-/* Блок метаданих треку */
 .metaBlock {
   margin-top: 1.2rem;
   text-align: left;
@@ -172,9 +174,7 @@
   text-transform: uppercase;
 }
 
-/* ==========================================
-   КНОПКИ СТРИМІНГІВ
-========================================== */
+/* СТРИМІНГИ */
 .platformsGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -203,9 +203,7 @@
   background: rgba(255, 255, 255, 0.02);
 }
 
-/* ==========================================
-   МІКШЕР ЗВУКУ
-========================================== */
+/* СЛАЙДЕР */
 .volumeBlock {
   margin-top: 1.2rem;
   width: 100%;
@@ -228,17 +226,12 @@
   height: 8px;
   border-radius: 50%;
   background: #ffffff;
-  transition: transform 0.1s ease;
-}
-
-.volumeSlider::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
 }
 
 /* ==========================================
    АДАПТИВНІСТЬ ТА МОБІЛЬНА ОПТИМІЗАЦІЯ
 ========================================== */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .overlay {
     flex-direction: column;
     padding: 2rem 1.5rem;
@@ -253,16 +246,17 @@
   
   .musicCard {
     width: 100%;
-    margin-top: 2rem;
+    margin-top: 1rem;
   }
   
   .lyricsContainer {
     width: 100%;
-    height: 30vh;
+    height: 35vh;
   }
   
   .lyricsScroll {
     padding: 12vh 0;
+    padding-left: 0;
     text-align: center;
   }
   
