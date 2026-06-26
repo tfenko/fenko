@@ -6,22 +6,18 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
+import Image from 'next/image'; // ✅ ДОДАНО для фото на фоні
 // @ts-ignore
 import * as random from 'maath/random/dist/maath-random.esm';
 
-/**
- * 3D Particle System: Оптимізований візуалізатор з інерцією руху
- */
 function ParticleSystem() {
   const ref = useRef<THREE.Points>(null!);
-  // Зменшуємо до 2500 частинок для гарантованих 60fps на всіх пристроях
   const sphere = random.inSphere(new Float32Array(2500), { radius: 1.5 });
 
   useFrame((state) => {
     if (ref.current) {
       ref.current.rotation.x += 0.0001;
       ref.current.rotation.y += 0.0001;
-      // Плавна лінійна інтерполяція (Lerp) для інерційного руху за мишею
       ref.current.position.x = THREE.MathUtils.lerp(ref.current.position.x, state.mouse.x * 0.2, 0.05);
       ref.current.position.y = THREE.MathUtils.lerp(ref.current.position.y, state.mouse.y * 0.2, 0.05);
     }
@@ -70,7 +66,19 @@ export default function Hero() {
       style={{ opacity: bgOpacity }}
       className="relative w-full h-screen bg-background flex items-center justify-center overflow-hidden z-30"
     >
-      {/* 3D Контейнер з оптимізованими налаштуваннями рендеру */}
+      {/* ✅ ТВОЄ ФОТО НА ФОНІ: Ледь помітне, під зірками */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.12] blur-[10px] scale-105 select-none transition-opacity duration-1000">
+        <Image
+          src="/vibe.webp"
+          alt="Background Texture"
+          fill
+          priority
+          quality={75}
+          className="object-cover grayscale"
+        />
+      </div>
+
+      {/* 3D Контейнер із зірками (йде поверх фото завдяки z-10) */}
       <div className={`absolute inset-0 z-10 opacity-60 ${theme === 'light' ? 'invert' : ''}`}>
         <Canvas 
           camera={{ position: [0, 0, 1] }}
@@ -91,7 +99,7 @@ export default function Hero() {
           FENKO
         </h1>
         <p className="font-sans text-[10px] md:text-[11px] text-foreground/60 font-light tracking-[0.5em] uppercase max-w-xl mx-auto leading-relaxed">
-          Music for the aftermath
+          Music for the aftermath.
         </p>
 
         <div className="mt-10 flex flex-wrap justify-center gap-4">
