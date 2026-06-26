@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import Hero from './components/Hero';
 import About from './components/About';
 import Footer from './components/Footer';
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'FENKO // Official Website',
-    description: 'Alternative R&B // Dark Soundscapes // Official archive and novel "Exit from Full Screen Mode"',
+    description: 'Alternative R&B // Dark Soundscapes // Official archive of FENKO and the fenkomus label.',
     url: 'https://fenko.space',
     siteName: 'FENKO SPACE',
     images: [
@@ -37,8 +38,8 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'FENKO // Official Website',
-    description: 'Alternative R&B // Dark Soundscapes // Official archive and novel "Exit from Full Screen Mode"',
-    images: ['/og-image.webp'], // Уніфіковано під один формат og-зображення
+    description: 'Alternative R&B // Dark Soundscapes // Official archive of FENKO and the fenkomus label.',
+    images: ['/og-image.webp'],
   },
   robots: {
     index: true,
@@ -56,9 +57,31 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
+      <Script
+        id="schema-music-artist"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "MusicGroup", // Змінено на MusicGroup для кращого охоплення артист/лейбл
+            "name": "FENKO",
+            "alternateName": ["fenkomus", "FENKO Music"],
+            "url": "https://fenko.space",
+            "sameAs": [
+              "https://open.spotify.com/artist/6DyQbxEBYocDwvxPvl2gBS",
+              "https://music.apple.com/ua/artist/fenko/1895075050",
+              "https://soundcloud.com/fenkomus",
+              "https://www.instagram.com/fenkomus",
+              "https://www.tiktok.com/@fenkomus"
+            ],
+            "description": "Alternative R&B artist FENKO (also known as fenkomus). Primary artist identity representing the creative label and production imprint."
+          }),
+        }}
+      />
+
       <Hero />
       <About />
-      {/* Клієнтський міст для роботи плеєра та караоке */}
       <HomeContent />
       <Footer />
     </>
