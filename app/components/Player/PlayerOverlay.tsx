@@ -10,13 +10,12 @@ interface PlayerOverlayProps {
   trackKey: 'deepend' | 'halfreal';
 }
 
-// ✅ ОНОВЛЕНО: Додано посилання на стримінги для кожного треку всередині плеєра
 const TRACKS_DATA = {
   deepend: {
     title: "Deep End",
     audioSrc: "/Deep-End.mp3",
     coverSrc: "/deepend.webp",
-    bgGradient: "linear-gradient(135deg, #050b14, #0a1118, #0e2530, #131a22, #050b14)",
+    bgGradient: "radial-gradient(circle at center, #0d1520 0%, #03070c 100%)",
     links: [
       { name: 'Spotify', url: 'https://open.spotify.com/track/1EG19rhMAOtv57SfzxfG6V' },
       { name: 'Apple Music', url: 'https://music.apple.com/ua/album/deep-end/1895073227?i=6763819432' },
@@ -55,7 +54,7 @@ const TRACKS_DATA = {
     title: "Half Real",
     audioSrc: "/Half-Real.mp3",
     coverSrc: "/halfreal-2.webp",
-    bgGradient: "linear-gradient(135deg, #000000, #150505, #2d0b0b, #100303, #000000)",
+    bgGradient: "radial-gradient(circle at center, #1a0808 0%, #050101 100%)",
     links: [
       { name: 'Spotify', url: 'https://open.spotify.com/track/6UOYiUahxxA4wWBawrfmzY' },
       { name: 'Apple Music', url: 'https://music.apple.com/ua/album/half-real/6769801424?i=6769801425' },
@@ -104,17 +103,17 @@ const TRACKS_DATA = {
 };
 
 const OverlayVisualizer = ({ isPlaying }: { isPlaying: boolean }) => (
-  <div className="flex items-end gap-[4px] h-8 justify-center opacity-70">
-    {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+  <div className="flex items-end gap-[3px] h-5 justify-center opacity-80">
+    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
       <motion.div
         key={i}
-        className="w-[3px] bg-foreground rounded-full"
-        animate={{ height: isPlaying ? ['20%', '100%', '30%', '90%', '40%'] : '10%' }}
+        className="w-[2px] bg-foreground rounded-full"
+        animate={{ height: isPlaying ? ['20%', '100%', '40%', '90%', '30%'] : '15%' }}
         transition={{
           repeat: Infinity,
-          duration: 0.4 + i * 0.1,
+          duration: 0.5 + i * 0.08,
           ease: "easeInOut",
-          delay: i * 0.05
+          delay: i * 0.03
         }}
       />
     ))}
@@ -123,7 +122,6 @@ const OverlayVisualizer = ({ isPlaying }: { isPlaying: boolean }) => (
 
 export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverlayProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const tonearmRef = useRef<HTMLImageElement>(null);
   const lyricsScrollRef = useRef<HTMLDivElement>(null);
   const lastUpdateRef = useRef(0);
 
@@ -145,16 +143,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  useEffect(() => {
-    const currentAudio = audioRef.current;
-    return () => {
-      if (currentAudio && !currentAudio.paused) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-      }
-    };
-  }, [isOpen]);
-
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -162,11 +150,9 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     if (audio.paused) {
       audio.play().catch(() => {});
       setIsPlaying(true);
-      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-5deg)';
     } else {
       audio.pause();
       setIsPlaying(false);
-      if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
     }
   }, []);
 
@@ -177,19 +163,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
       if (e.code === 'Space') {
         e.preventDefault();
         togglePlay();
-      }
-      if (e.code === 'ArrowRight' && audioRef.current) {
-        audioRef.current.currentTime = Math.min(audioRef.current.currentTime + 5, audioRef.current.duration);
-      }
-      if (e.code === 'ArrowLeft' && audioRef.current) {
-        audioRef.current.currentTime = Math.max(audioRef.current.currentTime - 5, 0);
-      }
-      if (e.code === 'KeyM') {
-        setVolume((prev) => {
-          const newVol = prev > 0 ? 0 : 1;
-          if (audioRef.current) audioRef.current.volume = newVol;
-          return newVol;
-        });
       }
     };
 
@@ -216,20 +189,12 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
         }
       }
       setActiveLineIndex(clickedIndex);
-      
       if (audioRef.current.paused) togglePlay();
     }
   };
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    if (audioRef.current) audioRef.current.volume = newVolume;
-  };
-
   const onTimeUpdateHandler = (e: React.SyntheticEvent<HTMLAudioElement>) => {
     const currentTime = e.currentTarget.currentTime;
-    
     if (currentTime - lastUpdateRef.current < 0.1) return;
     lastUpdateRef.current = currentTime;
 
@@ -243,7 +208,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
         break;
       }
     }
-
     setActiveLineIndex((prev) => (prev !== currentLineIndex ? currentLineIndex : prev));
   };
 
@@ -265,7 +229,6 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     setIsPlaying(false);
     setActiveLineIndex(-1);
     lastUpdateRef.current = 0;
-    if (tonearmRef.current) tonearmRef.current.style.transform = 'rotate(-25deg)';
   }, [isOpen, trackKey]);
 
   return (
@@ -276,25 +239,19 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
           animate={{ opacity: 1 }} 
           exit={{ opacity: 0 }}
           className={styles.overlay}
+          style={{ background: currentTrack.bgGradient }}
         >
+          {/* Хрестик закриття в інженерному стилі */}
           <button onClick={onClose} className={styles.closeBtnOverlay}>
-            [ CLOSE PLAYER ]
+            ✕ CLOSE
           </button>
 
-          <div 
-            className={`${styles.bgVideo} ${isPlaying ? styles.bgVideoActive : ''}`} 
-            style={{ background: currentTrack.bgGradient }}
-          />
-
-          <div className={`${styles.lyricsContainer} ${isPlaying ? styles.lyricsActive : ''}`}>
+          {/* ТЕКСТ КАРАОКЕ (ЗЛІВА) */}
+          <div className={styles.lyricsContainer}>
             <div 
               className={styles.lyricsScroll} 
               ref={lyricsScrollRef} 
               onScroll={handleLyricsScroll}
-              role="region"
-              aria-live="polite"
-              aria-atomic="false"
-              aria-label="Current lyrics"
             >
               {currentTrack.lyrics.map((line, index) => (
                 <p 
@@ -308,57 +265,62 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
             </div>
           </div>
 
-          <div className={`${styles.musicCard} ${isPlaying ? styles.musicCardShifted : ''}`}>
-            <div className={styles.recordContainer}>
-              <img src="/tonarm.png" alt="Vinyl record tonearm" className={styles.tonearm} ref={tonearmRef} />
-              <img src={currentTrack.coverSrc} alt={`${currentTrack.title} vinyl record`} className={`${styles.record} ${isPlaying ? styles.isRotating : ''}`} />
-              
-              <button onClick={togglePlay} className={styles.playBtn}>
-                <svg viewBox="0 0 24 24" width="32" height="32" fill="white">
-                  {isPlaying ? <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/> : <path d="M8 5v14l11-7z"/>}
-                </svg>
-              </button>
+          {/* СТУДІЙНА КАРТКА ПЛЕЄРА (СПРАВА) */}
+          <div className={styles.musicCard}>
+            
+            {/* Строга квадратна обкладинка з вбудованим Play/Pause ховером */}
+            <div className={styles.coverWrapper} onClick={togglePlay}>
+              <img src={currentTrack.coverSrc} alt={currentTrack.title} className={styles.squareCover} />
+              <div className={styles.coverOverlay}>
+                <div className={styles.playIconContainer}>
+                  {isPlaying ? (
+                    <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current text-white"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current text-white"><path d="M8 5v14l11-7z"/></svg>
+                  )}
+                </div>
+              </div>
             </div>
 
-            <div className={styles.trackInfo}>
+            {/* Метадані */}
+            <div className={styles.metaBlock}>
               <h2 className={styles.trackTitle}>{currentTrack.title}</h2>
-              <a href="https://fenko.space" target="_blank" rel="noopener noreferrer" className={styles.artistLink}>
-                <p className={styles.artistName}>FENKO</p>
-              </a>
+              <p className={styles.artistName}>FENKO</p>
             </div>
 
-            <div className="mb-2">
+            {/* Компактний індикатор */}
+            <div className="h-6 flex items-center justify-center my-2">
                <OverlayVisualizer isPlaying={isPlaying} />
             </div>
 
-            {/* ✅ ДОДАНА ФІЧА: Стримінгові посилання прямо всередині картки плеєра */}
-            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 max-w-[280px] font-mono text-[9px] uppercase tracking-[0.2em] mb-6 text-white/40 mt-1">
-              {currentTrack.links.map((link, idx) => (
-                <div key={link.name} className="flex items-center gap-3">
-                  <a 
-                    href={link.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="hover:text-white transition-colors duration-300"
-                  >
-                    {link.name}
-                  </a>
-                  {idx < currentTrack.links.length - 1 && <span className="opacity-30 text-[8px] select-none">//</span>}
-                </div>
+            {/* ЧІТКІ КНОПКИ СТРИМІНГІВ */}
+            <div className={styles.platformsGrid}>
+              {currentTrack.links.map((link) => (
+                <a 
+                  key={link.name}
+                  href={link.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className={styles.platformBadge}
+                >
+                  {link.name}
+                </a>
               ))}
             </div>
 
-            <div className={styles.volumeContainer}>
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" className={styles.volumeIcon}>
-                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-              </svg>
+            {/* Мікшер гучності */}
+            <div className={styles.volumeBlock}>
               <input 
                 type="range" 
                 min="0" 
                 max="1" 
                 step="0.01" 
                 value={volume} 
-                onChange={handleVolumeChange} 
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value);
+                  setVolume(v);
+                  if (audioRef.current) audioRef.current.volume = v;
+                }} 
                 className={styles.volumeSlider}
               />
             </div>
