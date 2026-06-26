@@ -4,10 +4,8 @@ import { motion, useMotionValue, useTransform, animate, useInView } from 'framer
 import { useEffect, useRef } from 'react';
 
 export default function Footer() {
-  // --- РЕДАГУЙ ДАНІ ТУТ ---
   const TOTAL_STREAMS = 11223;
   const CURRENT_DATE = "June 25, 2026";
-  // -----------------------
 
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.round(latest).toLocaleString());
@@ -30,36 +28,65 @@ export default function Footer() {
   ];
 
   return (
-    <footer ref={ref} className="relative z-10 w-full bg-background text-foreground py-16 px-6 md:px-16 border-t border-foreground/10">
-      <div className="max-w-6xl mx-auto">
+    <footer ref={ref} className="relative z-10 w-full bg-background text-foreground pt-32 pb-12 px-6 md:px-16 border-t border-foreground/10 transition-colors duration-600">
+      <div className="max-w-5xl mx-auto w-full">
         
-        {/* Верхній блок: Бренд та посилання */}
-        <div className="flex flex-col md:flex-row justify-between items-start mb-16 gap-8">
-          <div>
-            <h3 className="text-xl font-bold tracking-[0.2em] uppercase mb-2">FENKO</h3>
-            <p className="text-[10px] tracking-[0.3em] uppercase text-foreground/50">Some people only exist after midnight.</p>
+        {/* Головний блок: Бренд, Стріми, Стрімінги */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start pb-20">
+          
+          {/* Бренд */}
+          <div className="md:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
+            <h3 className="text-xl font-bold tracking-[0.25em] uppercase mb-3">FENKO</h3>
+            <p className="text-[9px] tracking-[0.3em] uppercase text-foreground/40 leading-relaxed max-w-[200px]">
+              Some people only exist after midnight.
+            </p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-2">
+
+          {/* Центральний фокус: Масивний чистий лічильник (без рамки) */}
+          <div className="md:col-span-4 flex flex-col items-center text-center py-2 md:py-0">
+            <span className="text-[8px] uppercase tracking-[0.4em] text-foreground/30 block mb-3">
+              Global Reach // Total Streams
+            </span>
+            <motion.span className="font-cormorant text-5xl md:text-6xl font-light block tracking-tight mb-2">
+              {rounded}
+            </motion.span>
+            <span className="text-[8px] uppercase tracking-[0.25em] text-foreground/30 block font-mono">
+              As of {CURRENT_DATE}
+            </span>
+          </div>
+
+          {/* Соціалки */}
+          <div className="md:col-span-4 grid grid-cols-2 gap-x-8 gap-y-3 justify-items-center md:justify-items-end text-center md:text-right font-mono">
             {socials.map((link) => (
-              <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" className="text-[11px] tracking-widest text-foreground/50 hover:text-foreground transition-colors uppercase">
+              <a 
+                key={link.name} 
+                href={link.url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-[10px] tracking-[0.2em] text-foreground/40 hover:text-foreground transition-colors uppercase"
+              >
                 {link.name}
               </a>
             ))}
           </div>
+
         </div>
 
-        {/* Компактний блок статистики */}
-        <div className="border border-foreground/10 p-8 mb-16 text-center">
-          <span className="text-[8px] uppercase tracking-[0.4em] text-foreground/30 block mb-2">Global reach // Total streams</span>
-          <motion.span className="font-cormorant text-4xl block mb-2">{rounded}</motion.span>
-          <span className="text-[10px] uppercase tracking-widest text-foreground/30">Streams // As of {CURRENT_DATE}</span>
+        {/* Нижня канонічна лінія */}
+        <div className="border-t border-foreground/10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[9px] tracking-[0.25em] uppercase text-foreground/30 font-mono">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
+            <span>© {new Date().getFullYear()} FENKO.SPACE</span>
+            <span className="hidden sm:inline">//</span>
+            <a 
+              href="mailto:fenkomus@gmail.com" 
+              className="text-foreground/50 hover:text-foreground transition-colors underline underline-offset-4 decoration-foreground/10 hover:decoration-foreground/30"
+            >
+              fenkomus@gmail.com
+            </a>
+          </div>
+          <p className="text-center sm:text-right text-foreground/20">Designed for the shadows.</p>
         </div>
 
-        {/* Футер лінія */}
-        <div className="flex justify-between text-[9px] tracking-[0.3em] uppercase text-foreground/30 font-mono">
-          <p>© {new Date().getFullYear()} FENKO</p>
-          <p>Designed for the shadows.</p>
-        </div>
       </div>
     </footer>
   );

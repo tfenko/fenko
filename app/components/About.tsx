@@ -53,7 +53,7 @@ export default function About() {
             transition={{ duration: 1, ease: "easeOut" }}
             className={`${cormorant.className} text-4xl md:text-5xl font-light tracking-tight mb-8 text-foreground`}
           >
-            Taras Fenko
+            Fenko
           </motion.h2>
 
           <motion.div 
