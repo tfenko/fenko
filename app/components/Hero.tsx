@@ -6,7 +6,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
-import Image from 'next/image'; // ✅ ДОДАНО для фото на фоні
+import Image from 'next/image';
 // @ts-ignore
 import * as random from 'maath/random/dist/maath-random.esm';
 
@@ -66,8 +66,8 @@ export default function Hero() {
       style={{ opacity: bgOpacity }}
       className="relative w-full h-screen bg-background flex items-center justify-center overflow-hidden z-30"
     >
-      {/* ✅ ТВОЄ ФОТО НА ФОНІ: Ледь помітне, під зірками */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.12] blur-[10px] scale-105 select-none transition-opacity duration-1000">
+      {/* ✅ ТВОЄ ФОТО НА ФОНІ: Непрозорість збільшено до 0.22 для кращої видимості */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.22] blur-[10px] scale-105 select-none transition-opacity duration-1000">
         <Image
           src="/vibe.webp"
           alt="Background Texture"
@@ -78,7 +78,7 @@ export default function Hero() {
         />
       </div>
 
-      {/* 3D Контейнер із зірками (йде поверх фото завдяки z-10) */}
+      {/* 3D Контейнер із зірками */}
       <div className={`absolute inset-0 z-10 opacity-60 ${theme === 'light' ? 'invert' : ''}`}>
         <Canvas 
           camera={{ position: [0, 0, 1] }}
