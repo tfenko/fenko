@@ -67,7 +67,7 @@ export default function Hero() {
       className="relative w-full h-screen bg-background flex items-center justify-center overflow-hidden z-30"
     >
       {/* ✅ ТВОЄ ФОТО НА ФОНІ: Непрозорість збільшено до 0.22 для кращої видимості */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.22] blur-[10px] scale-105 select-none transition-opacity duration-1000">
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.29] blur-[10px] scale-105 select-none transition-opacity duration-1000">
         <Image
           src="/vibe.webp"
           alt="Background Texture"
