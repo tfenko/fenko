@@ -73,13 +73,17 @@ const releases = [
   { 
     id: 3, 
     title: 'Still Get Close', 
-    type: 'Upcoming // July 3', 
-    description: 'A journey into the depths of the shadows. The new sound is coming.', 
+    type: 'Single // Out now', 
+    description: 'You make me lose my mind. Every single time.', 
     image: '/cover3.webp', 
     canScramble: false, 
-    previewUrl: '', 
-    links: [], 
-    preSaveUrl: 'https://distrokid.com/hyperfollow/fenko1/still-get-close' 
+    previewUrl: '/Still-Get-Close.mp3', 
+    links: [
+      { name: 'Apple Music', url: 'https://music.apple.com/ua/album/still-get-close/1895075050' }, 
+      { name: 'Spotify', url: 'https://open.spotify.com/track/YOUR_ID' }, 
+      { name: 'YouTube', url: 'https://music.youtube.com/@Fenkomus' }, 
+      { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/still-get-close' }
+    ] 
   },
   { 
     id: 2, 
@@ -114,61 +118,28 @@ const releases = [
 ];
 
 interface MusicProps {
-  onOpenPlayer: (trackKey: 'deepend' | 'halfreal') => void;
+  onOpenPlayer: (trackKey: 'deepend' | 'halfreal' | 'stillgetclose') => void;
 }
 
 export default function Music({ onOpenPlayer }: MusicProps) {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
   const [playingId, setPlayingId] = useState<number | null>(null);
   
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const togglePlay = (id: number, url: string) => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setPlayingId(null);
-    }
-
-    if (id === 1) {
-      onOpenPlayer('deepend');
-      return;
-    }
-    if (id === 2) {
-      onOpenPlayer('halfreal');
-      return;
-    }
-
-    if (!audioRef.current) {
-      audioRef.current = new Audio();
-    }
-
-    const audio = audioRef.current;
-    
-    if (playingId === id && !audio.paused) {
-      audio.pause();
-      setPlayingId(null);
-    } else {
-      audio.src = url;
-      audio.play().catch(() => {});
-      setPlayingId(id);
-      audio.onended = () => setPlayingId(null);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
+  const togglePlay = (id: number) => {
+    const trackMap: { [key: number]: 'deepend' | 'halfreal' | 'stillgetclose' } = {
+      1: 'deepend',
+      2: 'halfreal',
+      3: 'stillgetclose'
     };
-  }, []);
+    
+    onOpenPlayer(trackMap[id]);
+    setPlayingId(id);
+  };
 
   return (
     <section id="music" className="relative z-10 w-full min-h-screen bg-background text-foreground py-24 md:py-40 px-6 md:px-16 flex flex-col justify-center border-t border-foreground/10 transition-colors duration-600">
       <div className="max-w-5xl mx-auto w-full relative z-10">
         
-        {/* Заголовок секції — чистий, без зайвого пафосу */}
         <div className="mb-20 border-b border-foreground/10 pb-6 flex flex-col sm:flex-row justify-between items-center sm:items-end text-center sm:text-left gap-4">
           <div>
             <p className="font-sans text-[9px] tracking-[0.5em] text-foreground/40 uppercase mb-2">// Archives</p>
@@ -177,7 +148,6 @@ export default function Music({ onOpenPlayer }: MusicProps) {
           <span className="text-[9px] font-mono text-foreground/30 tracking-widest hidden sm:block">FENKO // ARCHIVE</span>
         </div>
 
-        {/* Список релізів */}
         <div className="flex flex-col gap-32 md:gap-40">
           {releases.map((track, index) => (
             <div 
@@ -187,26 +157,16 @@ export default function Music({ onOpenPlayer }: MusicProps) {
               onMouseLeave={() => setHoveredTrackId(null)}
             >
               
-              {/* Обкладинка треку */}
-              <motion.div className="relative w-full lg:w-1/2 aspect-square overflow-hidden bg-foreground/5 group">
+              <div className="relative w-full lg:w-1/2 aspect-square overflow-hidden bg-foreground/5 group">
                 <Image 
                   src={track.image} 
                   alt={`${track.title} cover art`} 
                   fill
-                  loading={index === 0 ? "eager" : "lazy"}
-                  priority={index === 0}
-                  quality={85}
                   className="object-cover grayscale contrast-125 transition-all duration-1000 group-hover:scale-105 group-hover:grayscale-0 group-hover:opacity-90" 
                 />
-                {track.id === 3 && (
-                   <div className="absolute top-4 right-4 z-20 bg-foreground text-background px-3 py-1 text-[8px] font-mono tracking-widest uppercase">
-                     July 3rd
-                   </div>
-                )}
                 <div className="absolute inset-0 bg-foreground/10 opacity-20 group-hover:opacity-0 transition-opacity duration-700" />
-              </motion.div>
+              </div>
 
-              {/* Інформація та Кнопки дії */}
               <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left">
                 <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-foreground/40 mb-4 block">{track.type}</span>
                 <h3 className={`${cormorant.className} text-3xl md:text-4xl font-light mb-6 text-foreground`}>
@@ -218,26 +178,14 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                 </p>
 
                 <div className="w-full flex flex-col items-center lg:items-start gap-6">
-                  {track.id === 3 ? (
-                    <a 
-                      href={track.preSaveUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="bg-foreground text-background px-8 py-3 text-[10px] tracking-[0.2em] uppercase hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
-                    >
-                      [ Pre-save ]
-                    </a>
-                  ) : (
-                    <button 
-                      onClick={() => togglePlay(track.id, track.previewUrl)}
-                      className="bg-foreground text-background px-8 py-3 text-[10px] tracking-[0.2em] uppercase flex items-center hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
-                    >
-                      {playingId === track.id && <Visualizer isPlaying={true} />}
-                      {playingId === track.id ? '[ Pause ]' : '[ Listen now ]'}
-                    </button>
-                  )}
+                  <button 
+                    onClick={() => togglePlay(track.id)}
+                    className="bg-foreground text-background px-8 py-3 text-[10px] tracking-[0.2em] uppercase flex items-center hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
+                  >
+                    {playingId === track.id && <Visualizer isPlaying={true} />}
+                    [ Listen now ]
+                  </button>
 
-                  {/* Стримінгові посилання — збережені та вирівняні */}
                   <div className="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-4 pt-6 border-t border-foreground/10 items-center w-full lg:w-auto">
                     {track.links.map((link) => (
                       <a 
@@ -245,7 +193,6 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                         href={link.url} 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        aria-label={`Listen to ${track.title} on ${link.name}`} 
                         className="text-foreground/50 hover:text-foreground transition-colors duration-300 relative group flex items-center justify-center w-12 h-12 md:w-auto md:h-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
                       >
                         <span className="flex md:hidden items-center justify-center w-8 h-8">
@@ -258,7 +205,6 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                   </div>
                 </div>
               </div>
-
             </div>
           ))}
         </div>

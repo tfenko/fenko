@@ -14,7 +14,7 @@ export default function Footer() {
 
   useEffect(() => {
     if (isInView) {
-      animate(count, TOTAL_STREAMS, { duration: 2.5, ease: "easeOut" });
+      animate(count, TOTAL_STREAMS, { duration: 2, ease: "easeOut" });
     }
   }, [isInView, count, TOTAL_STREAMS]);
 
