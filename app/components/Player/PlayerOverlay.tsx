@@ -113,8 +113,8 @@ const TRACKS_DATA = {
       { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/still-get-close' }
     ],
     lyrics: [
-      { time: 0.01, text: "One Touch" },
-      { time: 2.15, text: "That's enough" },
+      { time: 2.91, text: "One Touch" },
+      { time: 7.95, text: "That's enough" },
       { time: 21.40, text: "You walk in like you own the room" },
       { time: 25.80, text: "Black dress and expensive perfume" },
       { time: 30.25, text: "Everybody turns to look at you" },
