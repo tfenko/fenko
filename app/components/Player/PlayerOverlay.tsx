@@ -18,8 +18,8 @@ const TRACKS_DATA = {
     bgGradient: "radial-gradient(circle at center, #0d1520 0%, #03070c 100%)",
     links: [
       { name: 'Spotify', url: 'https://open.spotify.com/track/1EG19rhMAOtv57SfzxfG6V' },
-      { name: 'Apple Music', url: 'https://music.apple.com/ua/album/deep-end/1895073227?i=6763819432' },
-      { name: 'YouTube', url: 'https://music.youtube.com/playlist?list=OLAK5uy_myDt0WSvtAR2rKNX-p6_k2S4GVc7DAfkQ&si=GA2iGhEq4exWtb-8' },
+      { name: 'Apple Music', url: 'https://music.apple.com/ua/album/deep-end/1895507327?i=6763819432' },
+      { name: 'YouTube', url: 'https://music.youtube.com/playlist?list=OLAK5uy_myDt0WSvtAR2rKNX-p6_k2S4GVc7DAfkQ&si=jnRofbx12M4-0dqS' },
       { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/deep-end' }
     ],
     lyrics: [
@@ -32,7 +32,7 @@ const TRACKS_DATA = {
       { time: 50.45, text: "Away from me" },
       { time: 57.12, text: "I'm diving in the deep end for you" },
       { time: 65.92, text: "There's nothing else that I can do" },
-      { time: 73.03, text: "I'm losing air, 'm losing time" },
+      { time: 73.03, text: "I'm losing air, I'm losing time" },
       { time: 77.79, text: "But I'd die to make you mine" },
       { time: 91.17, text: "Salt on my skin, dust in my lungs" },
       { time: 95.46, text: "We're speaking in those silent tongues" },
