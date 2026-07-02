@@ -96,7 +96,7 @@ const releases = [
     links: [
       { name: 'Apple Music', url: 'https://music.apple.com/ua/album/half-real/6769801424?i=6769801425' }, 
       { name: 'Spotify', url: 'https://open.spotify.com/track/6UOYiUahxxA4wWBawrfmzY' }, 
-      { name: 'YouTube', url: 'https://music.youtube.com/watch?v=Fs0ZWHbaxBg&si=HG0NwzzWarDTfzLj' }, 
+      { name: 'YouTube', url: 'https://music.youtube.com/playlist?list=OLAK5uy_myPYbcMPqiegpvjCbv0sgJbqMe_rWa8Pw&si=n6B_tprtSObSV1a9' }, 
       { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/half-real' }
     ] 
   },
