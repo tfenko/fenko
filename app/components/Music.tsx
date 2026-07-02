@@ -79,10 +79,10 @@ const releases = [
     canScramble: false, 
     previewUrl: '/Still-Get-Close.mp3', 
     links: [
-      { name: 'Apple Music', url: 'https://music.apple.com/ua/album/still-get-close/1895075050' }, 
-      { name: 'Spotify', url: 'https://open.spotify.com/track/YOUR_ID' }, 
-      { name: 'YouTube', url: 'https://music.youtube.com/@Fenkomus' }, 
-      { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/still-get-close' }
+      { name: 'Spotify', url: 'https://open.spotify.com/album/1p9F7f6gA1KRgNVF8oRum1?si=dzQWd9uFSWGAOH107PVTPA' },
+      { name: 'Apple Music', url: 'https://music.apple.com/ua/artist/fenko/1895075050' },
+      { name: 'YouTube', url: 'https://music.youtube.com/@Fenkomus' },
+      { name: 'SoundCloud', url: 'https://on.soundcloud.com/rfogNc8uJBfpiR0MHT' }
     ] 
   },
   { 
