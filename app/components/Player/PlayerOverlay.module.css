@@ -13,39 +13,48 @@
   box-sizing: border-box;
   overflow: hidden;
   background-color: #000000;
-  /* Захист, щоб контент картки та лірики читався поверх анімованого фону */
+  /* Створює ізольований контекст, щоб анімація не перекривала текст і картку */
   isolation: isolate;
 }
 
-/* Ефект живого рідкого градієнта через псевдоелементи */
-.overlay::before,
+/* Анімована кольорова куля №1 */
+.overlay::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  z-index: -3;
+  background: inherit; /* Бере кастомний градієнт треку з React */
+  background-size: 180% 180%;
+  animation: fluidGradientFirst 22s infinite ease-in-out;
+  filter: blur(80px);
+  opacity: 0.65;
+}
+
+/* Анімована кольорова куля №2 (рухається в протилежний бік) */
 .overlay::after {
   content: "";
   position: absolute;
-  /* Робимо фон значно більшим за екран, щоб при обертанні не було видно країв */
   inset: -50%;
-  z-index: -1;
-  background: inherit; /* Підтягує кастомний bgGradient з React-компонента */
-  background-size: 200% 200%;
-  mix-blend-mode: screen;
-  opacity: 0.8;
+  z-index: -3;
+  background: inherit;
+  background-size: 180% 180%;
+  animation: fluidGradientSecond 18s infinite ease-in-out;
+  filter: blur(100px);
+  opacity: 0.45;
 }
 
-/* Перша куля градієнта: повільне обертання за годинниковою стрілкою */
-.overlay::before {
-  animation: fluidGradientFirst 25s infinite ease-in-out;
-  filter: blur(60px);
-}
-
-/* Друга куля градієнта: рух проти годинникової стрілки з іншою швидкістю */
-.overlay::after {
-  animation: fluidGradientSecond 20s infinite ease-in-out;
-  filter: blur(80px);
-  opacity: 0.5;
+/* Вугільно-чорний корсет (тримає кольорове світло строго в центрі) */
+.shadowMask {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  /* Центр м'яко пропускає колір, а краї йдуть у чистий 100% чорний */
+  background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.5) 45%, #000000 75%);
+  pointer-events: none;
 }
 
 /* ==========================================
-   КЛЮЧОВІ КАДРИ ДЛЯ АНІМАЦІЇ (APPLE MUSIC EFFECT)
+   КЛЮЧОВІ КАДРИ ДЛЯ ЕФЕКТУ ПЛАВАННЯ ГРАДІЄНТА
 ========================================== */
 @keyframes fluidGradientFirst {
   0% {
@@ -53,7 +62,7 @@
     background-position: 0% 50%;
   }
   50% {
-    transform: rotate(180deg) scale(1.15);
+    transform: rotate(180deg) scale(1.2);
     background-position: 100% 50%;
   }
   100% {
@@ -64,19 +73,22 @@
 
 @keyframes fluidGradientSecond {
   0% {
-    transform: rotate(360deg) scale(1.1);
+    transform: rotate(360deg) scale(1.15);
     background-position: 100% 50%;
   }
   50% {
-    transform: rotate(180deg) scale(0.95);
+    transform: rotate(180deg) scale(0.85);
     background-position: 0% 50%;
   }
   100% {
-    transform: rotate(0deg) scale(1.1);
+    transform: rotate(0deg) scale(1.15);
     background-position: 100% 50%;
   }
 }
 
+/* ==========================================
+   ЕЛЕМЕНТИ КЕРУВАННЯ
+========================================== */
 .closeBtnOverlay {
   position: absolute;
   top: 1.5rem;
