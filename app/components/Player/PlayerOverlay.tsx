@@ -104,7 +104,8 @@ const TRACKS_DATA = {
     title: "Still Get Close",
     audioSrc: "/Still-Get-Close.mp3",
     coverSrc: "/cover3.webp",
-    bgGradient: "radial-gradient(circle at center, #1a1a1a 0%, #000000 100%)",
+    // Кастомний глибокий бурштиново-чорний градієнт під обкладинку
+    bgGradient: "radial-gradient(circle at center, #241403 0%, #050300 100%)",
     links: [
       { name: 'Spotify', url: 'https://open.spotify.com/track/YOUR_ID' },
       { name: 'Apple Music', url: 'https://music.apple.com/ua/album/still-get-close/1895075050' },
