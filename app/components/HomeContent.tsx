@@ -5,19 +5,19 @@ import Music from './Music';
 import PlayerOverlay from './Player/PlayerOverlay';
 
 export default function HomeContent() {
-  // Стан обов'язково має приймати null або рядок з ключем треку!
-  const [activeTrack, setActiveTrack] = useState<'deepend' | 'halfreal' | null>(null);
+  // Додано 'stillgetclose' до типу стану, щоб уникнути помилки TypeScript
+  const [activeTrack, setActiveTrack] = useState<'deepend' | 'halfreal' | 'stillgetclose' | null>(null);
 
   return (
     <>
-      {/* Кліки по треках змінюють стан на 'deepend' або 'halfreal' */}
+      {/* Тепер onOpenPlayer коректно передає тип, який очікує setActiveTrack */}
       <Music onOpenPlayer={(trackKey) => setActiveTrack(trackKey)} />
       
-      {/* КРИТИЧНЕ МІСЦЕ: trackKey має братися СУВОРO зі стану activeTrack */}
+      {/* PlayerOverlay тепер також підтримує 'stillgetclose' через props */}
       <PlayerOverlay 
         isOpen={activeTrack !== null} 
         onClose={() => setActiveTrack(null)} 
-        trackKey={activeTrack || 'deepend'} // Якщо activeTrack змінить значення на 'halfreal', плеєр перемикнеться!
+        trackKey={activeTrack || 'deepend'} 
       />
     </>
   );

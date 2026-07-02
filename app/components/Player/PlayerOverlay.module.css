@@ -234,21 +234,24 @@
     flex-direction: column;
     padding: 1.5rem;
     padding-top: 2rem;
-    padding-bottom: 5rem; /* Запас для кнопки знизу */
+    padding-bottom: 6rem; /* Збільшив нижній відступ для зручності */
     justify-content: flex-start;
     gap: 1rem;
     overflow-y: auto;
   }
   
-  /* Переміщуємо кнопку вниз */
+  /* Кнопка закриття стає "якорем" знизу на телефонах */
   .closeBtnOverlay {
     position: fixed;
     top: auto;
-    bottom: 20px;
+    bottom: 25px;
     right: 50%;
     transform: translateX(50%);
     width: auto;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    z-index: 9999999;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
   
   .musicCard {

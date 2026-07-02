@@ -7,7 +7,7 @@ import styles from './PlayerOverlay.module.css';
 interface PlayerOverlayProps {
   isOpen: boolean;
   onClose: () => void;
-  trackKey: 'deepend' | 'halfreal';
+  trackKey: 'deepend' | 'halfreal' | 'stillgetclose';
 }
 
 const TRACKS_DATA = {
@@ -99,6 +99,26 @@ const TRACKS_DATA = {
       { time: 144.16, text: "You come back" },
       { time: 153.51, text: "And I don't ask why" }
     ]
+  },
+  stillgetclose: {
+    title: "Still Get Close",
+    audioSrc: "/Still-Get-Close.mp3",
+    coverSrc: "/cover3.webp",
+    bgGradient: "radial-gradient(circle at center, #1a1a1a 0%, #000000 100%)",
+    links: [
+      { name: 'Spotify', url: 'https://open.spotify.com/track/YOUR_ID' },
+      { name: 'Apple Music', url: 'https://music.apple.com/ua/album/still-get-close/1895075050' },
+      { name: 'YouTube', url: 'https://music.youtube.com/@Fenkomus' },
+      { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/still-get-close' }
+    ],
+    lyrics: [
+      { time: 0.1, text: "One Touch" },
+      { time: 1.5, text: "That's enough" },
+      { time: 3.2, text: "You walk in like you own the room" },
+      { time: 6.5, text: "Black dress and expensive perfume" },
+      { time: 10.0, text: "Everybody turns to look at you" },
+      { time: 13.0, text: "But you looking through" }
+    ]
   }
 };
 
@@ -166,14 +186,12 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
 
   useEffect(() => {
     if (!isOpen) return;
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
         e.preventDefault();
         togglePlay();
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, togglePlay]);
@@ -188,13 +206,10 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     if (audioRef.current) {
       audioRef.current.currentTime = time;
       lastUpdateRef.current = time;
-      
       let clickedIndex = -1;
-      const lyrics = TRACKS_DATA[trackKey].lyrics;
+      const lyrics = currentTrack.lyrics;
       for (let i = 0; i < lyrics.length; i++) {
-        if (time >= lyrics[i].time) {
-          clickedIndex = i;
-        }
+        if (time >= lyrics[i].time) clickedIndex = i;
       }
       setActiveLineIndex(clickedIndex);
       if (audioRef.current.paused) togglePlay();
@@ -205,16 +220,11 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     const currentTime = e.currentTarget.currentTime;
     if (currentTime - lastUpdateRef.current < 0.1) return;
     lastUpdateRef.current = currentTime;
-
     let currentLineIndex = -1;
-    const lyrics = TRACKS_DATA[trackKey].lyrics;
-
+    const lyrics = currentTrack.lyrics;
     for (let i = 0; i < lyrics.length; i++) {
-      if (currentTime >= lyrics[i].time) {
-        currentLineIndex = i;
-      } else {
-        break;
-      }
+      if (currentTime >= lyrics[i].time) currentLineIndex = i;
+      else break;
     }
     setActiveLineIndex((prev) => (prev !== currentLineIndex ? currentLineIndex : prev));
   };
@@ -223,9 +233,7 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
     if (!isUserScrolling.current && activeLineIndex !== -1 && lyricsScrollRef.current) {
       const container = lyricsScrollRef.current;
       const activeElement = container.children[activeLineIndex] as HTMLElement;
-      if (activeElement) {
-        activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      if (activeElement) activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [activeLineIndex]);
 
@@ -249,34 +257,17 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
           className={styles.overlay}
           style={{ background: currentTrack.bgGradient }}
         >
-          {/* Хрестик закриття в інженерному стилі */}
-          <button onClick={onClose} className={styles.closeBtnOverlay}>
-            ✕ CLOSE
-          </button>
-
-          {/* ТЕКСТ КАРАОКЕ (ЗЛІВА) */}
+          <button onClick={onClose} className={styles.closeBtnOverlay}>✕ CLOSE</button>
           <div className={styles.lyricsContainer}>
-            <div 
-              className={styles.lyricsScroll} 
-              ref={lyricsScrollRef} 
-              onScroll={handleLyricsScroll}
-            >
+            <div className={styles.lyricsScroll} ref={lyricsScrollRef} onScroll={handleLyricsScroll}>
               {currentTrack.lyrics.map((line, index) => (
-                <p 
-                  key={index} 
-                  className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`}
-                  onClick={() => handleLineClick(line.time)}
-                >
+                <p key={index} className={`${styles.lyricLine} ${index === activeLineIndex ? styles.lyricLineActive : ''}`} onClick={() => handleLineClick(line.time)}>
                   {line.text}
                 </p>
               ))}
             </div>
           </div>
-
-          {/* СТУДІЙНА КАРТКА ПЛЕЄРА (СПРАВА) */}
           <div className={styles.musicCard}>
-            
-            {/* Строга квадратна обкладинка з вбудованим Play/Pause ховером */}
             <div className={styles.coverWrapper} onClick={togglePlay}>
               <img src={currentTrack.coverSrc} alt={currentTrack.title} className={styles.squareCover} />
               <div className={styles.coverOverlay}>
@@ -289,56 +280,29 @@ export default function PlayerOverlay({ isOpen, onClose, trackKey }: PlayerOverl
                 </div>
               </div>
             </div>
-
-            {/* Метадані */}
             <div className={styles.metaBlock}>
               <h2 className={styles.trackTitle}>{currentTrack.title}</h2>
               <p className={styles.artistName}>FENKO</p>
             </div>
-
-            {/* Компактний індикатор */}
             <div className="h-6 flex items-center justify-center my-2">
                <OverlayVisualizer isPlaying={isPlaying} />
             </div>
-
-            {/* ЧІТКІ КНОПКИ СТРИМІНГІВ */}
             <div className={styles.platformsGrid}>
               {currentTrack.links.map((link) => (
-                <a 
-                  key={link.name}
-                  href={link.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className={styles.platformBadge}
-                >
+                <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" className={styles.platformBadge}>
                   {link.name}
                 </a>
               ))}
             </div>
-
-            {/* Мікшер гучності */}
             <div className={styles.volumeBlock}>
-              <input 
-                type="range" 
-                min="0" 
-                max="1" 
-                step="0.01" 
-                value={volume} 
-                onChange={(e) => {
+              <input type="range" min="0" max="1" step="0.01" value={volume} onChange={(e) => {
                   const v = parseFloat(e.target.value);
                   setVolume(v);
                   if (audioRef.current) audioRef.current.volume = v;
-                }} 
-                className={styles.volumeSlider}
+                }} className={styles.volumeSlider}
               />
             </div>
-
-            <audio 
-              ref={audioRef} 
-              src={currentTrack.audioSrc} 
-              preload="auto" 
-              onTimeUpdate={onTimeUpdateHandler} 
-            />
+            <audio ref={audioRef} src={currentTrack.audioSrc} preload="auto" onTimeUpdate={onTimeUpdateHandler} />
           </div>
         </motion.div>
       )}
