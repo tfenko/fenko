@@ -107,10 +107,10 @@ const TRACKS_DATA = {
     // Кастомний глибокий бурштиново-чорний градієнт під обкладинку
     bgGradient: "radial-gradient(circle at center, #241403 0%, #050300 100%)",
     links: [
-      { name: 'Spotify', url: 'https://open.spotify.com/track/YOUR_ID' },
-      { name: 'Apple Music', url: 'https://music.apple.com/ua/album/still-get-close/1895075050' },
+      { name: 'Spotify', url: 'https://open.spotify.com/album/1p9F7f6gA1KRgNVF8oRum1?si=dzQWd9uFSWGAOH107PVTPA' },
+      { name: 'Apple Music', url: 'https://music.apple.com/ua/artist/fenko/1895075050' },
       { name: 'YouTube', url: 'https://music.youtube.com/@Fenkomus' },
-      { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/still-get-close' }
+      { name: 'SoundCloud', url: 'https://on.soundcloud.com/rfogNc8uJBfpiR0MHT' }
     ],
     lyrics: [
       { time: 2.91, text: "One Touch" },
