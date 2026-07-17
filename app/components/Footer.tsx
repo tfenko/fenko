@@ -4,8 +4,8 @@ import { motion, useMotionValue, useTransform, animate, useInView } from 'framer
 import { useEffect, useRef } from 'react';
 
 export default function Footer() {
-  const TOTAL_STREAMS = 23441;
-  const CURRENT_DATE = "July 15, 2026";
+  const TOTAL_STREAMS = 23672;
+  const CURRENT_DATE = "July 17, 2026";
 
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.round(latest).toLocaleString());
