@@ -51,7 +51,7 @@ export default function Footer() {
               {rounded}
             </motion.span>
             <span className="text-[9px] uppercase tracking-[0.2em] text-foreground/40 block font-sans">
-              Verified statistics (31 July)
+              Verified statistics (3 August)
             </span>
           </div>
 
