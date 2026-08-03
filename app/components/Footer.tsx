@@ -4,7 +4,7 @@ import { motion, useMotionValue, useTransform, animate, useInView } from 'framer
 import { useEffect, useRef } from 'react';
 
 export default function Footer() {
-  const TOTAL_STREAMS = 25086;
+  const TOTAL_STREAMS = 25243;
   const CURRENT_DATE = "July 30, 2026";
 
   const count = useMotionValue(0);
