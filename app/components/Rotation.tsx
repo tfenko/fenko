@@ -26,7 +26,7 @@ export default function Rotation() {
         {/* Контентний блок */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
-          {/* Опис та концепт плейлиста */}
+          {/* Опис та концепт плейлиста (англійською, просто і без метафор) */}
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -41,16 +41,16 @@ export default function Rotation() {
               Noir Vibes
             </h3>
             <p className="text-xs md:text-sm text-foreground/60 leading-relaxed font-light mb-8 max-w-md mx-auto lg:mx-0">
-              Саундтрек пізньої ночі. Музика, яка формує атмосферу, надихає під час нічних студійних сесій та відображає естетику проєкту.
+              A collection of tracks I listen to regularly. Music that inspires my creative process and defines my current sound preferences.
             </p>
 
             <div className="pt-6 border-t border-foreground/10 flex flex-wrap justify-center lg:justify-start gap-6 font-mono text-[9px] tracking-widest text-foreground/40 uppercase">
-              <div>Mood: <span className="text-foreground/70">Midnight</span></div>
+              <div>Vibe: <span className="text-foreground/70">Late Night</span></div>
               <div>Genre: <span className="text-foreground/70">Dark R&B / Soul</span></div>
             </div>
           </motion.div>
 
-          {/* Віджет Spotify */}
+          {/* Віджет Spotify із блокуванням прокрутки сторінки */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -58,14 +58,12 @@ export default function Rotation() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="lg:col-span-7 w-full relative"
           >
-            {/* М'яка кольорова підкладка для ефекту свічення */}
             <div className="absolute -inset-1 bg-gradient-to-r from-foreground/10 via-foreground/5 to-transparent blur-2xl opacity-50 pointer-events-none rounded-3xl" />
 
-            {/* Контейнер рамки */}
-            <div className="relative w-full bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 md:p-3 backdrop-blur-md shadow-2xl overflow-hidden">
+            <div className="relative w-full bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 md:p-3 backdrop-blur-md shadow-2xl overflow-hidden overscroll-contain">
               <iframe 
                 data-testid="embed-iframe" 
-                style={{ borderRadius: '12px' }} 
+                style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} 
                 src="https://open.spotify.com/embed/playlist/4cy88PJ0imBgxlQ9a2MkAz?utm_source=generator&theme=0&si=b987cacc1ac84baa" 
                 width="100%" 
                 height="382" 
