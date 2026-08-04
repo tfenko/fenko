@@ -31,7 +31,7 @@ export default function Footer() {
       <div className="max-w-5xl mx-auto w-full">
         
         {/* Головний блок */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start pb-16">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start pb-20">
           
           {/* Бренд */}
           <div className="md:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
@@ -69,27 +69,6 @@ export default function Footer() {
             ))}
           </div>
 
-        </div>
-
-        {/* Плейлист у футері */}
-        <div className="mb-16 pt-12 border-t border-foreground/10">
-          <div className="flex flex-col items-center mb-6">
-            <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-foreground/40 mb-2">// Curated</span>
-            <h4 className="font-cormorant text-2xl font-light tracking-wide text-foreground">In Rotation</h4>
-          </div>
-          <div className="max-w-xl mx-auto w-full bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-3 backdrop-blur-md">
-            <iframe 
-              data-testid="embed-iframe" 
-              style={{ borderRadius: '12px' }} 
-              src="https://open.spotify.com/embed/playlist/4cy88PJ0imBgxlQ9a2MkAz?utm_source=generator&theme=0&si=b987cacc1ac84baa" 
-              width="100%" 
-              height="352" 
-              frameBorder="0" 
-              allowFullScreen={true}
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-              loading="lazy"
-            />
-          </div>
         </div>
 
         {/* Нижня лінія */}

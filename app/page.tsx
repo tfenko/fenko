@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import Hero from './components/Hero';
 import About from './components/About';
-import Footer from './components/Footer';
 import HomeContent from './components/HomeContent';
+import Rotation from './components/Rotation';
+import Footer from './components/Footer';
 
 export const metadata: Metadata = {
   title: 'FENKO // Official Website',
@@ -64,7 +65,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "MusicGroup", // Змінено на MusicGroup для кращого охоплення артист/лейбл
+            "@type": "MusicGroup",
             "name": "FENKO",
             "alternateName": ["fenkomus", "FENKO Music"],
             "url": "https://fenko.space",
@@ -83,6 +84,7 @@ export default function Home() {
       <Hero />
       <About />
       <HomeContent />
+      <Rotation />
       <Footer />
     </>
   );

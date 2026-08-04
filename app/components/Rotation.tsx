@@ -1,0 +1,85 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { Cormorant_Garamond } from 'next/font/google';
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['300', '400'],
+  style: ['normal', 'italic'],
+});
+
+export default function Rotation() {
+  return (
+    <section id="rotation" className="relative z-10 w-full bg-background text-foreground py-24 md:py-32 px-6 md:px-16 border-t border-foreground/10 transition-colors duration-600">
+      <div className="max-w-5xl mx-auto w-full">
+        
+        {/* Заголовок секції */}
+        <div className="mb-16 border-b border-foreground/10 pb-6 flex flex-col sm:flex-row justify-between items-center sm:items-end text-center sm:text-left gap-4">
+          <div>
+            <p className="font-sans text-[9px] tracking-[0.5em] text-foreground/40 uppercase mb-2">// CURATED SOUNDS</p>
+            <h2 className={`${cormorant.className} text-4xl md:text-5xl font-light tracking-tight text-foreground`}>In Rotation</h2>
+          </div>
+          <span className="text-[9px] font-mono text-foreground/30 tracking-widest hidden sm:block">NOCTURNAL VIBES // SPOTIFY</span>
+        </div>
+
+        {/* Контентний блок */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          
+          {/* Опис та концепт плейлиста */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="lg:col-span-5 flex flex-col justify-center text-center lg:text-left"
+          >
+            <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-foreground/40 block mb-4">
+              [ Curator : FENKO ]
+            </span>
+            <h3 className={`${cormorant.className} text-3xl font-light mb-4 text-foreground`}>
+              Noir Vibes
+            </h3>
+            <p className="text-xs md:text-sm text-foreground/60 leading-relaxed font-light mb-8 max-w-md mx-auto lg:mx-0">
+              Саундтрек пізньої ночі. Музика, яка формує атмосферу, надихає під час нічних студійних сесій та відображає естетику проєкту.
+            </p>
+
+            <div className="pt-6 border-t border-foreground/10 flex flex-wrap justify-center lg:justify-start gap-6 font-mono text-[9px] tracking-widest text-foreground/40 uppercase">
+              <div>Mood: <span className="text-foreground/70">Midnight</span></div>
+              <div>Genre: <span className="text-foreground/70">Dark R&B / Soul</span></div>
+            </div>
+          </motion.div>
+
+          {/* Віджет Spotify */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="lg:col-span-7 w-full relative"
+          >
+            {/* М'яка кольорова підкладка для ефекту свічення */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-foreground/10 via-foreground/5 to-transparent blur-2xl opacity-50 pointer-events-none rounded-3xl" />
+
+            {/* Контейнер рамки */}
+            <div className="relative w-full bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 md:p-3 backdrop-blur-md shadow-2xl overflow-hidden">
+              <iframe 
+                data-testid="embed-iframe" 
+                style={{ borderRadius: '12px' }} 
+                src="https://open.spotify.com/embed/playlist/4cy88PJ0imBgxlQ9a2MkAz?utm_source=generator&theme=0&si=b987cacc1ac84baa" 
+                width="100%" 
+                height="382" 
+                frameBorder="0" 
+                allowFullScreen={true}
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                loading="lazy"
+              />
+            </div>
+          </motion.div>
+
+        </div>
+
+      </div>
+    </section>
+  );
+}
