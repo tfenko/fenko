@@ -311,14 +311,14 @@ export default function Music({}: MusicProps) {
                           frameBorder="no" 
                           allow="autoplay; encrypted-media" 
                           style={{ borderRadius: '12px', overscrollBehavior: 'contain', background: '#111111' }}
-                          src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2322358568&color=%23111111&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true"
+                          src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2344733477&color=%23151416&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true"
                         />
                       )}
                       {track.id === 3 && currentPlatform === 'youtube' && (
                         <iframe 
                           width="100%" 
                           height="152" 
-                          src="https://www.youtube.com/embed/Fs0ZWHbaxBg" 
+                          src="https://www.youtube.com/embed/vqeTIjubkuQ" 
                           title="YouTube video player" 
                           frameBorder="0" 
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 

@@ -66,7 +66,7 @@ export default function Rotation() {
                 style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} 
                 src="https://open.spotify.com/embed/playlist/4cy88PJ0imBgxlQ9a2MkAz?utm_source=generator&theme=0&si=b987cacc1ac84baa" 
                 width="100%" 
-                height="382" 
+                height="360" 
                 frameBorder="0" 
                 allowFullScreen={true}
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
