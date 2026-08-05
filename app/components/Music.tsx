@@ -125,7 +125,6 @@ export default function Music({ onOpenPlayer }: MusicProps) {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
   const [playingId, setPlayingId] = useState<number | null>(null);
   
-  // Додано 'youtube' у стан платформ
   const [halfRealPlatform, setHalfRealPlatform] = useState<'apple' | 'spotify' | 'soundcloud' | 'youtube'>('apple');
   
   const togglePlay = (id: number) => {
@@ -183,36 +182,8 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                 <div className="w-full flex flex-col items-start gap-4">
                   {track.id === 2 ? (
                     <div className="w-full max-w-sm">
-                      {/* Міні-перемикач платформ зліва (включаючи YouTube) */}
-                      <div className="flex flex-wrap gap-2 mb-3 font-mono text-[9px] uppercase tracking-widest">
-                        <button 
-                          onClick={() => setHalfRealPlatform('apple')}
-                          className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'apple' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
-                        >
-                          Apple Music
-                        </button>
-                        <button 
-                          onClick={() => setHalfRealPlatform('spotify')}
-                          className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'spotify' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
-                        >
-                          Spotify
-                        </button>
-                        <button 
-                          onClick={() => setHalfRealPlatform('soundcloud')}
-                          className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'soundcloud' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
-                        >
-                          SoundCloud
-                        </button>
-                        <button 
-                          onClick={() => setHalfRealPlatform('youtube')}
-                          className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'youtube' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
-                        >
-                          YouTube
-                        </button>
-                      </div>
-
-                      {/* Плеєр залежно від обраної платформи */}
-                      <div className="bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 backdrop-blur-md overflow-hidden overscroll-contain">
+                      {/* Вікно плеєра */}
+                      <div className="bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 backdrop-blur-md overflow-hidden overscroll-contain mb-3">
                         {halfRealPlatform === 'apple' && (
                           <iframe 
                             allow="autoplay *; encrypted-media *;" 
@@ -239,12 +210,12 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                         {halfRealPlatform === 'soundcloud' && (
                           <iframe 
                             width="100%" 
-                            height="152" 
+                            height="166" 
                             scrolling="no" 
                             frameBorder="no" 
                             allow="autoplay; encrypted-media" 
-                            style={{ borderRadius: '12px', overscrollBehavior: 'contain' }}
-                            src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2322358568&color=%230b0c0b&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"
+                            style={{ borderRadius: '12px', overscrollBehavior: 'contain', background: '#111111' }}
+                            src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2322358568&color=%23111111&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true"
                           />
                         )}
                         {halfRealPlatform === 'youtube' && (
@@ -260,6 +231,34 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                           />
                         )}
                       </div>
+
+                      {/* Кнопки перемикання платформ ПІД плеєром зліва */}
+                      <div className="flex flex-wrap gap-2 font-mono text-[9px] uppercase tracking-widest">
+                        <button 
+                          onClick={() => setHalfRealPlatform('apple')}
+                          className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'apple' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
+                        >
+                          Apple Music
+                        </button>
+                        <button 
+                          onClick={() => setHalfRealPlatform('spotify')}
+                          className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'spotify' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
+                        >
+                          Spotify
+                        </button>
+                        <button 
+                          onClick={() => setHalfRealPlatform('soundcloud')}
+                          className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'soundcloud' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
+                        >
+                          SoundCloud
+                        </button>
+                        <button 
+                          onClick={() => setHalfRealPlatform('youtube')}
+                          className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'youtube' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
+                        >
+                          YouTube
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <button 
@@ -271,23 +270,26 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                     </button>
                   )}
 
-                  <div className="flex flex-wrap justify-start gap-x-6 gap-y-4 pt-6 border-t border-foreground/10 items-center w-full">
-                    {track.links.map((link) => (
-                      <a 
-                        key={link.name} 
-                        href={link.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="text-foreground/50 hover:text-foreground transition-colors duration-300 relative group flex items-center justify-center w-12 h-12 md:w-auto md:h-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
-                      >
-                        <span className="flex md:hidden items-center justify-center w-8 h-8">
-                          <Image src={platformIcons[link.name]} alt="" width={24} height={24} className={`${iconSizes[link.name]} object-contain opacity-70`} />
-                        </span>
-                        <span className="hidden md:block text-[11px] tracking-[0.25em] uppercase">{link.name}</span>
-                        <span className="absolute left-0 bottom-[-4px] w-0 h-[1px] bg-foreground transition-all duration-300 group-hover:w-full hidden md:block" />
-                      </a>
-                    ))}
-                  </div>
+                  {/* Стандартні посилання для інших треків (прибрані дублікати знизу для Half Real) */}
+                  {track.id !== 2 && (
+                    <div className="flex flex-wrap justify-start gap-x-6 gap-y-4 pt-6 border-t border-foreground/10 items-center w-full">
+                      {track.links.map((link) => (
+                        <a 
+                          key={link.name} 
+                          href={link.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-foreground/50 hover:text-foreground transition-colors duration-300 relative group flex items-center justify-center w-12 h-12 md:w-auto md:h-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+                        >
+                          <span className="flex md:hidden items-center justify-center w-8 h-8">
+                            <Image src={platformIcons[link.name]} alt="" width={24} height={24} className={`${iconSizes[link.name]} object-contain opacity-70`} />
+                          </span>
+                          <span className="hidden md:block text-[11px] tracking-[0.25em] uppercase">{link.name}</span>
+                          <span className="absolute left-0 bottom-[-4px] w-0 h-[1px] bg-foreground transition-all duration-300 group-hover:w-full hidden md:block" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
