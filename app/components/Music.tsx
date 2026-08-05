@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Cormorant_Garamond } from 'next/font/google';
 import Image from 'next/image';
@@ -9,38 +9,6 @@ const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
   weight: ['300', '400'],
 });
-
-const Visualizer = ({ isPlaying }: { isPlaying: boolean }) => (
-  <div className="flex items-center gap-[2px] h-3 mr-3">
-    {[1, 2, 3].map((i) => (
-      <motion.div
-        key={i}
-        className="w-[2px] bg-background"
-        animate={{ height: isPlaying ? ['20%', '100%', '40%', '80%', '30%'] : '20%' }}
-        transition={{ 
-          repeat: Infinity, 
-          duration: 0.8, 
-          delay: i * 0.1,
-          ease: "linear" 
-        }}
-      />
-    ))}
-  </div>
-);
-
-const platformIcons: { [key: string]: string } = {
-  'Apple Music': '/apple-music.png',
-  'Spotify': '/spotify.png',
-  'YouTube': '/youtube-music.png',
-  'SoundCloud': '/soundcloud.png',
-};
-
-const iconSizes: { [key: string]: string } = {
-  'Apple Music': 'w-[18px] h-[22px]',
-  'Spotify': 'w-6 h-6',
-  'YouTube': 'w-6.5 h-6.5 scale-[1]',
-  'SoundCloud': 'w-6 h-6',
-};
 
 function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: boolean; enabled: boolean }) {
   const [displayText, setDisplayText] = useState(text);
@@ -78,12 +46,6 @@ const releases = [
     image: '/cover3.webp', 
     canScramble: false, 
     previewUrl: '/Still-Get-Close.mp3', 
-    links: [
-      { name: 'Spotify', url: 'https://open.spotify.com/album/1p9F7f6gA1KRgNVF8oRum1?si=dzQWd9uFSWGAOH107PVTPA' },
-      { name: 'Apple Music', url: 'https://music.apple.com/ua/song/still-get-close/6781459464' },
-      { name: 'YouTube', url: 'https://music.youtube.com/playlist?list=OLAK5uy_mSK2HpdY-LvOnqFLI685Uc6ZrDNDxTqU4&si=vPaIIvrKUgPuZGHv' },
-      { name: 'SoundCloud', url: 'https://on.soundcloud.com/Oi5DVioQ07YoLcuoWp' }
-    ] 
   },
   { 
     id: 2, 
@@ -93,12 +55,6 @@ const releases = [
     image: '/halfreal-2.webp', 
     canScramble: true, 
     previewUrl: '/Half-Real.mp3', 
-    links: [
-      { name: 'Apple Music', url: 'https://music.apple.com/ua/album/half-real/6769801424?i=6769801425' }, 
-      { name: 'Spotify', url: 'https://open.spotify.com/track/6UOYiUahxxA4wWBawrfmzY' }, 
-      { name: 'YouTube', url: 'https://music.youtube.com/playlist?list=OLAK5uy_myPYbcMPqiegpvjCbv0sgJbqMe_rWa8Pw&si=n6B_tprtSObSV1a9' }, 
-      { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/half-real' }
-    ] 
   },
   { 
     id: 1, 
@@ -108,20 +64,10 @@ const releases = [
     image: '/deepend.webp', 
     canScramble: false, 
     previewUrl: '/Deep-End.mp3', 
-    links: [
-      { name: 'Apple Music', url: 'https://music.apple.com/ua/album/deep-end/1895507327?i=6763819432' }, 
-      { name: 'Spotify', url: 'https://open.spotify.com/track/1EG19rhMAOtv57SfzxfG6V' }, 
-      { name: 'YouTube', url: 'https://music.youtube.com/playlist?list=OLAK5uy_myDt0WSvtAR2rKNX-p6_k2S4GVc7DAfkQ&si=jnRofbx12M4-0dqS' }, 
-      { name: 'SoundCloud', url: 'https://soundcloud.com/fenkomus/deep-end' }
-    ] 
   },
 ];
 
-interface MusicProps {
-  onOpenPlayer: (trackKey: 'deepend' | 'halfreal' | 'stillgetclose') => void;
-}
-
-export default function Music({}: MusicProps) {
+export default function Music() {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
   
   const [platforms, setPlatforms] = useState<{ [key: number]: 'spotify' | 'apple' | 'soundcloud' | 'youtube' }>({
