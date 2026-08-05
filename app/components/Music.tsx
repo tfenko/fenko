@@ -124,7 +124,6 @@ interface MusicProps {
 export default function Music({}: MusicProps) {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
   
-  // Окремі стани вибраної платформи для кожного треку
   const [platforms, setPlatforms] = useState<{ [key: number]: 'spotify' | 'apple' | 'soundcloud' | 'youtube' }>({
     3: 'spotify',
     2: 'spotify',
@@ -159,8 +158,8 @@ export default function Music({}: MusicProps) {
                 onMouseLeave={() => setHoveredTrackId(null)}
               >
                 
-                {/* Обкладинка треку */}
-                <div className="relative w-full lg:w-1/2 aspect-square overflow-hidden bg-foreground/5 border border-foreground/15 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] group">
+                {/* Ледь помітний контур обкладинки */}
+                <div className="relative w-full lg:w-1/2 aspect-square overflow-hidden bg-foreground/5 border border-foreground/10 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.4)] group">
                   <Image 
                     src={track.image} 
                     alt={`${track.title} cover art`} 
@@ -237,7 +236,7 @@ export default function Music({}: MusicProps) {
                         <iframe 
                           data-testid="embed-iframe" 
                           style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} 
-                          src="https://open.spotify.com/track/1EG19rhMAOtv57SfzxfG6V?utm_source=generator&theme=0" 
+                          src="https://open.spotify.com/embed/track/1EG19rhMAOtv57SfzxfG6V?utm_source=generator&theme=0&si=6852b3fa7e0c4e40" 
                           width="100%" 
                           height="152" 
                           frameBorder="0" 
@@ -285,7 +284,7 @@ export default function Music({}: MusicProps) {
                         <iframe 
                           data-testid="embed-iframe" 
                           style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} 
-                          src="https://open.spotify.com/embed/album/1p9F7f6gA1KRgNVF8oRum1?utm_source=generator&theme=0" 
+                          src="https://open.spotify.com/embed/track/2bHUTKRBxnVq4MNF4ngvC4?utm_source=generator&theme=0&si=681075c6ae1d4c67" 
                           width="100%" 
                           height="152" 
                           frameBorder="0" 
@@ -330,7 +329,7 @@ export default function Music({}: MusicProps) {
 
                     </div>
 
-                    {/* Кнопки перемикання платформ під плеєром */}
+                    {/* Кнопки перемикання платформ */}
                     <div className="flex flex-wrap gap-2 font-mono text-[9px] uppercase tracking-widest">
                       <button 
                         onClick={() => handlePlatformChange(track.id, 'spotify')}
