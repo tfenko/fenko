@@ -179,7 +179,6 @@ export default function Music({ onOpenPlayer }: MusicProps) {
 
                 <div className="w-full flex flex-col items-center lg:items-start gap-6">
                   {track.id === 2 ? (
-                    /* Spotify Embedded Player для Half Real з блокуванням скролу */
                     <div className="w-full max-w-sm bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 backdrop-blur-md overflow-hidden overscroll-contain">
                       <iframe 
                         data-testid="embed-iframe" 
