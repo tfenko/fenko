@@ -14,7 +14,7 @@ export default function Rotation() {
     <section id="rotation" className="relative z-10 w-full bg-background text-foreground py-16 md:py-24 px-6 md:px-16 border-t border-foreground/10 transition-colors duration-600">
       <div className="max-w-5xl mx-auto w-full">
         
-        {/* Заголовок секції (синхронізований за відступами з дискографією) */}
+        {/* Заголовок секції */}
         <div className="mb-10 md:mb-14 border-b border-foreground/10 pb-5 flex flex-col sm:flex-row justify-between items-center sm:items-end text-center sm:text-left gap-4">
           <div>
             <p className="font-sans text-[9px] tracking-[0.5em] text-foreground/40 uppercase mb-2">// CURATED SOUNDS</p>
@@ -50,7 +50,7 @@ export default function Rotation() {
             </div>
           </motion.div>
 
-          {/* Віджет Spotify із блокуванням прокрутки сторінки */}
+          {/* Віджет Spotify з виправленою висотою */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -66,7 +66,7 @@ export default function Rotation() {
                 style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} 
                 src="https://open.spotify.com/embed/playlist/4cy88PJ0imBgxlQ9a2MkAz?utm_source=generator&theme=0&si=b987cacc1ac84baa" 
                 width="100%" 
-                height="350" 
+                height="480" 
                 frameBorder="0" 
                 allowFullScreen={true}
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
@@ -80,4 +80,3 @@ export default function Rotation() {
       </div>
     </section>
   );
-}
