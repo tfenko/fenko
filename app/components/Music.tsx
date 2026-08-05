@@ -45,7 +45,6 @@ const releases = [
     description: 'You make me lose my mind. Every single time.', 
     image: '/cover3.webp', 
     canScramble: false, 
-    previewUrl: '/Still-Get-Close.mp3', 
   },
   { 
     id: 2, 
@@ -54,7 +53,6 @@ const releases = [
     description: 'Navigating the duality of a haunting relationship. Love that feels both real and illusory.', 
     image: '/halfreal-2.webp', 
     canScramble: true, 
-    previewUrl: '/Half-Real.mp3', 
   },
   { 
     id: 1, 
@@ -63,21 +61,21 @@ const releases = [
     description: 'A deep dive into the weight of attachment. Salt on skin, dust in lungs.', 
     image: '/deepend.webp', 
     canScramble: false, 
-    previewUrl: '/Deep-End.mp3', 
   },
 ];
 
 export default function Music() {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
   
-  const [platforms, setPlatforms] = useState<{ [key: number]: 'spotify' | 'apple' | 'soundcloud' | 'youtube' }>({
-    3: 'spotify',
-    2: 'spotify',
-    1: 'spotify',
+  // Зберігає активну платформу для кожного треку (якщо null — грає звичайна обкладинка)
+  const [activePlatforms, setActivePlatforms] = useState<{ [key: number]: 'spotify' | 'apple' | 'soundcloud' | 'youtube' | null }>({
+    3: null,
+    2: null,
+    1: null,
   });
 
-  const handlePlatformChange = (trackId: number, platform: 'spotify' | 'apple' | 'soundcloud' | 'youtube') => {
-    setPlatforms(prev => ({ ...prev, [trackId]: platform }));
+  const handleActivatePlatform = (trackId: number, platform: 'spotify' | 'apple' | 'soundcloud' | 'youtube') => {
+    setActivePlatforms(prev => ({ ...prev, [trackId]: platform }));
   };
 
   return (
@@ -94,7 +92,7 @@ export default function Music() {
 
         <div className="flex flex-col gap-24 md:gap-32">
           {releases.map((track, index) => {
-            const currentPlatform = platforms[track.id] || 'spotify';
+            const currentPlatform = activePlatforms[track.id];
 
             return (
               <div key={track.id}>
@@ -104,7 +102,7 @@ export default function Music() {
                   onMouseLeave={() => setHoveredTrackId(null)}
                 >
                   
-                  {/* Ледь помітний, м'який контур обкладинки */}
+                  {/* Обкладинка треку (зникає або замінюється плеєром по кліку) */}
                   <div className="relative w-full lg:w-1/2 aspect-square overflow-hidden bg-foreground/5 border border-foreground/5 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.3)] group">
                     <Image 
                       src={track.image} 
@@ -126,177 +124,82 @@ export default function Music() {
                     </p>
 
                     <div className="w-full max-w-sm">
-                      {/* Вікно плеєра */}
-                      <div className="bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 backdrop-blur-md overflow-hidden overscroll-contain mb-3">
-                        
-                        {/* === HALF REAL (id: 2) === */}
-                        {track.id === 2 && currentPlatform === 'spotify' && (
-                          <iframe 
-                            data-testid="embed-iframe" 
-                            style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} 
-                            src="https://open.spotify.com/embed/track/6UOYiUahxxA4wWBawrfmzY?utm_source=generator&theme=0&si=df7238f3dad34764" 
-                            width="100%" 
-                            height="152" 
-                            frameBorder="0" 
-                            allowFullScreen={true}
-                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                            loading="lazy"
-                          />
-                        )}
-                        {track.id === 2 && currentPlatform === 'apple' && (
-                          <iframe 
-                            allow="autoplay *; encrypted-media *;" 
-                            frameBorder="0" 
-                            height="150" 
-                            style={{ width: '100%', maxWidth: '660px', overflow: 'hidden', background: 'transparent', borderRadius: '12px', overscrollBehavior: 'contain' }} 
-                            sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" 
-                            src="https://embed.music.apple.com/ua/album/half-real/6769801424?i=6769801425&theme=dark"
-                          />
-                        )}
-                        {track.id === 2 && currentPlatform === 'soundcloud' && (
-                          <iframe 
-                            width="100%" 
-                            height="166" 
-                            scrolling="no" 
-                            frameBorder="no" 
-                            allow="autoplay; encrypted-media" 
-                            style={{ borderRadius: '12px', overscrollBehavior: 'contain', background: '#111111' }}
-                            src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2322358568&color=%23111111&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true"
-                          />
-                        )}
-                        {track.id === 2 && currentPlatform === 'youtube' && (
-                          <iframe 
-                            width="100%" 
-                            height="152" 
-                            src="https://www.youtube.com/embed/Fs0ZWHbaxBg" 
-                            title="YouTube video player" 
-                            frameBorder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowFullScreen 
-                            style={{ borderRadius: '12px', overscrollBehavior: 'contain' }}
-                          />
-                        )}
+                      
+                      {/* Якщо платформа активована — показуємо iframe, якщо ні — підказку */}
+                      {currentPlatform ? (
+                        <div className="bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 backdrop-blur-md overflow-hidden overscroll-contain mb-3 animate-fadeIn">
+                          
+                          {/* === HALF REAL (id: 2) === */}
+                          {track.id === 2 && currentPlatform === 'spotify' && (
+                            <iframe data-testid="embed-iframe" style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} src="https://open.spotify.com/embed/track/6UOYiUahxxA4wWBawrfmzY?utm_source=generator&theme=0&si=df7238f3dad34764" width="100%" height="152" frameBorder="0" allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" />
+                          )}
+                          {track.id === 2 && currentPlatform === 'apple' && (
+                            <iframe allow="autoplay *; encrypted-media *;" frameBorder="0" height="150" style={{ width: '100%', maxWidth: '660px', overflow: 'hidden', background: 'transparent', borderRadius: '12px', overscrollBehavior: 'contain' }} sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/ua/album/half-real/6769801424?i=6769801425&theme=dark" loading="lazy" />
+                          )}
+                          {track.id === 2 && currentPlatform === 'soundcloud' && (
+                            <iframe width="100%" height="166" scrolling="no" frameBorder="no" allow="autoplay; encrypted-media" style={{ borderRadius: '12px', overscrollBehavior: 'contain', background: '#111111' }} src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2322358568&color=%23111111&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true" loading="lazy" />
+                          )}
+                          {track.id === 2 && currentPlatform === 'youtube' && (
+                            <iframe width="100%" height="152" src="https://www.youtube.com/embed/Fs0ZWHbaxBg?autoplay=1" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} loading="lazy" />
+                          )}
 
-                        {/* === DEEP END (id: 1) === */}
-                        {track.id === 1 && currentPlatform === 'spotify' && (
-                          <iframe 
-                            data-testid="embed-iframe" 
-                            style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} 
-                            src="https://open.spotify.com/embed/track/1EG19rhMAOtv57SfzxfG6V?utm_source=generator&theme=0&si=6852b3fa7e0c4e40" 
-                            width="100%" 
-                            height="152" 
-                            frameBorder="0" 
-                            allowFullScreen={true}
-                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                            loading="lazy"
-                          />
-                        )}
-                        {track.id === 1 && currentPlatform === 'apple' && (
-                          <iframe 
-                            allow="autoplay *; encrypted-media *;" 
-                            frameBorder="0" 
-                            height="150" 
-                            style={{ width: '100%', maxWidth: '660px', overflow: 'hidden', background: 'transparent', borderRadius: '12px', overscrollBehavior: 'contain' }} 
-                            sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" 
-                            src="https://embed.music.apple.com/ua/album/deep-end/1895507327?i=6763819432&theme=dark"
-                          />
-                        )}
-                        {track.id === 1 && currentPlatform === 'soundcloud' && (
-                          <iframe 
-                            width="100%" 
-                            height="166" 
-                            scrolling="no" 
-                            frameBorder="no" 
-                            allow="autoplay; encrypted-media" 
-                            style={{ borderRadius: '12px', overscrollBehavior: 'contain', background: '#111111' }}
-                            src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2316745055&color=%23151416&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true"
-                          />
-                        )}
-                        {track.id === 1 && currentPlatform === 'youtube' && (
-                          <iframe 
-                            width="100%" 
-                            height="152" 
-                            src="https://www.youtube.com/embed/QVCaTgY_r7w" 
-                            title="YouTube video player" 
-                            frameBorder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowFullScreen 
-                            style={{ borderRadius: '12px', overscrollBehavior: 'contain' }}
-                          />
-                        )}
+                          {/* === DEEP END (id: 1) === */}
+                          {track.id === 1 && currentPlatform === 'spotify' && (
+                            <iframe data-testid="embed-iframe" style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} src="https://open.spotify.com/embed/track/1EG19rhMAOtv57SfzxfG6V?utm_source=generator&theme=0&si=6852b3fa7e0c4e40" width="100%" height="152" frameBorder="0" allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" />
+                          )}
+                          {track.id === 1 && currentPlatform === 'apple' && (
+                            <iframe allow="autoplay *; encrypted-media *;" frameBorder="0" height="150" style={{ width: '100%', maxWidth: '660px', overflow: 'hidden', background: 'transparent', borderRadius: '12px', overscrollBehavior: 'contain' }} sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/ua/album/deep-end/1895507327?i=6763819432&theme=dark" loading="lazy" />
+                          )}
+                          {track.id === 1 && currentPlatform === 'soundcloud' && (
+                            <iframe width="100%" height="166" scrolling="no" frameBorder="no" allow="autoplay; encrypted-media" style={{ borderRadius: '12px', overscrollBehavior: 'contain', background: '#111111' }} src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2316745055&color=%23151416&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true" loading="lazy" />
+                          )}
+                          {track.id === 1 && currentPlatform === 'youtube' && (
+                            <iframe width="100%" height="152" src="https://www.youtube.com/embed/QVCaTgY_r7w?autoplay=1" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} loading="lazy" />
+                          )}
 
-                        {/* === STILL GET CLOSE (id: 3) === */}
-                        {track.id === 3 && currentPlatform === 'spotify' && (
-                          <iframe 
-                            data-testid="embed-iframe" 
-                            style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} 
-                            src="https://open.spotify.com/embed/track/2bHUTKRBxnVq4MNF4ngvC4?utm_source=generator&theme=0&si=681075c6ae1d4c67" 
-                            width="100%" 
-                            height="152" 
-                            frameBorder="0" 
-                            allowFullScreen={true}
-                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                            loading="lazy"
-                          />
-                        )}
-                        {track.id === 3 && currentPlatform === 'apple' && (
-                          <iframe 
-                            allow="autoplay *; encrypted-media *;" 
-                            frameBorder="0" 
-                            height="150" 
-                            style={{ width: '100%', maxWidth: '660px', overflow: 'hidden', background: 'transparent', borderRadius: '12px', overscrollBehavior: 'contain' }} 
-                            sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" 
-                            src="https://embed.music.apple.com/ua/song/still-get-close/6781459464?theme=dark"
-                          />
-                        )}
-                        {track.id === 3 && currentPlatform === 'soundcloud' && (
-                          <iframe 
-                            width="100%" 
-                            height="166" 
-                            scrolling="no" 
-                            frameBorder="no" 
-                            allow="autoplay; encrypted-media" 
-                            style={{ borderRadius: '12px', overscrollBehavior: 'contain', background: '#111111' }}
-                            src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2344733477&color=%23151416&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true"
-                          />
-                        )}
-                        {track.id === 3 && currentPlatform === 'youtube' && (
-                          <iframe 
-                            width="100%" 
-                            height="152" 
-                            src="https://www.youtube.com/embed/vqeTIjubkuQ" 
-                            title="YouTube video player" 
-                            frameBorder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowFullScreen 
-                            style={{ borderRadius: '12px', overscrollBehavior: 'contain' }}
-                          />
-                        )}
+                          {/* === STILL GET CLOSE (id: 3) === */}
+                          {track.id === 3 && currentPlatform === 'spotify' && (
+                            <iframe data-testid="embed-iframe" style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} src="https://open.spotify.com/embed/track/2bHUTKRBxnVq4MNF4ngvC4?utm_source=generator&theme=0&si=681075c6ae1d4c67" width="100%" height="152" frameBorder="0" allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" />
+                          )}
+                          {track.id === 3 && currentPlatform === 'apple' && (
+                            <iframe allow="autoplay *; encrypted-media *;" frameBorder="0" height="150" style={{ width: '100%', maxWidth: '660px', overflow: 'hidden', background: 'transparent', borderRadius: '12px', overscrollBehavior: 'contain' }} sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/ua/song/still-get-close/6781459464?theme=dark" loading="lazy" />
+                          )}
+                          {track.id === 3 && currentPlatform === 'soundcloud' && (
+                            <iframe width="100%" height="166" scrolling="no" frameBorder="no" allow="autoplay; encrypted-media" style={{ borderRadius: '12px', overscrollBehavior: 'contain', background: '#111111' }} src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2344733477&color=%23151416&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true" loading="lazy" />
+                          )}
+                          {track.id === 3 && currentPlatform === 'youtube' && (
+                            <iframe width="100%" height="152" src="https://www.youtube.com/embed/vqeTIjubkuQ?autoplay=1" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} loading="lazy" />
+                          )}
 
-                      </div>
+                        </div>
+                      ) : (
+                        <div className="bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-6 text-center backdrop-blur-md mb-3 flex flex-col items-center justify-center gap-2">
+                          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/50">Select platform to listen</p>
+                        </div>
+                      )}
 
-                      {/* Кнопки перемикання платформ */}
+                      {/* Кнопки вибору платформи */}
                       <div className="flex flex-wrap gap-2 font-mono text-[9px] uppercase tracking-widest">
                         <button 
-                          onClick={() => handlePlatformChange(track.id, 'spotify')}
+                          onClick={() => handleActivatePlatform(track.id, 'spotify')}
                           className={`px-3 py-1.5 rounded-md border transition-all ${currentPlatform === 'spotify' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
                         >
                           Spotify
                         </button>
                         <button 
-                          onClick={() => handlePlatformChange(track.id, 'apple')}
+                          onClick={() => handleActivatePlatform(track.id, 'apple')}
                           className={`px-3 py-1.5 rounded-md border transition-all ${currentPlatform === 'apple' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
                         >
                           Apple Music
                         </button>
                         <button 
-                          onClick={() => handlePlatformChange(track.id, 'soundcloud')}
+                          onClick={() => handleActivatePlatform(track.id, 'soundcloud')}
                           className={`px-3 py-1.5 rounded-md border transition-all ${currentPlatform === 'soundcloud' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
                         >
                           SoundCloud
                         </button>
                         <button 
-                          onClick={() => handlePlatformChange(track.id, 'youtube')}
+                          onClick={() => handleActivatePlatform(track.id, 'youtube')}
                           className={`px-3 py-1.5 rounded-md border transition-all ${currentPlatform === 'youtube' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
                         >
                           YouTube
@@ -307,7 +210,7 @@ export default function Music() {
                   </div>
                 </div>
 
-                {/* Елегантна лінія-розділювач між треками (не з'являється після останнього треку) */}
+                {/* Розділювач між треками */}
                 {index < releases.length - 1 && (
                   <div className="w-full h-[1px] bg-foreground/10 my-24 md:my-32" />
                 )}
