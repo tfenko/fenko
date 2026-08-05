@@ -39,7 +39,7 @@ export default function Navbar() {
   ];
 
   return (
-    <div className="fixed top-4 left-0 right-0 z-[9999] px-4 md:px-8 pointer-events-none">
+    <div className="fixed top-4 left-0 right-0 z-[9999] px-3 md:px-8 pointer-events-none">
       <motion.nav
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -48,14 +48,14 @@ export default function Navbar() {
         className="max-w-4xl mx-auto border border-foreground/10 flex flex-col justify-between pointer-events-auto overflow-hidden relative rounded-full shadow-2xl opacity-95"
       >
         
-        <div className="flex justify-between items-center px-6 py-3 w-full">
+        <div className="flex justify-between items-center px-4 md:px-6 py-2.5 md:py-3 w-full gap-2">
           
-          {/* ✅ Логотип-іконка */}
+          {/* Логотип-іконка */}
           <button 
             onClick={scrollToTop}
-            className="flex items-center gap-2 group cursor-pointer"
+            className="flex items-center gap-2 group cursor-pointer shrink-0"
           >
-            <div className="relative w-6 h-6 transition-opacity group-hover:opacity-70">
+            <div className="relative w-5 h-5 md:w-6 md:h-6 transition-opacity group-hover:opacity-70">
               <Image 
                 src="/icon.png" 
                 alt="FENKO" 
@@ -66,43 +66,43 @@ export default function Navbar() {
             </div>
           </button>
 
-          <div className="flex items-center gap-6 md:gap-8">
-            <div className="flex gap-5 md:gap-6 font-mono text-[9px] tracking-[0.25em] uppercase">
+          <div className="flex items-center gap-3 sm:gap-6 md:gap-8">
+            {/* Меню з адаптивним розміром шрифта, щоб усе влізало на телефонах */}
+            <div className="flex gap-2 sm:gap-4 md:gap-6 font-mono text-[7.5px] sm:text-[8.5px] md:text-[9px] tracking-[0.15em] sm:tracking-[0.25em] uppercase">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className="text-foreground/50 hover:text-foreground transition-all duration-300 relative py-1 group flex flex-col items-center cursor-pointer"
+                  className="text-foreground/50 hover:text-foreground transition-all duration-300 relative py-1 group flex flex-col items-center cursor-pointer whitespace-nowrap"
                 >
                   <span>[{item.name}]</span>
                   <span className="w-1 h-1 bg-foreground rounded-full absolute -bottom-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </button>
               ))}
 
-              {/* Кнопка Stats, що веде в самий низ сайту */}
               <button
                 onClick={scrollToBottom}
-                className="text-foreground/50 hover:text-foreground transition-all duration-300 relative py-1 group flex flex-col items-center cursor-pointer"
+                className="text-foreground/50 hover:text-foreground transition-all duration-300 relative py-1 group flex flex-col items-center cursor-pointer whitespace-nowrap"
               >
                 <span>[stats]</span>
                 <span className="w-1 h-1 bg-foreground rounded-full absolute -bottom-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </button>
             </div>
 
-            <div className="w-[1px] h-3 bg-foreground/10 hidden sm:block" />
+            <div className="w-[1px] h-3 bg-foreground/10 hidden sm:block shrink-0" />
 
             {mounted && (
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="flex items-center justify-center w-7 h-7 rounded-full border border-foreground/10 hover:border-foreground/30 bg-foreground/[0.03] hover:bg-foreground/[0.08] transition-all cursor-pointer pointer-events-auto group text-foreground shrink-0"
+                className="flex items-center justify-center w-6 h-6 md:w-7 md:h-7 rounded-full border border-foreground/10 hover:border-foreground/30 bg-foreground/[0.03] hover:bg-foreground/[0.08] transition-all cursor-pointer pointer-events-auto group text-foreground shrink-0"
                 aria-label="Toggle theme"
               >
                 {theme === 'dark' ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.22 4.22l1.59 1.59m12.38 12.38l1.59 1.59M3 12h2.25m13.5 0H21M4.22 19.78l1.59-1.59m12.38-12.38l1.59-1.59M12 7.5a4.5 4.5 0 110 9 4.5 4.5 0 010-9z" />
                   </svg>
                 ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 12.83A9.54 9.54 0 0112 21.75c-5.28 0-9.5-4.22-9.5-9.5a9.54 9.54 0 0112.58-9.04 8.25 8.25 0 008.67 8.67z" />
                   </svg>
                 )}
