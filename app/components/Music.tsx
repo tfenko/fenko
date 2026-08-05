@@ -125,8 +125,8 @@ export default function Music({ onOpenPlayer }: MusicProps) {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
   const [playingId, setPlayingId] = useState<number | null>(null);
   
-  // Стан для перемикання платформ для треку Half Real ('apple' | 'spotify' | 'soundcloud')
-  const [halfRealPlatform, setHalfRealPlatform] = useState<'apple' | 'spotify' | 'soundcloud'>('apple');
+  // Додано 'youtube' у стан платформ
+  const [halfRealPlatform, setHalfRealPlatform] = useState<'apple' | 'spotify' | 'soundcloud' | 'youtube'>('apple');
   
   const togglePlay = (id: number) => {
     const trackMap: { [key: number]: 'deepend' | 'halfreal' | 'stillgetclose' } = {
@@ -183,7 +183,7 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                 <div className="w-full flex flex-col items-start gap-4">
                   {track.id === 2 ? (
                     <div className="w-full max-w-sm">
-                      {/* Міні-перемикач платформ зліва */}
+                      {/* Міні-перемикач платформ зліва (включаючи YouTube) */}
                       <div className="flex flex-wrap gap-2 mb-3 font-mono text-[9px] uppercase tracking-widest">
                         <button 
                           onClick={() => setHalfRealPlatform('apple')}
@@ -202,6 +202,12 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                           className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'soundcloud' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
                         >
                           SoundCloud
+                        </button>
+                        <button 
+                          onClick={() => setHalfRealPlatform('youtube')}
+                          className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'youtube' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
+                        >
+                          YouTube
                         </button>
                       </div>
 
@@ -239,6 +245,18 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                             allow="autoplay; encrypted-media" 
                             style={{ borderRadius: '12px', overscrollBehavior: 'contain' }}
                             src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2322358568&color=%230b0c0b&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"
+                          />
+                        )}
+                        {halfRealPlatform === 'youtube' && (
+                          <iframe 
+                            width="100%" 
+                            height="152" 
+                            src="https://www.youtube.com/embed/Fs0ZWHbaxBg" 
+                            title="YouTube video player" 
+                            frameBorder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowFullScreen 
+                            style={{ borderRadius: '12px', overscrollBehavior: 'contain' }}
                           />
                         )}
                       </div>
