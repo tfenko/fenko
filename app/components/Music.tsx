@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Cormorant_Garamond } from 'next/font/google';
 import Image from 'next/image';
 
@@ -78,11 +77,11 @@ export default function Music() {
   };
 
   return (
-    <section id="music" className="relative z-10 w-full bg-background text-foreground py-20 md:py-28 px-6 md:px-16 flex flex-col justify-center border-t border-foreground/10 transition-colors duration-600">
+    <section id="music" className="relative z-10 w-full bg-background text-foreground py-16 md:py-24 px-6 md:px-16 flex flex-col justify-center border-t border-foreground/10 transition-colors duration-600">
       <div className="max-w-5xl mx-auto w-full relative z-10">
         
         {/* Заголовок секції */}
-        <div className="mb-14 border-b border-foreground/10 pb-6 flex flex-col sm:flex-row justify-between items-center sm:items-end text-center sm:text-left gap-4">
+        <div className="mb-10 md:mb-14 border-b border-foreground/10 pb-5 flex flex-col sm:flex-row justify-between items-center sm:items-end text-center sm:text-left gap-4">
           <div>
             <p className="font-sans text-[9px] tracking-[0.5em] text-foreground/40 uppercase mb-2">// Archives</p>
             <h2 className={`${cormorant.className} text-3xl md:text-4xl font-light tracking-tight text-foreground`}>Discography</h2>
@@ -90,21 +89,21 @@ export default function Music() {
           <span className="text-[9px] font-mono text-foreground/30 tracking-widest hidden sm:block">FENKO // ARCHIVE</span>
         </div>
 
-        {/* Список треків з компактнішими відступами */}
-        <div className="flex flex-col gap-20 md:gap-24">
+        {/* Список треків з оптимізованими відступами */}
+        <div className="flex flex-col">
           {releases.map((track, index) => {
             const currentPlatform = activePlatforms[track.id];
 
             return (
               <div key={track.id}>
                 <div 
-                  className={`flex flex-col lg:flex-row gap-8 lg:gap-16 items-center ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`} 
+                  className={`flex flex-col lg:flex-row gap-8 lg:gap-14 items-center ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`} 
                   onMouseEnter={() => setHoveredTrackId(track.id)} 
                   onMouseLeave={() => setHoveredTrackId(null)}
                 >
                   
-                  {/* Зменшена, акуратна обкладинка */}
-                  <div className="relative w-full lg:w-[42%] aspect-square max-w-[380px] overflow-hidden bg-foreground/5 border border-foreground/5 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.3)] group">
+                  {/* Компактна обкладинка */}
+                  <div className="relative w-full lg:w-[40%] aspect-square max-w-[330px] overflow-hidden bg-foreground/5 border border-foreground/5 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.3)] group">
                     <Image 
                       src={track.image} 
                       alt={`${track.title} cover art`} 
@@ -115,12 +114,12 @@ export default function Music() {
                   </div>
 
                   <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left">
-                    <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-foreground/40 mb-3 block">{track.type}</span>
-                    <h3 className={`${cormorant.className} text-2xl md:text-3xl font-light mb-4 text-foreground`}>
+                    <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-foreground/40 mb-2 block">{track.type}</span>
+                    <h3 className={`${cormorant.className} text-2xl md:text-3xl font-light mb-3 text-foreground`}>
                       <ScrambleText text={track.title} isHovered={hoveredTrackId === track.id} enabled={track.canScramble} />
                     </h3>
                     
-                    <p className="text-foreground/60 text-xs md:text-sm leading-relaxed mb-6 max-w-sm">
+                    <p className="text-foreground/60 text-xs md:text-sm leading-relaxed mb-5 max-w-sm">
                       {track.description}
                     </p>
 
@@ -173,7 +172,7 @@ export default function Music() {
 
                         </div>
                       ) : (
-                        <div className="bg-foreground/[0.02] border border-foreground/10 rounded-2xl py-4 px-6 text-center backdrop-blur-md mb-3 flex items-center justify-center">
+                        <div className="bg-foreground/[0.02] border border-foreground/10 rounded-2xl py-3 px-5 text-center backdrop-blur-md mb-3 flex items-center justify-center">
                           <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/40">Select platform to listen</p>
                         </div>
                       )}
@@ -210,9 +209,9 @@ export default function Music() {
                   </div>
                 </div>
 
-                {/* Елегантний розділювач між треками */}
+                {/* Акуратний розділювач із помірними відступами */}
                 {index < releases.length - 1 && (
-                  <div className="w-full h-[1px] bg-foreground/10 my-16 md:my-20" />
+                  <div className="w-full h-[1px] bg-foreground/10 my-10 md:my-14" />
                 )}
               </div>
             );
