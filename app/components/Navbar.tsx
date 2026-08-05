@@ -24,13 +24,18 @@ export default function Navbar() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const scrollToBottom = () => {
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navItems = [
-    { name: 'listen', id: 'music' },
-    { name: 'info', id: 'about' },
+    { name: 'biography', id: 'about' },
+    { name: 'my music', id: 'music' },
+    { name: 'playlist', id: 'rotation' },
   ];
 
   return (
@@ -62,7 +67,7 @@ export default function Navbar() {
           </button>
 
           <div className="flex items-center gap-6 md:gap-8">
-            <div className="flex gap-6 font-mono text-[9px] tracking-[0.3em] uppercase">
+            <div className="flex gap-5 md:gap-6 font-mono text-[9px] tracking-[0.25em] uppercase">
               {navItems.map((item) => (
                 <button
                   key={item.id}
@@ -73,6 +78,15 @@ export default function Navbar() {
                   <span className="w-1 h-1 bg-foreground rounded-full absolute -bottom-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </button>
               ))}
+
+              {/* Кнопка Stats, що веде в самий низ сайту */}
+              <button
+                onClick={scrollToBottom}
+                className="text-foreground/50 hover:text-foreground transition-all duration-300 relative py-1 group flex flex-col items-center cursor-pointer"
+              >
+                <span>[stats]</span>
+                <span className="w-1 h-1 bg-foreground rounded-full absolute -bottom-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </button>
             </div>
 
             <div className="w-[1px] h-3 bg-foreground/10 hidden sm:block" />
@@ -107,4 +121,3 @@ export default function Navbar() {
     </div>
   );
 }
-

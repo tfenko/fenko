@@ -89,7 +89,7 @@ export default function Music() {
           <span className="text-[9px] font-mono text-foreground/30 tracking-widest hidden sm:block">FENKO // ARCHIVE</span>
         </div>
 
-        {/* Список треків з оптимізованими відступами */}
+        {/* Список треків */}
         <div className="flex flex-col">
           {releases.map((track, index) => {
             const currentPlatform = activePlatforms[track.id];
@@ -102,8 +102,8 @@ export default function Music() {
                   onMouseLeave={() => setHoveredTrackId(null)}
                 >
                   
-                  {/* Компактна обкладинка */}
-                  <div className="relative w-full lg:w-[40%] aspect-square max-w-[330px] overflow-hidden bg-foreground/5 border border-foreground/5 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.3)] group">
+                  {/* Обкладинка без рамок */}
+                  <div className="relative w-full lg:w-[40%] aspect-square max-w-[330px] overflow-hidden bg-foreground/5 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.3)] group">
                     <Image 
                       src={track.image} 
                       alt={`${track.title} cover art`} 
@@ -209,7 +209,7 @@ export default function Music() {
                   </div>
                 </div>
 
-                {/* Акуратний розділювач із помірними відступами */}
+                {/* Розділювач між треками */}
                 {index < releases.length - 1 && (
                   <div className="w-full h-[1px] bg-foreground/10 my-10 md:my-14" />
                 )}
