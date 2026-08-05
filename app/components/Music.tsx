@@ -178,13 +178,30 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                 </p>
 
                 <div className="w-full flex flex-col items-center lg:items-start gap-6">
-                  <button 
-                    onClick={() => togglePlay(track.id)}
-                    className="bg-foreground text-background px-8 py-3 text-[10px] tracking-[0.2em] uppercase flex items-center hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
-                  >
-                    {playingId === track.id && <Visualizer isPlaying={true} />}
-                    [ Listen now ]
-                  </button>
+                  {track.id === 2 ? (
+                    /* Spotify Embedded Player для Half Real з блокуванням скролу */
+                    <div className="w-full max-w-sm bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 backdrop-blur-md overflow-hidden overscroll-contain">
+                      <iframe 
+                        data-testid="embed-iframe" 
+                        style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} 
+                        src="https://open.spotify.com/embed/track/6UOYiUahxxA4wWBawrfmzY?utm_source=generator&theme=0&si=df7238f3dad34764" 
+                        width="100%" 
+                        height="152" 
+                        frameBorder="0" 
+                        allowFullScreen={true}
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                        loading="lazy"
+                      />
+                    </div>
+                  ) : (
+                    <button 
+                      onClick={() => togglePlay(track.id)}
+                      className="bg-foreground text-background px-8 py-3 text-[10px] tracking-[0.2em] uppercase flex items-center hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
+                    >
+                      {playingId === track.id && <Visualizer isPlaying={true} />}
+                      [ Listen now ]
+                    </button>
+                  )}
 
                   <div className="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-4 pt-6 border-t border-foreground/10 items-center w-full lg:w-auto">
                     {track.links.map((link) => (
