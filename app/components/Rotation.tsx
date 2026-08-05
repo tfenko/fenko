@@ -50,7 +50,7 @@ export default function Rotation() {
             </div>
           </motion.div>
 
-          {/* Віджет Spotify з виправленою висотою */}
+          {/* Віджет Spotify з твоїм компактним кодом */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -64,9 +64,9 @@ export default function Rotation() {
               <iframe 
                 data-testid="embed-iframe" 
                 style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} 
-                src="https://open.spotify.com/embed/playlist/4cy88PJ0imBgxlQ9a2MkAz?utm_source=generator&theme=0&si=b987cacc1ac84baa" 
+                src="https://open.spotify.com/embed/playlist/4cy88PJ0imBgxlQ9a2MkAz?utm_source=generator&si=89f88ebcb91144ed" 
                 width="100%" 
-                height="480" 
+                height="352" 
                 frameBorder="0" 
                 allowFullScreen={true}
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
@@ -80,3 +80,4 @@ export default function Rotation() {
       </div>
     </section>
   );
+}
