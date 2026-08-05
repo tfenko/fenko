@@ -125,8 +125,8 @@ export default function Music({ onOpenPlayer }: MusicProps) {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
   const [playingId, setPlayingId] = useState<number | null>(null);
   
-  // Стан для перемикання платформ для треку Half Real ('apple' або 'spotify')
-  const [halfRealPlatform, setHalfRealPlatform] = useState<'apple' | 'spotify'>('apple');
+  // Стан для перемикання платформ для треку Half Real ('apple' | 'spotify' | 'soundcloud')
+  const [halfRealPlatform, setHalfRealPlatform] = useState<'apple' | 'spotify' | 'soundcloud'>('apple');
   
   const togglePlay = (id: number) => {
     const trackMap: { [key: number]: 'deepend' | 'halfreal' | 'stillgetclose' } = {
@@ -180,11 +180,11 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                   {track.description}
                 </p>
 
-                <div className="w-full flex flex-col items-center lg:items-start gap-4">
+                <div className="w-full flex flex-col items-start gap-4">
                   {track.id === 2 ? (
                     <div className="w-full max-w-sm">
-                      {/* Міні-перемикач платформ */}
-                      <div className="flex gap-2 mb-3 font-mono text-[9px] uppercase tracking-widest">
+                      {/* Міні-перемикач платформ зліва */}
+                      <div className="flex flex-wrap gap-2 mb-3 font-mono text-[9px] uppercase tracking-widest">
                         <button 
                           onClick={() => setHalfRealPlatform('apple')}
                           className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'apple' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
@@ -197,11 +197,17 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                         >
                           Spotify
                         </button>
+                        <button 
+                          onClick={() => setHalfRealPlatform('soundcloud')}
+                          className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'soundcloud' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
+                        >
+                          SoundCloud
+                        </button>
                       </div>
 
                       {/* Плеєр залежно від обраної платформи */}
                       <div className="bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 backdrop-blur-md overflow-hidden overscroll-contain">
-                        {halfRealPlatform === 'apple' ? (
+                        {halfRealPlatform === 'apple' && (
                           <iframe 
                             allow="autoplay *; encrypted-media *;" 
                             frameBorder="0" 
@@ -210,7 +216,8 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                             sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" 
                             src="https://embed.music.apple.com/ua/album/half-real/6769801424?i=6769801425&theme=dark"
                           />
-                        ) : (
+                        )}
+                        {halfRealPlatform === 'spotify' && (
                           <iframe 
                             data-testid="embed-iframe" 
                             style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} 
@@ -221,6 +228,17 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                             allowFullScreen={true}
                             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
                             loading="lazy"
+                          />
+                        )}
+                        {halfRealPlatform === 'soundcloud' && (
+                          <iframe 
+                            width="100%" 
+                            height="152" 
+                            scrolling="no" 
+                            frameBorder="no" 
+                            allow="autoplay; encrypted-media" 
+                            style={{ borderRadius: '12px', overscrollBehavior: 'contain' }}
+                            src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2322358568&color=%230b0c0b&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"
                           />
                         )}
                       </div>
@@ -235,7 +253,7 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                     </button>
                   )}
 
-                  <div className="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-4 pt-6 border-t border-foreground/10 items-center w-full lg:w-auto">
+                  <div className="flex flex-wrap justify-start gap-x-6 gap-y-4 pt-6 border-t border-foreground/10 items-center w-full">
                     {track.links.map((link) => (
                       <a 
                         key={link.name} 
