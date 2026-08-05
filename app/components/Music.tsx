@@ -181,15 +181,12 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                   {track.id === 2 ? (
                     <div className="w-full max-w-sm bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 backdrop-blur-md overflow-hidden overscroll-contain">
                       <iframe 
-                        data-testid="embed-iframe" 
-                        style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} 
-                        src="https://open.spotify.com/embed/track/6UOYiUahxxA4wWBawrfmzY?utm_source=generator&theme=0&si=df7238f3dad34764" 
-                        width="100%" 
-                        height="152" 
+                        allow="autoplay *; encrypted-media *;" 
                         frameBorder="0" 
-                        allowFullScreen={true}
-                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                        loading="lazy"
+                        height="150" 
+                        style={{ width: '100%', maxWidth: '660px', overflow: 'hidden', background: 'transparent', borderRadius: '12px', overscrollBehavior: 'contain' }} 
+                        sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" 
+                        src="https://embed.music.apple.com/ua/album/half-real/6769801424?i=6769801425"
                       />
                     </div>
                   ) : (
