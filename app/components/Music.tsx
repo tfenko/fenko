@@ -125,6 +125,9 @@ export default function Music({ onOpenPlayer }: MusicProps) {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
   const [playingId, setPlayingId] = useState<number | null>(null);
   
+  // Стан для перемикання платформ для треку Half Real ('apple' або 'spotify')
+  const [halfRealPlatform, setHalfRealPlatform] = useState<'apple' | 'spotify'>('apple');
+  
   const togglePlay = (id: number) => {
     const trackMap: { [key: number]: 'deepend' | 'halfreal' | 'stillgetclose' } = {
       1: 'deepend',
@@ -177,17 +180,50 @@ export default function Music({ onOpenPlayer }: MusicProps) {
                   {track.description}
                 </p>
 
-                <div className="w-full flex flex-col items-center lg:items-start gap-6">
+                <div className="w-full flex flex-col items-center lg:items-start gap-4">
                   {track.id === 2 ? (
-                    <div className="w-full max-w-sm bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 backdrop-blur-md overflow-hidden overscroll-contain">
-                      <iframe 
-                        allow="autoplay *; encrypted-media *;" 
-                        frameBorder="0" 
-                        height="150" 
-                        style={{ width: '100%', maxWidth: '660px', overflow: 'hidden', background: 'transparent', borderRadius: '12px', overscrollBehavior: 'contain' }} 
-                        sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" 
-                        src="https://embed.music.apple.com/ua/album/half-real/6769801424?i=6769801425"
-                      />
+                    <div className="w-full max-w-sm">
+                      {/* Міні-перемикач платформ */}
+                      <div className="flex gap-2 mb-3 font-mono text-[9px] uppercase tracking-widest">
+                        <button 
+                          onClick={() => setHalfRealPlatform('apple')}
+                          className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'apple' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
+                        >
+                          Apple Music
+                        </button>
+                        <button 
+                          onClick={() => setHalfRealPlatform('spotify')}
+                          className={`px-3 py-1.5 rounded-md border transition-all ${halfRealPlatform === 'spotify' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
+                        >
+                          Spotify
+                        </button>
+                      </div>
+
+                      {/* Плеєр залежно від обраної платформи */}
+                      <div className="bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 backdrop-blur-md overflow-hidden overscroll-contain">
+                        {halfRealPlatform === 'apple' ? (
+                          <iframe 
+                            allow="autoplay *; encrypted-media *;" 
+                            frameBorder="0" 
+                            height="150" 
+                            style={{ width: '100%', maxWidth: '660px', overflow: 'hidden', background: 'transparent', borderRadius: '12px', overscrollBehavior: 'contain' }} 
+                            sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" 
+                            src="https://embed.music.apple.com/ua/album/half-real/6769801424?i=6769801425&theme=dark"
+                          />
+                        ) : (
+                          <iframe 
+                            data-testid="embed-iframe" 
+                            style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} 
+                            src="https://open.spotify.com/embed/track/6UOYiUahxxA4wWBawrfmzY?utm_source=generator&theme=0&si=df7238f3dad34764" 
+                            width="100%" 
+                            height="152" 
+                            frameBorder="0" 
+                            allowFullScreen={true}
+                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                            loading="lazy"
+                          />
+                        )}
+                      </div>
                     </div>
                   ) : (
                     <button 
