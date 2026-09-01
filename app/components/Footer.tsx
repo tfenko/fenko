@@ -4,7 +4,7 @@ import { motion, useMotionValue, useTransform, animate, useInView } from 'framer
 import { useEffect, useRef } from 'react';
 
 export default function Footer() {
-  const TOTAL_STREAMS = 25932;
+  const TOTAL_STREAMS = 27144;
 
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.round(latest).toLocaleString());
@@ -50,7 +50,7 @@ export default function Footer() {
               {rounded}
             </motion.span>
             <span className="text-[9px] uppercase tracking-[0.2em] text-foreground/40 block font-sans">
-              Verified statistics (16 August)
+              Verified statistics (1 September)
             </span>
           </div>
 
