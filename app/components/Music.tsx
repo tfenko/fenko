@@ -50,7 +50,7 @@ const releases = [
     title: 'Cathedral', 
     type: 'Single // Out now', 
     description: 'Echoes in high stone arches. Shadows falling across sacred space.', 
-    image: '/cover4.webp', // За потреби змініть шлях до обкладинки
+    image: '/cover4.webp', 
     canScramble: true, 
   },
   { 
@@ -203,7 +203,7 @@ export default function Music() {
                             <iframe width="100%" height="166" scrolling="no" frameBorder="no" allow="autoplay; encrypted-media" style={{ borderRadius: '12px', overscrollBehavior: 'contain', background: '#111111' }} src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2316745055&color=%23151416&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true" loading="lazy" />
                           )}
                           {track.id === 1 && currentPlatform === 'youtube' && (
-                            <iframe width="100%" height="152" src="https://www.youtube.com/embed/QVCaTgY_r7w?autoplay=1" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} loading="`y`" />
+                            <iframe width="100%" height="152" src="https://www.youtube.com/embed/QVCaTgY_r7w?autoplay=1" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} loading="lazy" />
                           )}
 
                         </div>
