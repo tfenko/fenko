@@ -38,12 +38,20 @@ function ScrambleText({ text, isHovered, enabled }: { text: string; isHovered: b
 
 const releases = [
   { 
-    id: 4, 
+    id: 5, 
     title: 'Leave Me Alone', 
     type: 'Single // Coming Sept 25', 
     description: 'Drifting further into the dark edges of attachment and nocturnal isolation.', 
     image: '/leavemealone.webp', 
     canScramble: false, 
+  },
+  { 
+    id: 4, 
+    title: 'Cathedral', 
+    type: 'Single // Out now', 
+    description: 'Echoes in high stone arches. Shadows falling across sacred space.', 
+    image: '/cover4.webp', // За потреби змініть шлях до обкладинки
+    canScramble: true, 
   },
   { 
     id: 3, 
@@ -75,6 +83,7 @@ export default function Music() {
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null);
   
   const [activePlatforms, setActivePlatforms] = useState<{ [key: number]: 'spotify' | 'apple' | 'soundcloud' | 'youtube' | null }>({
+    5: null,
     4: null,
     3: null,
     2: null,
@@ -82,8 +91,6 @@ export default function Music() {
   });
 
   const handleActivatePlatform = (trackId: number, platform: 'spotify' | 'apple' | 'soundcloud' | 'youtube') => {
-    // Для треку 4 кнопки поки що не активні
-    if (trackId === 4) return;
     setActivePlatforms(prev => ({ ...prev, [trackId]: platform }));
   };
 
@@ -136,13 +143,27 @@ export default function Music() {
 
                     <div className="w-full max-w-sm">
                       
-                      {track.id === 4 ? (
+                      {track.id === 5 ? (
                         <div className="bg-foreground/[0.02] border border-foreground/10 rounded-2xl py-3 px-5 text-center backdrop-blur-md mb-3 flex items-center justify-center">
                           <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-foreground/40">Coming September 25</p>
                         </div>
                       ) : currentPlatform ? (
                         <div className="bg-foreground/[0.02] border border-foreground/10 rounded-2xl p-2 backdrop-blur-md overflow-hidden overscroll-contain mb-3 animate-fadeIn">
                           
+                          {/* === CATHEDRAL (id: 4) === */}
+                          {track.id === 4 && currentPlatform === 'spotify' && (
+                            <iframe data-testid="embed-iframe" style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} src="https://open.spotify.com/embed/track/11iZRBxAH3UAKWttr9L9dF?utm_source=generator&theme=0&si=515bd5ccb8744522" width="100%" height="152" frameBorder="0" allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" />
+                          )}
+                          {track.id === 4 && currentPlatform === 'apple' && (
+                            <iframe allow="autoplay *; encrypted-media *;" frameBorder="0" height="150" style={{ width: '100%', maxWidth: '660px', overflow: 'hidden', background: 'transparent', borderRadius: '12px', overscrollBehavior: 'contain' }} sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/ua/album/cathedral/6781459464?theme=dark" loading="lazy" />
+                          )}
+                          {track.id === 4 && currentPlatform === 'soundcloud' && (
+                            <iframe width="100%" height="166" scrolling="no" frameBorder="no" allow="autoplay; encrypted-media" style={{ borderRadius: '12px', overscrollBehavior: 'contain', background: '#111111' }} src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2344733477&color=%23151416&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true" loading="lazy" />
+                          )}
+                          {track.id === 4 && currentPlatform === 'youtube' && (
+                            <iframe width="100%" height="152" src="https://www.youtube.com/embed/vqeTIjubkuQ?autoplay=1" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} loading="lazy" />
+                          )}
+
                           {/* === STILL GET CLOSE (id: 3) === */}
                           {track.id === 3 && currentPlatform === 'spotify' && (
                             <iframe data-testid="embed-iframe" style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} src="https://open.spotify.com/embed/track/2bHUTKRBxnVq4MNF4ngvC4?utm_source=generator&theme=0&si=681075c6ae1d4c67" width="100%" height="152" frameBorder="0" allowFullScreen={true} allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" />
@@ -182,7 +203,7 @@ export default function Music() {
                             <iframe width="100%" height="166" scrolling="no" frameBorder="no" allow="autoplay; encrypted-media" style={{ borderRadius: '12px', overscrollBehavior: 'contain', background: '#111111' }} src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2316745055&color=%23151416&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true" loading="lazy" />
                           )}
                           {track.id === 1 && currentPlatform === 'youtube' && (
-                            <iframe width="100%" height="152" src="https://www.youtube.com/embed/QVCaTgY_r7w?autoplay=1" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} loading="lazy" />
+                            <iframe width="100%" height="152" src="https://www.youtube.com/embed/QVCaTgY_r7w?autoplay=1" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius: '12px', overscrollBehavior: 'contain' }} loading="`y`" />
                           )}
 
                         </div>
@@ -196,29 +217,29 @@ export default function Music() {
                       <div className="flex flex-wrap gap-2 font-mono text-[9px] uppercase tracking-widest">
                         <button 
                           onClick={() => handleActivatePlatform(track.id, 'spotify')}
-                          disabled={track.id === 4}
-                          className={`px-3 py-1.5 rounded-md border transition-all ${track.id === 4 ? 'opacity-30 cursor-not-allowed border-foreground/10 text-foreground/30' : currentPlatform === 'spotify' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
+                          disabled={track.id === 5}
+                          className={`px-3 py-1.5 rounded-md border transition-all ${track.id === 5 ? 'opacity-30 cursor-not-allowed border-foreground/10 text-foreground/30' : currentPlatform === 'spotify' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
                         >
                           Spotify
                         </button>
                         <button 
                           onClick={() => handleActivatePlatform(track.id, 'apple')}
-                          disabled={track.id === 4}
-                          className={`px-3 py-1.5 rounded-md border transition-all ${track.id === 4 ? 'opacity-30 cursor-not-allowed border-foreground/10 text-foreground/30' : currentPlatform === 'apple' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
+                          disabled={track.id === 5}
+                          className={`px-3 py-1.5 rounded-md border transition-all ${track.id === 5 ? 'opacity-30 cursor-not-allowed border-foreground/10 text-foreground/30' : currentPlatform === 'apple' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
                         >
                           Apple Music
                         </button>
                         <button 
                           onClick={() => handleActivatePlatform(track.id, 'soundcloud')}
-                          disabled={track.id === 4}
-                          className={`px-3 py-1.5 rounded-md border transition-all ${track.id === 4 ? 'opacity-30 cursor-not-allowed border-foreground/10 text-foreground/30' : currentPlatform === 'soundcloud' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
+                          disabled={track.id === 5}
+                          className={`px-3 py-1.5 rounded-md border transition-all ${track.id === 5 ? 'opacity-30 cursor-not-allowed border-foreground/10 text-foreground/30' : currentPlatform === 'soundcloud' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
                         >
                           SoundCloud
                         </button>
                         <button 
                           onClick={() => handleActivatePlatform(track.id, 'youtube')}
-                          disabled={track.id === 4}
-                          className={`px-3 py-1.5 rounded-md border transition-all ${track.id === 4 ? 'opacity-30 cursor-not-allowed border-foreground/10 text-foreground/30' : currentPlatform === 'youtube' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
+                          disabled={track.id === 5}
+                          className={`px-3 py-1.5 rounded-md border transition-all ${track.id === 5 ? 'opacity-30 cursor-not-allowed border-foreground/10 text-foreground/30' : currentPlatform === 'youtube' ? 'border-foreground bg-foreground text-background' : 'border-foreground/10 text-foreground/50 hover:text-foreground'}`}
                         >
                           YouTube
                         </button>
